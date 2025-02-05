@@ -24,10 +24,10 @@ export function Anmeldeseite() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem' }}
+            style={{ width: '100%', padding: '10px', marginTop: '5px' }}
           />
         </div>
-        <div style={{ marginBottom: '1rem' }}>
+        <div style={{ marginBottom: '10px' }}>
           <label htmlFor="password">Password:</label>
           <input
             type="password"
@@ -35,10 +35,10 @@ export function Anmeldeseite() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            style={{ width: '100%', padding: '0.5rem', marginTop: '0.5rem' }}
+            style={{ width: '100%', padding: '10px', marginTop: '5px' }}
           />
         </div>
-        <button type="submit" style={{ padding: '0.5rem 1rem' }}>Login</button>
+        <button type="submit" style={{ padding: '5px' }}>Login</button>
       </form>
     </div>
   );
