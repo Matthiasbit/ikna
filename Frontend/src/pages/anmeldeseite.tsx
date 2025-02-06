@@ -3,6 +3,10 @@ import { TextField, Stack, Button, FormControl, InputLabel, OutlinedInput, IconB
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Header from '@/Components/Header';
 
+//das muss in layout tsx oder in globals css umgesetzt werden
+import '../app/bodyfix.css';
+
+
 export function Anmeldeseite() {
   
   const [email, setEmail] = useState("");
@@ -24,8 +28,8 @@ export function Anmeldeseite() {
   //Header fehlt noch, styling fehlt noch, auch überlegen ob es nicht was besseres als h2 gibt... 
   return(
     <div>
-      <Header  text="login" style/>
-      <div style={{ maxWidth: '40vw', margin: 'auto', top:"5vw"}}>
+      <Header  text="login"/>
+      <div style={{ maxWidth: '30vw', margin: 'auto', height: '100vh', paddingTop: '10vh'}}>
         
           <Stack spacing={2} direction="column">
             <TextField
