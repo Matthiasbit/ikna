@@ -1,36 +1,43 @@
 import Header from "@/Components/Header";
 import Set from "@/Components/Set";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
-import { Autocomplete, Grid2, IconButton, Stack, TextField } from "@mui/material";
-import '../app/bodyfix.css';
-import { useState } from "react";
+import { Autocomplete, CircularProgress, Grid2, IconButton, Stack, TextField } from "@mui/material";
+import {  useEffect, useState, useRef } from "react";
+import { Sets, useGetSets } from "@/api/getSets";
 
 
 export default function Startseite() {
 
   const [page, setPage] = useState(0);
+  const pages = useRef<Array<Array<Sets>>>([]);
 
-  const data = ["Set1", "Set2", "Set3", "Set4", "Set5", "Set6", "Set7", "Set8", "Set9", "Set10"];
-  const pages: Array<Array<string>> = []; 
-  // wahrscheinlich ein useEffect wenn die daten geladen werden dann...
-  for (let i = 0; i < data.length / 8; i++) {
-    pages.push(data.slice(i * 8, i * 8 + 8));
-  }
+  const data = useGetSets().data;
+
+  useEffect(() => {
+    for (let i = 0; i < data.length / 8; i++) {
+      pages.current.push(data.slice(i * 8, i * 8 + 8));
+    }
+  }, [data]);
+  
 
   function handleChange(next: boolean) {
     if (next) {
-      if(page === pages.length - 1) {
+      if(page === pages.current.length - 1) {
         setPage(0);
       } else {
         setPage(page + 1);
       }
     } else {
       if (page === 0) {
-        setPage(pages.length - 1);
+        setPage(pages.current.length - 1);
       } else {  
         setPage(page - 1);
       }
     }
+  }
+
+  if (pages.current[page] === undefined) {
+    return <CircularProgress />
   }
   
   return (
@@ -41,23 +48,23 @@ export default function Startseite() {
           options={["Example1", "Example2"]}
           renderInput={(params) => <TextField {...params} label="Kategorien" />}
         />
-        <Stack direction="row" spacing={2} style={{width: '100%'}}>
-        <IconButton onClick={() => handleChange(false)}>
-            <ChevronLeft />
+        <Stack direction="row" spacing={2} style={{width: '100%', minHeight: '500px'}}>
+          <IconButton onClick={() => handleChange(false)}>
+            <ChevronLeft color="primary" />
           </IconButton>
           <Grid2 container spacing={2} style={{width: '100%'}}>
-            {pages[page].map((_set, index) => {
+            {pages.current[page].map((_set, index) => {
               return (
-              <Grid2 size={4} >
-                <Set data={pages[page][index]} />
+              <Grid2 key={index} size={4} >
+                <Set  data={pages.current[page][index]} />
               </Grid2>)
             })}
             <Grid2 size={4} >
-              <Set  data="plus"/>
+              <Set  data={{name: "plus"}}/>
             </Grid2>
           </Grid2>
           <IconButton onClick={() => handleChange(true)}>
-            <ChevronRight />
+            <ChevronRight color="primary"/>
           </IconButton>
         </Stack>
     </Stack>
