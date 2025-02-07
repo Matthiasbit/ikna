@@ -1,3 +1,6 @@
+type HeaderProps = {
+    text: string;
+}
 import React from 'react';
 import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 import Image from 'next/image';
