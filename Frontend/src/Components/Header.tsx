@@ -1,9 +1,20 @@
-import { Height } from "@mui/icons-material"
+import React from 'react';
+import { AppBar, Box, Toolbar, Typography } from '@mui/material';
+import Image from 'next/image';
 
-export default function Header({text}) {
-    return (
-        <div style={{ width: '100%', height: '10vh', backgroundColor: 'red'}}>
-            {text}
-        </div>
-    );
+//logo is based in public didnt manage it else
+//logo verschiebt überschrift
+export default function Header({ text }) {
+  return (
+    <AppBar position="fixed">
+      <Toolbar>
+        <img src='/AnkiLogo.png' alt="Anki Logo" width={50} height={50} />
+        <Typography variant="h4" component="div" sx={{ flexGrow: 1, display: "flex", justifyContent: 'center'}}>
+          {text}
+        </Typography>
+        {/* Platzhalter, um den Text zentriert zu halten */}
+        <Box sx={{ width: 50 }} /> 
+      </Toolbar>
+    </AppBar>
+  );
 }

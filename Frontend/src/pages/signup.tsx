@@ -27,10 +27,10 @@ export function Anmeldeseite() {
   //login erstellt noch 2 augen für pw sichtbarkeit onclick im firefox browser
   return(
     <div>
-      <Header  text="Login"/>
+      <Header  text="Sign Up"/>
       <div style={{ maxWidth: '30vw', margin: 'auto', height: '100vh', paddingTop: '20vh'}}>
           <Typography variant="body1" gutterBottom>
-            Log in to an existing account or <Link href="/signup">Sign Up here</Link>.
+            Create a new Account or <Link href="/anmeldeseite">Log in here</Link>.
           </Typography>
           <Stack spacing={2} direction="column">
             <TextField
