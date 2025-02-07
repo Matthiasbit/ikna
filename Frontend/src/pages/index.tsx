@@ -2,12 +2,14 @@ import Header from "@/Components/Header";
 import Set from "@/Components/Set";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { Autocomplete, CircularProgress, Grid2, IconButton, Stack, TextField } from "@mui/material";
+import '../app/bodyfix.css';
 import {  useEffect, useState, useRef } from "react";
 import { Sets, useGetSets } from "@/api/getSets";
 
 
 export default function Startseite() {
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [page, setPage] = useState(0);
   const pages = useRef<Array<Array<Sets>>>([]);
 
