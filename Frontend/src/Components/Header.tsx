@@ -1,14 +1,17 @@
 import React from 'react';
 import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 import Image from 'next/image';
+import Link from 'next/link';
 
-//logo is based in public didnt manage it else
-//logo verschiebt überschrift
+//logo is located in public didnt manage it else
+//neben Logo Namen
 export default function Header({ text }) {
   return (
     <AppBar position="fixed">
       <Toolbar>
-        <img src='/AnkiLogo.png' alt="Anki Logo" width={50} height={50} />
+        <Link href="/">
+              <Image src="/IknaLogo.png" alt="Anki Logo" width={50} height={50} />
+        </Link>
         <Typography variant="h4" component="div" sx={{ flexGrow: 1, display: "flex", justifyContent: 'center'}}>
           {text}
         </Typography>
