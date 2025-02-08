@@ -12,7 +12,7 @@ export default function Header({ text }: HeaderProps) {
   return (
     <AppBar position="relative">
       <Toolbar>
-        <Image src='/AnkiLogo.png' alt="Anki Logo" width={50} height={50} />
+        <Image src='/IknaLogo.png' alt="Anki Logo" width={50} height={50} />
         <Typography variant="h4" component="div" sx={{ flexGrow: 1, display: "flex", justifyContent: 'center'}}>
           {text}
         </Typography>

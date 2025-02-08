@@ -2,14 +2,12 @@ import Header from "@/Components/Header";
 import Set from "@/Components/Set";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { Autocomplete, CircularProgress, Grid2, IconButton, Stack, TextField } from "@mui/material";
-import '../app/bodyfix.css';
 import {  useEffect, useState, useRef } from "react";
 import { Sets, useGetSets } from "@/api/getSets";
 
 
 export default function Startseite() {
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [page, setPage] = useState(0);
   const pages = useRef<Array<Array<Sets>>>([]);
 
@@ -54,15 +52,15 @@ export default function Startseite() {
           <IconButton onClick={() => handleChange(false)}>
             <ChevronLeft color="primary" />
           </IconButton>
-          <Grid2 container spacing={2} style={{width: '100%'}}>
+          <Grid2 container spacing={3} style={{width: '100%'}}>
             {pages.current[page].map((_set, index) => {
               return (
-              <Grid2 key={index} size={4} >
+              <Grid2 key={index} size={{xs: 12, md: 6, lg: 4}} >
                 <Set  data={pages.current[page][index]} />
               </Grid2>)
             })}
-            <Grid2 size={4} >
-              <Set  data={{name: "plus"}}/>
+            <Grid2 size={{xs: 12, md: 6, lg: 4}}>
+              <Set data={null}/>
             </Grid2>
           </Grid2>
           <IconButton onClick={() => handleChange(true)}>
