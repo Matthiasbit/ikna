@@ -9,7 +9,6 @@ import { Sets, useGetSets } from "@/api/getSets";
 
 export default function Startseite() {
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [page, setPage] = useState(0);
   const pages = useRef<Array<Array<Sets>>>([]);
 
@@ -61,8 +60,8 @@ export default function Startseite() {
                 <Set  data={pages.current[page][index]} />
               </Grid2>)
             })}
-            <Grid2 size={4} >
-              <Set  data={{name: "plus"}}/>
+            <Grid2 size={4}>
+              <Set data={null}/>
             </Grid2>
           </Grid2>
           <IconButton onClick={() => handleChange(true)}>
