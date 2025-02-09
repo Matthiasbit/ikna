@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Stack, Button, FormControl, InputLabel, OutlinedInput, IconButton,InputAdornment, Typography, Link } from '@mui/material';
+import { TextField, Stack, Button, FormControl, InputLabel, OutlinedInput, IconButton,InputAdornment, Typography, Link, Tabs, Tab, Box } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Header from '@/Components/Header';
 
@@ -19,41 +19,45 @@ export function Anmeldeseite() {
   };
   
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleLoginClick = () => {
-    setIsLogin(true);
+  
+  const handleLoginLinkClick = () => {
     setIsResetPassword(false);
   };
-  const handleSignUpClick = () => {
-    setIsLogin(false);
-    setIsResetPassword(false);
-  };
-  const handleResetPasswordClick = () => {
+
+  const handleResetLinkClick = () => {
     setIsResetPassword(true);
+  };
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    if (newValue === 0) {
+      setIsLogin(true);
+      setIsResetPassword(false);
+    } else {
+      setIsLogin(false);
+      setIsResetPassword(false);
+    }
   };
   
   //login erstellt noch 2 augen für pw sichtbarkeit onclick im firefox browser
   return(
     <div>
       <Header text={isLogin ? (isResetPassword ? "Reset Password" : "Login") : "Sign Up"} />
-      <div style={{paddingTop: '20vh', float: 'right', marginRight:'10vh'}}>
-      <Button variant={isLogin ? "contained" : "outlined"} color="primary" onClick={handleLoginClick}>
-        Login
-      </Button>
-      <Button variant={!isLogin ? "contained" : "outlined"} color="secondary" onClick={handleSignUpClick}>
-        Sign Up
-      </Button>
-      </div>
-      <div style={{ maxWidth: '30vw', margin: 'auto', height: '100vh', paddingTop: '20vh'}}>
-      <Typography variant="h4" component="h1" gutterBottom>
-          {isLogin ? (isResetPassword ? "Reset Password" : "Login") : "Sign Up"}
-        </Typography>
+      <Box sx={{ width: '100%', bgcolor: 'background.paper', marginTop: '20vh' }}>
+        <Tabs value={isLogin ? 0 : 1} onChange={handleTabChange} centered>
+          <Tab label="Login" />
+          <Tab label="Sign Up" />
+        </Tabs>
+      </Box>
+      <div style={{ maxWidth: '30vw', margin: 'auto', height: '100vh', paddingTop: '5vh'}}>
         <Typography variant="body1" gutterBottom>
           {isLogin ? (
             isResetPassword ? (
-              "Enter your email to reset your password."
+              <>
+                Enter your email to reset your password. Or Log in <Link href="#" onClick={handleLoginLinkClick}>here</Link>.
+              </>
             ) : (
               <>
-                Log in to an existing account. Or reset your Password <Link href="#" onClick={handleResetPasswordClick}>here</Link>.
+                Log in to an existing account. Or reset your Password <Link href="#" onClick={handleResetLinkClick}>here</Link>.
               </>
             )
           ) : (
