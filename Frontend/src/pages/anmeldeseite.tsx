@@ -20,9 +20,9 @@ export function Anmeldeseite() {
   
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   
-  const handleLoginLinkClick = () => {
-    setIsResetPassword(false);
-  };
+  const handleLoginClick = () => {
+    setIsLogin(true);
+    setIsResetPassword(false);  };
 
   const handleResetLinkClick = () => {
     setIsResetPassword(true);
@@ -30,8 +30,7 @@ export function Anmeldeseite() {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     if (newValue === 0) {
-      setIsLogin(true);
-      setIsResetPassword(false);
+      handleLoginClick();
     } else {
       setIsLogin(false);
       setIsResetPassword(false);
@@ -44,7 +43,7 @@ export function Anmeldeseite() {
       <Header text={isLogin ? (isResetPassword ? "Reset Password" : "Login") : "Sign Up"} />
       <Box sx={{ width: '100%', bgcolor: 'background.paper', marginTop: '20vh' }}>
         <Tabs value={isLogin ? 0 : 1} onChange={handleTabChange} centered>
-          <Tab label="Login" />
+          <Tab label="Login" onClick={handleLoginClick} />
           <Tab label="Sign Up" />
         </Tabs>
       </Box>
@@ -53,7 +52,7 @@ export function Anmeldeseite() {
           {isLogin ? (
             isResetPassword ? (
               <>
-                Enter your email to reset your password. Or Log in <Link href="#" onClick={handleLoginLinkClick}>here</Link>.
+                Enter your email to reset your password. Or Log in <Link href="#" onClick={handleLoginClick}>here</Link>.
               </>
             ) : (
               <>
