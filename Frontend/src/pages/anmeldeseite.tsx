@@ -47,7 +47,7 @@ export function Anmeldeseite() {
           <Tab label="Sign Up" />
         </Tabs>
       </Box>
-      <div style={{ maxWidth: '30vw', margin: 'auto', height: '100vh', paddingTop: '5vh'}}>
+      <Box sx={{ maxWidth: { xs: '90%', sm: '70%', md: '50%', lg: '30%' }, margin: 'auto', height: '100vh', paddingTop: '5vh' }}>
         <Typography variant="body1" gutterBottom>
           {isLogin ? (
             isResetPassword ? (
@@ -60,7 +60,9 @@ export function Anmeldeseite() {
               </>
             )
           ) : (
-            "Create a new account."
+            <>
+              Create a new account.
+            </>
           )}
         </Typography>
         <Stack spacing={2} direction="column">
@@ -101,7 +103,7 @@ export function Anmeldeseite() {
             {isLogin ? (isResetPassword ? "Reset Password" : "Login") : "Sign Up"}
           </Button>
         </Stack>
-      </div>
+      </Box>
     </div>
   );
 };

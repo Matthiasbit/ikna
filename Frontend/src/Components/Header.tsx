@@ -3,9 +3,12 @@ import { AppBar, Box, Toolbar, Typography } from '@mui/material';
 import Image from 'next/image';
 import Link from 'next/link';
 
+type HeaderProps = {
+  text: string;
+}
 //logo is located in public didnt manage it else
 //neben Logo Namen
-export default function Header({ text }) {
+export default function Header({ text}: HeaderProps ) {
   return (
     <AppBar position="fixed">
       <Toolbar>
