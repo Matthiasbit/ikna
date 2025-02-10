@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Stack, Button, FormControl, InputLabel, OutlinedInput, IconButton, InputAdornment, Typography, Link, Tabs, Tab, Box } from '@mui/material';
+import { TextField, Stack, Button, FormControl, InputLabel, OutlinedInput, IconButton, InputAdornment, Typography, Link, Tab, Box } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 
@@ -11,9 +11,8 @@ export function Anmeldeseite() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
   const [isResetPassword, setIsResetPassword] = useState(false);
-  const [tabValue, setTabValue] = useState("1");
+  const [tabValue, setTabValue] = useState<"1" | "2">("1");
 
   function anmeldung() {
     setError(true);
@@ -22,55 +21,34 @@ export function Anmeldeseite() {
   };
   
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  
-  const handleLoginClick = () => {
-    setIsLogin(true);
-    setIsResetPassword(false);
-  };
 
   const handleResetLinkClick = () => {
-    setIsResetPassword(true);
-  };
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    setTabValue(newValue);
-    if (newValue === "1") {
-      handleLoginClick();
-    } else {
-      setIsLogin(false);
-      setIsResetPassword(false);
-    }
+    setIsResetPassword(!isResetPassword);
   };
   
   return (
     <div>
-      <Header text={isLogin ? (isResetPassword ? "Reset Password" : "Login") : "Sign Up"} />
-      <Box sx={{ width: '100%', bgcolor: 'background.paper', marginTop: '20vh' }}>
-        <TabContext value={tabValue}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <TabList onChange={handleTabChange} centered>
-              <Tab label="Login" value="1"/>
-              <Tab label="Sign Up" value="2" />
-            </TabList>
-          </Box>
-          <TabPanel value="1">
-            <Box sx={{ maxWidth: { xs: '90%', sm: '70%', md: '50%', lg: '30%' }, margin: 'auto', height: '100vh', paddingTop: '5vh' }}>
+      <Header text={tabValue === "1" ? isResetPassword ? "Reset Password" : "Login" : "Sign up" } />
+      <Box sx={{ width: '100%',  marginTop: '20vh' }}>
+        <Box sx={{ maxWidth: { xs: '90%', sm: '70%', md: '50%', lg: '30%' }, margin: 'auto', height: '100vh', paddingTop: '5vh' }}>
+          <TabContext value={tabValue}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <TabList onChange={(_event, value) => setTabValue(value)} centered style={{ width: '100%' }}>
+                <Tab label="Login" value="1"/>
+                <Tab label="Sign Up" value="2" />
+              </TabList>
+            </Box>
+            <TabPanel value="1">
               <Typography variant="body1" gutterBottom>
-                {isLogin ? (
-                  isResetPassword ? (
+                { isResetPassword ? (
                     <>
-                      Enter your email to reset your password. Or Log in <Link href="#" onClick={handleLoginClick}>here</Link>.
+                      Enter your email to reset your password. Or Log in <Link href="#" onClick={handleResetLinkClick}>here</Link>.
                     </>
                   ) : (
                     <>
                       Log in to an existing account. Or reset your Password <Link href="#" onClick={handleResetLinkClick}>here</Link>.
                     </>
-                  )
-                ) : (
-                  <>
-                    Create a new account.
-                  </>
-                )}
+                  )}
               </Typography>
               <Stack spacing={2} direction="column">
                 <TextField
@@ -107,13 +85,11 @@ export function Anmeldeseite() {
                   </FormControl>
                 )}
                 <Button onClick={anmeldung} variant="contained" color="primary">
-                  {isLogin ? (isResetPassword ? "Reset Password" : "Login") : "Sign Up"}
+                  {isResetPassword ? "Reset Password" : "Login"}
                 </Button>
               </Stack>
-            </Box>
-          </TabPanel>
-          <TabPanel value="2">
-            <Box sx={{ maxWidth: { xs: '90%', sm: '70%', md: '50%', lg: '30%' }, margin: 'auto', height: '100vh', paddingTop: '5vh' }}>
+            </TabPanel>
+            <TabPanel value="2">
               <Typography variant="body1" gutterBottom>
                 Create a new account.
               </Typography>
@@ -153,9 +129,9 @@ export function Anmeldeseite() {
                   Sign Up
                 </Button>
               </Stack>
-            </Box>
-          </TabPanel>
-        </TabContext>
+            </TabPanel>
+          </TabContext>
+        </Box>
       </Box>
     </div>
   );
