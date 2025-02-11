@@ -23,6 +23,9 @@ export default function Home() {
         <Link href="./anmeldeseite">
           <button className={styles.button}>Go to Login Page</button>
         </Link>
+        <Link href="./Lernseite">
+          <button className={styles.button}>Go to Learn Page</button>
+        </Link>
         <div className={styles.ctas}>
           <a
             className={styles.primary}
