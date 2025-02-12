@@ -1,80 +1,72 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-import Link from "next/link";
+import Header from "@/Components/Header";
+import Set from "@/Components/Set";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { Autocomplete, CircularProgress, Grid2, IconButton, Stack, TextField } from "@mui/material";
+import {  useEffect, useState, useRef } from "react";
+import { Sets, useGetSets } from "@/api/getSets";
 
-export default function Home() {
+
+export default function Startseite() {
+
+  const [page, setPage] = useState(0);
+  const pages = useRef<Array<Array<Sets>>>([]);
+
+  const data = useGetSets().data;
+
+  useEffect(() => {
+    for (let i = 0; i < data.length / 8; i++) {
+      pages.current.push(data.slice(i * 8, i * 8 + 8));
+    }
+  }, [data]);
+  
+
+  function handleChange(next: boolean) {
+    if (next) {
+      if(page === pages.current.length - 1) {
+        setPage(0);
+      } else {
+        setPage(page + 1);
+      }
+    } else {
+      if (page === 0) {
+        setPage(pages.current.length - 1);
+      } else {  
+        setPage(page - 1);
+      }
+    }
+  }
+
+  if (pages.current[page] === undefined) {
+    return <CircularProgress />
+  }
+  
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src={`${process.env.BASE_PATH ?? ''}/next.svg`}
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <Stack direction="column" spacing={2} justifyContent="center" alignItems="center">
+      <Header text="Start" />
+        <Autocomplete 
+          style={{width: '50%'}}
+          options={["Example1", "Example2"]}
+          renderInput={(params) => <TextField {...params} label="Kategorien" />}
         />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-        <Link href="./anmeldeseite">
-          <button className={styles.button}>Go to Login Page</button>
-        </Link>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src={`${process.env.BASE_PATH ?? ''}/vercel.svg`}
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src={`${process.env.BASE_PATH ?? ''}/file.svg`} alt="File icon" width={16} height={16} />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src={`${process.env.BASE_PATH ?? ''}/window.svg`} alt="Window icon" width={16} height={16} />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image aria-hidden src={`${process.env.BASE_PATH ?? ''}/globe.svg`} alt="Globe icon" width={16} height={16} />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <Stack direction="row" spacing={2} style={{width: '100%', minHeight: '500px'}}>
+          <IconButton onClick={() => handleChange(false)}>
+            <ChevronLeft color="primary" />
+          </IconButton>
+          <Grid2 container spacing={2} style={{width: '100%'}}>
+            {pages.current[page].map((_set, index) => {
+              return (
+              <Grid2 key={index} size={4} >
+                <Set  data={pages.current[page][index]} />
+              </Grid2>)
+            })}
+            <Grid2 size={4} >
+              <Set  data={{name: "plus"}}/>
+            </Grid2>
+          </Grid2>
+          <IconButton onClick={() => handleChange(true)}>
+            <ChevronRight color="primary"/>
+          </IconButton>
+        </Stack>
+    </Stack>
   );
 }
