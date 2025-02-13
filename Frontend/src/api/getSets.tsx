@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type Sets = {
     name: string;
@@ -8,7 +7,12 @@ export type Sets = {
 
 export function useGetSets() {
   const [data, setData] = useState<Array<Sets>>([{name: "lala"}]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+  setData([{name: "lala"}]);
+  setLoading(false)
+  }, []);
 
  /* useEffect(() => {
     fetch("/api/sets")
