@@ -11,11 +11,11 @@ export default function Startseite() {
   const [page, setPage] = useState(0);
   const pages = useRef<Array<Array<Sets>>>([]);
 
-  const data = useGetSets().data;
+  const data = useGetSets();
 
   useEffect(() => {
-    for (let i = 0; i < data.length / 8; i++) {
-      pages.current.push(data.slice(i * 8, i * 8 + 8));
+    for (let i = 0; i < data.data.length / 8; i++) {
+      pages.current.push(data.data.slice(i * 8, i * 8 + 8));
     }
   }, [data]);
   
