@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Component } from 'react';
-import { Box, Button, Typography, Card, CardContent } from '@mui/material';
+import { Box, Button, Typography, Card, CardContent, Chip } from '@mui/material';
 import Header from '@/Components/Header';
 
 const Lernseite: React.FC = () => {
@@ -59,31 +59,57 @@ const useFetchCards = () => {
 
   };
 
-
   const CardFront: React.FC<{ question: string; onClick: () => void }> = ({ question, onClick }) => (
-    <Card onClick={onClick} sx={{ height: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <Card onClick={onClick} sx={{ height: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#E3F2FD', borderRadius: '16px'}}>
       <CardContent>
         <Typography variant="h5" align="center">{question}</Typography>
       </CardContent>
     </Card>
   );
 
-  const CardBack: React.FC<{ answer: string; onCorrect: () => void; onIncorrect: () => void }> = ({ answer, onCorrect, onIncorrect }) => (
-    <Card sx={{ height: '50vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant="h5" align="center">{answer}</Typography>
-      </CardContent>
-      <Box sx={{  border: '1px solid', borderColor: 'grey.400', display: 'flex', justifyContent: 'center', gap: '8px', padding: '8px' }}>
-        <Button variant="text" sx={{ width: '100%'}}>Button 1</Button>
-        <Button variant="text" sx={{ width: '100%'}}>Button 2</Button>
-        <Button variant="text" sx={{ width: '100%'}}>Button 3</Button>
-      </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', padding: '16px' }}>
-        <Button onClick={onCorrect} color="primary" variant="contained" sx={{ width: '100%' }}>Correct</Button>
-        <Button onClick={onIncorrect} color="secondary" variant="contained" sx={{ width: '100%' }}>Incorrect</Button>
-      </Box>
-    </Card>
-  );
+  const CardBack: React.FC<{ answer: string; onCorrect: () => void; onIncorrect: () => void }> = ({ answer, onCorrect, onIncorrect }) => {
+    const [selectedChip, setSelectedChip] = useState<string | null>(null);
+  
+    const handleChipClick = (chipLabel: string) => {
+      setSelectedChip(chipLabel);
+    };
+    
+    //Die chips müssen noch irgendwie outputs liefern
+    return (
+      <Card sx={{ height: '50vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#E3F2FD', borderRadius: '16px' }}>
+        <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Typography variant="h5" align="center">{answer}</Typography>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: '8px', padding: '8px' }}>
+          <Chip
+            label="Chip 1"
+            variant="outlined"
+            sx={{ width: '100%', backgroundColor: selectedChip === 'Chip 1' ? 'lightblue' : 'inherit' }}
+            clickable
+            onClick={() => handleChipClick('Chip 1')}
+          />
+          <Chip
+            label="Chip 2"
+            variant="outlined"
+            sx={{ width: '100%', backgroundColor: selectedChip === 'Chip 2' ? 'lightblue' : 'inherit' }}
+            clickable
+            onClick={() => handleChipClick('Chip 2')}
+          />
+          <Chip
+            label="Chip 3"
+            variant="outlined"
+            sx={{ width: '100%', backgroundColor: selectedChip === 'Chip 3' ? 'lightblue' : 'inherit' }}
+            clickable
+            onClick={() => handleChipClick('Chip 3')}
+          />
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', padding: '16px' }}>
+          <Button onClick={onCorrect} color="primary" variant="text" sx={{ width: '100%' }}>Correct</Button>
+          <Button onClick={onIncorrect} color="secondary" variant="text" sx={{ width: '100%' }}>Incorrect</Button>
+        </Box>
+      </Card>
+    );
+  };
 
   const CardList: React.FC = () => {
     const [cards, setCards] = useState<{ id: string; question: string; answer: string; difficulty: number; }[]>([]);
@@ -144,7 +170,7 @@ const useFetchCards = () => {
   return (
     <div>
       <Header text="Lernseite" />
-      <Box sx={{ maxWidth: ['90%', '70%', '60%', '50%'], margin: 'auto', paddingTop: '30vh' }}>
+      <Box sx={{ maxWidth: ['90%', '70%', '60%', '50%'], margin: 'auto', paddingTop: '30vh'}}>
         <CardList/>
       </Box>
     </div>
