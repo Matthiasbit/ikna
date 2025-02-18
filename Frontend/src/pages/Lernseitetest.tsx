@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, Typography, Card, CardContent, Chip } from '@mui/material';
 import Header from '@/Components/Header';
 import useGetCards from '@/api/getCards';
+import '@/app/lernseite.css';
 
 export type Cards = {
   id: string;
@@ -40,42 +41,42 @@ export function Lernseite() {
   return (
     <div>
       <Header text="Lernseite" />
-      <Box sx={{ maxWidth:'90vw', margin: 'auto', paddingTop: '20vh' }}>
+      <Box className="container">
         {showAnswer ? (
-          <Card sx={{ minHeight: '70vh', borderRadius: '16px', backgroundColor: '#E3F2FD', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-            <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Card className="card">
+            <Box className="cardContent">
               <Typography variant="h5" align="center">{currentCard.answer}</Typography>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '8px', padding: '8px' }}>
+            <Box className="chipContainer">
               <Chip
                 label="Leicht"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Leicht' ? 'lightblue' : 'inherit' }}
+                className={`chip ${selectedChip === 'Leicht' ? 'chipSelected' : ''}`}
                 clickable
                 onClick={() => handleChipClick('Leicht')}
               />
               <Chip
                 label="Mittel"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Mittel' ? 'lightblue' : 'inherit' }}
+                className={`chip ${selectedChip === 'Mittel' ? 'chipSelected' : ''}`}
                 clickable
                 onClick={() => handleChipClick('Mittel')}
               />
               <Chip
                 label="Schwer"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Schwer' ? 'lightblue' : 'inherit' }}
+                className={`chip ${selectedChip === 'Schwer' ? 'chipSelected' : ''}`}
                 clickable
                 onClick={() => handleChipClick('Schwer')}
               />
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', padding: '16px' }}>
-              <Button onClick={() => handleButtonClick(false)} color="secondary" variant="text" sx={{ width: '100%' }}>Incorrect</Button>
-              <Button onClick={() => handleButtonClick(true)} color="primary" variant="text" sx={{ width: '100%' }}>Correct</Button>
+            <Box className="buttonContainer">
+              <Button onClick={() => handleButtonClick(false)} color="secondary" variant="text" className="chip">Incorrect</Button>
+              <Button onClick={() => handleButtonClick(true)} color="primary" variant="text" className="chip">Correct</Button>
             </Box>
           </Card>
         ) : (
-          <Card onClick={() => setShowAnswer(true)} sx={{ minHeight: '70vh', borderRadius: '16px', backgroundColor: '#E3F2FD', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor : "pointer" }}>
+          <Card onClick={() => setShowAnswer(true)} className="card cardClickable">
             <CardContent>
               <Typography variant="h5" align="center">{currentCard.question}</Typography>
             </CardContent>
