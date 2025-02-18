@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Button, Typography, Card, CardContent, Chip } from '@mui/material';
 import Header from '@/Components/Header';
-import useFetchCards from '@/Components/FetchCards';
+import useGetCards from '@/api/getCards';
 
-type Cards = {
+export type Cards = {
   id: string;
   question: string;
   answer: string;
@@ -11,30 +11,23 @@ type Cards = {
 };
 
 export function Lernseite() {
-  const { cards } = useFetchCards();
+  const { cards } = useGetCards();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
 
-  const updateCardStatus = async (cardId: string, status: boolean, chipLabel: string|null) => {
+  const updateCardStatus = async (cardId: string, status: boolean, chipLabel: string | null) => {
     console.log(`Card ${cardId} status updated to ${status ? 'correct' : 'incorrect'} as ${chipLabel}`);
   };
 
-  const handleCorrect = async () => {
+  async function handleButtonClick(value: boolean) {
     setShowAnswer(false);
     setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
     setSelectedChip(null);
-    updateCardStatus(cards[currentCardIndex].id, true, selectedChip);
+    updateCardStatus(cards[currentCardIndex].id, value, selectedChip);
   };
 
-  const handleIncorrect = async () => {
-    setShowAnswer(false);
-    setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
-    setSelectedChip(null);
-    updateCardStatus(cards[currentCardIndex].id, false, selectedChip);
-  };
-
-  const handleChipClick = (chipLabel: string) => {
+  function handleChipClick(chipLabel: string){
     setSelectedChip(chipLabel);
   };
 
@@ -49,7 +42,7 @@ export function Lernseite() {
       <Header text="Lernseite" />
       <Box sx={{ maxWidth: ['90%', '70%', '60%', '50%'], margin: 'auto', paddingTop: '30vh' }}>
         {showAnswer ? (
-          <Card sx={{ height: '50vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#E3F2FD', borderRadius: '16px' }}>
+          <Card sx={{ height: '50vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#E3F2FD', borderRadius: '16px'}}>
             <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Typography variant="h5" align="center">{currentCard.answer}</Typography>
             </Box>
@@ -77,12 +70,12 @@ export function Lernseite() {
               />
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', padding: '16px' }}>
-              <Button onClick={handleCorrect} color="primary" variant="text" sx={{ width: '100%' }}>Correct</Button>
-              <Button onClick={handleIncorrect} color="secondary" variant="text" sx={{ width: '100%' }}>Incorrect</Button>
+              <Button onClick={() => handleButtonClick(false)} color="secondary" variant="text" sx={{ width: '100%' }}>Incorrect</Button>
+              <Button onClick={() => handleButtonClick(true)} color="primary" variant="text" sx={{ width: '100%' }}>Correct</Button>
             </Box>
           </Card>
         ) : (
-          <Card onClick={() => setShowAnswer(true)} sx={{ height: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#E3F2FD', borderRadius: '16px' }}>
+          <Card onClick={() => setShowAnswer(true)} sx={{ height: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#E3F2FD', borderRadius: '16px', cursor : "pointer" }}>
             <CardContent>
               <Typography variant="h5" align="center">{currentCard.question}</Typography>
             </CardContent>
