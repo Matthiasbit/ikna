@@ -40,9 +40,9 @@ export function Lernseite() {
   return (
     <div>
       <Header text="Lernseite" />
-      <Box sx={{ maxWidth: ['90%', '70%', '60%', '50%'], margin: 'auto', paddingTop: '30vh' }}>
+      <Box sx={{ maxWidth:'90vw', margin: 'auto', paddingTop: '20vh' }}>
         {showAnswer ? (
-          <Card sx={{ height: '50vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#E3F2FD', borderRadius: '16px'}}>
+          <Card sx={{ minHeight: '70vh', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', backgroundColor: '#E3F2FD', borderRadius: '16px'}}>
             <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Typography variant="h5" align="center">{currentCard.answer}</Typography>
             </Box>
@@ -75,7 +75,7 @@ export function Lernseite() {
             </Box>
           </Card>
         ) : (
-          <Card onClick={() => setShowAnswer(true)} sx={{ height: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#E3F2FD', borderRadius: '16px', cursor : "pointer" }}>
+          <Card onClick={() => setShowAnswer(true)} sx={{minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#E3F2FD', borderRadius: '16px', cursor : "pointer" }}>
             <CardContent>
               <Typography variant="h5" align="center">{currentCard.question}</Typography>
             </CardContent>
