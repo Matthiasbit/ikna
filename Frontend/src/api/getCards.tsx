@@ -1,9 +1,10 @@
+import { Cards } from "@/pages/Lernseite";
 import { useEffect, useState } from "react";
 
-const useFetchCards = () => {
-  const [cards, setCards] = useState<{ id: string; question: string; answer: string; difficulty: number; }[]>([]);
+
+function useGetCards() {
+  const [cards, setCards] = useState<Cards[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<any>(null);
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -16,13 +17,14 @@ const useFetchCards = () => {
           { id: '5', question: 'Wer füllt die restlichen Karten mit tollem Text?', answer: 'Genau Svenja!!', difficulty: 1 },
         ]);
         setCards(response);
+        setLoading(false);
       
     };
 
     fetchCards();
   }, []);
 
-  return { cards };
+  return { cards, loading };
 };
 
-export default useFetchCards;
+export default useGetCards;
