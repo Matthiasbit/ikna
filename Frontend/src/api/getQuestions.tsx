@@ -1,24 +1,27 @@
-import { useEffect, useState } from 'react'
+import {useEffect, useState} from "react";
 
-type Question = {
-    id: number
-    question: string
-    answer: string
-    category: string
-    difficulty: string
-}
-
-export function useGetQuestion() {
-    const [questionsArray, setQuestionsArray] = useState<Question>();
-    const [loading, setLoading] = useState(true);
+export function useGetQuestions() {
+    const [data, setData] = useState([])
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
-        setQuestionsArray({question: "Test Question", answer: "Answer is cool", category: "Test Category", difficulty: "easy", id: 1});
-        setLoading(false);
+
+        // TODO: replace the content of useEffect
+        // chatGPTs vorschlag, weil ich nicht wusste was in das useEffect rein sollte
+        const fetchData = async () => {
+            try {
+                const response = await fetch('deine_api_url'); // API URL hier einfügen
+                const result = await response.json();
+                setData(result);
+            } catch (error) {
+                console.error('Fehler beim Abrufen der Daten:', error);
+            } finally {
+                setLoading(false); // Sobald die Daten geladen sind, loading auf false setzen
+            }
+        };
+        fetchData();
+        // chatGPT Ende
+        //
+
     }, []);
-    /*useEffect(() => {
-        fetch('http://localhost:8080/api/questions')
-            .then(response => response.json())
-            .then(data => setQuestionsArray(data))
-    }, [])*/
-    return {data: questionsArray, loading};
+    return {data, loading}
 }
