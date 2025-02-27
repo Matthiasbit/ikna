@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 export type Sets = {
     id: string;
     name: string;
+    category?: string;
     zero: number;
     twentyfive: number;
     fifty: number;
