@@ -6,19 +6,38 @@ import TextField from '@mui/material/TextField';
 import Card from "@mui/material/Card";
 import CloseIcon from '@mui/icons-material/Close';
 import Header from "@/Components/Header";
-import {Button, Divider} from "@mui/material";
-
+import {Button, Divider, Stack} from "@mui/material";
 
 export default function CreateCard() {
+
+    const questionsArray = useGetQuestions();
 
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
 
     console.log(question, answer) // TODO: API call an Backend
 
+    const handleClose =()=> {
+        setQuestion("")
+        setAnswer("")
+        window.location.href="/createSet"
+        //TODO: cancel edit and go one page back ??
+    }
+    const hanldeDelete = (questionID: number) => {
+        console.log("delete: " , questionID)
+    }
+    const handleSave = (questionID: number) => {
+        console.log("save: " , questionID, "in setID" )
+    }
+    const handleNext = (questionID: number) => {
+        handleSave(questionID)
+        window.location.href = "/createCard" // TODO: createNewID
+        console.log("save:", questionID, "open new createCard")
+    }
+
     return (
         <>
-            <Header text="Bearbeitung"/>
+            <Header text="edit-card-page"/>
             <br/>
             <Card variant={'outlined'}
                   style={{
@@ -28,7 +47,7 @@ export default function CreateCard() {
                       padding: '5vw',
                       paddingTop: '2vw'
                   }}>
-                <Box style={{textAlign: 'right'}}> <CloseIcon/> </Box>
+                <Box style={{textAlign: 'right'}}> <CloseIcon onClick={handleClose}/> </Box>
                 <Box component="form"
                      sx={{'& .MuiTextField-root': {m: 1, width: '25ch'}}}
                      noValidate
@@ -71,18 +90,25 @@ export default function CreateCard() {
 
                 <Divider/>
 
-                <div style={{display: 'flex', justifyContent: 'flex-end'  /*,border: '1px solid black'*/}}>
-                    <div style={{display: 'flex'}}>
-                        <Button><DeleteForeverIcon/></Button>
-                        {/*TODO: ask if sure to delete?*/}
-                    </div>
-                    <div style={{display: 'flex'}}>
-                        <Button> save</Button>
-                        {/*TODO: saveCardInSet*/}
-                        <Button> next card</Button>
-                        {/*TODO: saveCardInSet + opens new empty form */}
-                    </div>
-                </div>
+                {questionsArray.data.flatMap((question) => {
+                    return (
+                        <Stack style={{display: 'flex', justifyContent: 'flex-end'  /*,border: '1px solid black'*/}}>
+                            <Stack style={{display: 'flex'}}>
+                                <Button><DeleteForeverIcon onClick={() => hanldeDelete(question.questionId)}/></Button>
+
+                            </Stack>
+                            <Stack style={{display: 'flex'}}>
+                                <Button onClick={() => handleSave(question.questionId)}> save </Button>
+
+                                <Button onClick={() => handleNext(question.questionId)}> next card</Button>
+
+                            </Stack>
+                        </Stack>
+
+                    )
+                })
+
+                }
             </Card>
         </>
     )
