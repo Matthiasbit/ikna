@@ -7,7 +7,7 @@ import Card from "@mui/material/Card";
 import CloseIcon from '@mui/icons-material/Close';
 import Header from "@/Components/Header";
 import {Button, CircularProgress, Divider, Stack} from "@mui/material";
-import { useGetQuestion } from '@/api/getQuestions';
+import {useGetQuestion} from "@/api/getQuestion";
 
 export default function CreateCard() {
 

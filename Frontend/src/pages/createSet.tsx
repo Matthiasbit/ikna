@@ -1,27 +1,33 @@
-import {ListItem, ListItemText, ListItemIcon, List, ListItemButton, Stack, TextField} from "@mui/material";
+import {ListItem, ListItemText, ListItemIcon, List, ListItemButton, Button, Stack, TextField, Divider} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import Header from "@/Components/Header";
 import {useGetQuestions} from "@/api/getQuestions";
-import {useGetSets} from "@/api/getSets";
 import {Delete} from "@mui/icons-material";
 import {useEffect, useState} from "react";
+import { useGetSet } from "@/api/getSet";
 
 
 export default function CreateSet() {
 
     const questionsArray = useGetQuestions();
 
-    const setDataArray = useGetSets();
+    const data = useGetSet();
 
     const [newSetname, setNewSetname] = useState("")
     const [newCategory, setNewCategory] = useState("")
 
+    function saveSet() {
+        console.log("save set" + newSetname + newCategory);
+    }
+
     useEffect(() => {
-        {
-            console.log("new Setname:", {newSetname}, "new setCategory:", {newCategory})
+        if (data.data === undefined) {
+            return
         }
-    }, [setDataArray]);
+        setNewSetname(data.data.name)
+        setNewCategory(data.data.category ?? "")
+    }, [data]);
 
     const handleAddCard = () => {
         // TODO: newID -> empty createCard
@@ -43,48 +49,39 @@ export default function CreateSet() {
     return (
         <>
             <Header text={'edit-set-page'}/>
+            <Stack direction="column" spacing={2} style={{padding: '10px'}}>
+                <TextField 
+                    label='setname'
+                    value={newSetname}
+                    onChange={(event) => setNewSetname(event.target.value) }
+                    onBlur={saveSet}
+                    />
+                <TextField 
+                    label='category'
+                    value={newCategory}
+                    onChange={(event) => setNewCategory(event.target.value)}
+                    onBlur={saveSet}
+                    />
 
-            <Stack direction={"column"} spacing={2}>
+                <Divider/>
 
-                {setDataArray.data.flatMap((setData) => {
-                    return (
-                        <List style={{display: 'flex'}}>
-
-                            <ListItem>
-                                <TextField label={'setname'}
-                                           defaultValue={setData.name}
-                                           onChange={(event) => setNewSetname(event.target.value)}/>
-                                <TextField label={'category'}
-                                           defaultValue={setData.category}
-                                           onChange={(event) => setNewCategory(event.target.value)}/>
-                            </ListItem>
-                        </List>
-                    )
-                })}
-
-
-                <List>
-                    <ListItem>
-                        <ListItemButton style={{justifyContent: 'center', border: '1px solid lightgrey'}}>
-                            <AddIcon onClick={handleAddCard}/>
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-
+                <Button style={{justifyContent: 'center', border: '1px solid lightgrey', marginLeft: '10px', marginRight: '10px'}}>  
+                    <AddIcon onClick={handleAddCard}/>
+                </Button>
 
                 {questionsArray.data.flatMap((question) => {
                     return (
                         <List>
                             <ListItem>
                                 <ListItemButton style={{border: '1px solid lightgrey'}}>
-                                    <ListItemText primary={question.questionText}/>
+                                    <ListItemText primary={question.question}/>
                                 </ListItemButton>
                                 <ListItemIcon>
                                     <ListItemButton style={{padding: '12px', border: '1px solid lightgrey'}}>
-                                        <EditIcon onClick={()=>handleEditCard(question.questionID)}/>
+                                        <EditIcon onClick={()=>handleEditCard(question.id)}/>
                                     </ListItemButton>
                                     <ListItemButton style={{padding: '12px', border: '1px solid lightgrey'}}>
-                                        <Delete onClick={() => handleDeleteCard(question.questionID)}/>
+                                        <Delete onClick={() => handleDeleteCard(question.id)}/>
                                     </ListItemButton>
                                 </ListItemIcon>
                             </ListItem>
