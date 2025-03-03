@@ -1,23 +1,13 @@
 import {useEffect, useState} from "react";
+import {QuestionArrayType} from "@/api/getQuestions";
 
-export type QuestionArrayType = {
-    id: number,
-    question: string,
-    answer: string,
-    category?: string,
-}
 
-const exampleQuestion: QuestionArrayType[] = [
-    {id: 1, question: 'question 1', answer: "123"},
-    {id: 2, question: 'question 2', answer: "234"}
-]
-
-export function useGetQuestions() {
-    const [data, setData] = useState(exampleQuestion)
+export function useGetQuestion() {
+    const [data, setData] = useState<QuestionArrayType>({id: 2, question: 'question 2', answer: "123"})
     const [loading, setLoading] = useState(false)
     useEffect(() => {
 
-          const fetchData = async () => {
+        const fetchData = async () => {
             try {
                 const response = await fetch('deine_api_url'); // API URL hier einfügen
                 const result = await response.json();
