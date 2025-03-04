@@ -20,7 +20,7 @@ export default function Header({ text }: HeaderProps) {
     <>
       <AppBar position="relative">
         <Toolbar>
-          <Image src={ikna} alt="Anki Logo" width={50} height={50} />
+          <Image style={{cursor: "pointer"}} src={ikna} alt="Anki Logo" width={50} height={50} onClick={() => window.location.href="/"} />
           <Typography variant="h4" component="div" sx={{ flexGrow: 1, display: "flex", justifyContent: 'center'}}>
             {text}
           </Typography>
