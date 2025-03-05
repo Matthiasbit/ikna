@@ -3,6 +3,7 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import { Card, Stack, useMediaQuery, useTheme } from "@mui/material";
 import { useGetNextFreeDataId } from "@/api/getNextFreeDataId";
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from "react";
 
 type SetProps = {
@@ -36,9 +37,9 @@ export default function Set({data}: SetProps) {
 
     function handleClick() {
         if (data === null) {
-        window.location.href = "/set/" + dataId;
+        window.location.href = "/createSet?id=" + dataId;
         } else {
-            window.location.href = "/set/" + data.id;
+            window.location.href = "/Lernseite?id=" + data.id;
         }
     }
 
@@ -53,7 +54,12 @@ export default function Set({data}: SetProps) {
     return (
         <Card elevation={3} >
             <Stack direction="column" spacing={2} alignItems="center" onClick={handleClick} style={{cursor: "pointer", padding: "5px"}}>
-                <h2>{data.name}</h2>
+                <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" style={{width: "100%", paddingRight: "5px", paddingLeft: "5px"}}>
+                    <div></div>
+                    <h2>{data.name}</h2>
+                    <EditIcon onClick={() => window.location.href = "/createSet?id=" + data.id} style={{cursor: "pointer"}}/>
+                </Stack>
+
                 <BarChart x-Axis={[{scaleType: "band"}]}
                 series={[
                     {data: [data.zero], label: "0%", color: "darkred"},

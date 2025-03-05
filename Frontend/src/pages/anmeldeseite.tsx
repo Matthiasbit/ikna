@@ -18,6 +18,7 @@ export function Anmeldeseite() {
     setError(true);
     console.log('Email:', email);
     console.log('Password:', password);
+    window.location.href = "/";
   };
   
   const handleClickShowPassword = () => setShowPassword((show) => !show);

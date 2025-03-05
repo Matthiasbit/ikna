@@ -6,14 +6,17 @@ import {useGetQuestions} from "@/api/getQuestions";
 import {Delete} from "@mui/icons-material";
 import {useEffect, useState} from "react";
 import { useGetSet } from "@/api/getSet";
+import { useSearchParams } from "next/navigation";
+import { useGetNextFreeDataId } from "@/api/getNextFreeDataId";
 
 
 export default function CreateSet() {
 
+    const serachParams = useSearchParams();
+    const [setID, setSetID] = useState(0);
+    const newQuestionId = useGetNextFreeDataId().data;
     const questionsArray = useGetQuestions();
-
     const data = useGetSet();
-
     const [newSetname, setNewSetname] = useState("")
     const [newCategory, setNewCategory] = useState("")
 
@@ -21,30 +24,35 @@ export default function CreateSet() {
         console.log("save set" + newSetname + newCategory);
     }
 
+
+
     useEffect(() => {
         if (data.data === undefined) {
-            return
+            return;
         }
+        if (serachParams === null) {
+            return;
+        }
+        const setParam = serachParams.get("set");
+        setSetID(setParam !== null ? parseInt(setParam) : 0);
         setNewSetname(data.data.name)
         setNewCategory(data.data.category ?? "")
     }, [data]);
 
     const handleAddCard = () => {
         // TODO: newID -> empty createCard
-        window.location.href = "/createCard"
+        window.location.href = `/createCard?question${newQuestionId}`
         console.log("createNewID")
     }
     const handleEditCard = (questionID: number) => {
         // TODO: cardID
-        window.location.href = "/createCard?set=1&question=5"
-
+        window.location.href = `/createCard?set=${setID}&question=${questionID}`
         console.log("navigate to createCard with the ID", questionID)
     }
     const handleDeleteCard =(questionID: number)=> {
         // TODO: delete card by ID
         console.log("delete card by ID", questionID)
     }
-
 
     return (
         <>
