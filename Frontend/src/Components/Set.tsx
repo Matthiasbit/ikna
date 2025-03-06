@@ -38,11 +38,12 @@ export default function Set({data}: SetProps) {
 
     function handleClick() {
         console.log(env.BASE_PATH)
-        if (data === null) {
+        console.log(dataId)
+        /*if (data === null) {
         window.location.href = env.BASE_PATH ?? "" + "/createSet?id=" + dataId;
         } else {
             window.location.href = env.BASE_PATH ?? "" + "/Lernseite?id=" + data.id;
-        }
+        }*/
     }
 
     if (data === null) {
