@@ -4,6 +4,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 
 import Header from '@/Components/Header';
+import { env } from 'process';
 
 export function Anmeldeseite() {
   
@@ -18,7 +19,7 @@ export function Anmeldeseite() {
     setError(true);
     console.log('Email:', email);
     console.log('Password:', password);
-    window.location.href = "/";
+    window.location.href = env.BASE_PATH ?? "" + "/";
   };
   
   const handleClickShowPassword = () => setShowPassword((show) => !show);

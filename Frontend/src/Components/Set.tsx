@@ -5,6 +5,7 @@ import { useGetNextFreeDataId } from "@/api/getNextFreeDataId";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from "react";
+import { env } from "process";
 
 type SetProps = {
     data: Sets | null;
@@ -37,9 +38,9 @@ export default function Set({data}: SetProps) {
 
     function handleClick() {
         if (data === null) {
-        window.location.href = "/createSet?id=" + dataId;
+        window.location.href = env.BASE_PATH ?? "" + "/createSet?id=" + dataId;
         } else {
-            window.location.href = "/Lernseite?id=" + data.id;
+            window.location.href = env.BASE_PATH ?? "" + "/Lernseite?id=" + data.id;
         }
     }
 
@@ -57,7 +58,7 @@ export default function Set({data}: SetProps) {
                 <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" style={{width: "100%", paddingRight: "5px", paddingLeft: "5px"}}>
                     <div onClick={handleClick} style={{cursor: "pointer"}}></div>
                     <h2 onClick={handleClick} style={{cursor: "pointer"}}>{data.name}</h2>
-                    <EditIcon onClick={() => window.location.href = "/createSet?id=" + data.id} style={{cursor: "pointer"}}/>
+                    <EditIcon onClick={() => window.location.href = env.BASE_PATH ?? "" + "/createSet?id=" + data.id} style={{cursor: "pointer"}}/>
                 </Stack>
                 <div onClick={handleClick} style={{cursor: "pointer"}}>
                 <BarChart
