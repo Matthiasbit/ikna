@@ -8,7 +8,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import Header from "@/Components/Header";
 import {Button, CircularProgress, Divider, Stack} from "@mui/material";
 import {useGetQuestion} from "@/api/getQuestion";
-import { env } from 'process';
 
 export default function CreateCard() {
 
@@ -30,8 +29,8 @@ export default function CreateCard() {
     const handleClose =()=> {
         setQuestion("")
         setAnswer("")
-        console.log(env.BASE_PATH)
-        window.location.href= env.BASE_PATH ?? "" + "/createSet"
+       
+        window.location.href= "ikna/createSet"
         //TODO: cancel edit and go one page back ??
     }
     const hanldeDelete = (questionID: number | undefined) => {
@@ -51,7 +50,7 @@ export default function CreateCard() {
             return
         }
         handleSave(questionID)
-        window.location.href = env.BASE_PATH ?? "" + "/createCard" // TODO: createNewID
+        window.location.href = "/ikna/createCard"
         console.log("save:", questionID, "open new createCard")
     }
 

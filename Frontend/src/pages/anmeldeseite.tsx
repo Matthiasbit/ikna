@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Stack, Button, FormControl, InputLabel, OutlinedInput, IconButton, InputAdornment, Typography, Link, Tab, Box } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
-
 import Header from '@/Components/Header';
-import { env } from 'process';
 
 export function Anmeldeseite() {
   
@@ -19,7 +17,7 @@ export function Anmeldeseite() {
     setError(true);
     console.log('Email:', email);
     console.log('Password:', password);
-    window.location.href = env.BASE_PATH ?? "" + "/";
+    window.location.href =  "/ikna/";
   };
   
   const handleClickShowPassword = () => setShowPassword((show) => !show);
