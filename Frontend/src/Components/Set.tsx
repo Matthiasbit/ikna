@@ -53,14 +53,15 @@ export default function Set({data}: SetProps) {
 
     return (
         <Card elevation={3} >
-            <Stack direction="column" spacing={2} alignItems="center" onClick={handleClick} style={{cursor: "pointer", padding: "5px"}}>
+            <Stack direction="column" spacing={2} alignItems="center" style={{ padding: "5px"}}>
                 <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between" style={{width: "100%", paddingRight: "5px", paddingLeft: "5px"}}>
-                    <div></div>
-                    <h2>{data.name}</h2>
+                    <div onClick={handleClick} style={{cursor: "pointer"}}></div>
+                    <h2 onClick={handleClick} style={{cursor: "pointer"}}>{data.name}</h2>
                     <EditIcon onClick={() => window.location.href = "/createSet?id=" + data.id} style={{cursor: "pointer"}}/>
                 </Stack>
-
-                <BarChart x-Axis={[{scaleType: "band"}]}
+                <div onClick={handleClick} style={{cursor: "pointer"}}>
+                <BarChart
+                x-Axis={[{scaleType: "band"}]}
                 series={[
                     {data: [data.zero], label: "0%", color: "darkred"},
                     {data: [data.twentyfive], label: "25%", color: "orange"},
@@ -71,6 +72,7 @@ export default function Set({data}: SetProps) {
                 width={width}
                 height={height}
                 />
+                </div>
             </Stack>
         </Card>
 
