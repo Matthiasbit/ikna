@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import SettingdsDialog from './SettingsDialog';
 import ikna from '../../public/IknaLogo.png';
+import { env } from 'process';
 
 type HeaderProps = {
   text: string;
@@ -20,7 +21,7 @@ export default function Header({ text }: HeaderProps) {
     <>
       <AppBar position="relative">
         <Toolbar>
-          <Image style={{cursor: "pointer"}} src={ikna} alt="Anki Logo" width={50} height={50} onClick={() => window.location.href="/"} />
+          <Image style={{cursor: "pointer"}} src={ikna} alt="Anki Logo" width={50} height={50} onClick={() => window.location.href= env.BASE_PATH ?? "" + "/"} />
           <Typography variant="h4" component="div" sx={{ flexGrow: 1, display: "flex", justifyContent: 'center'}}>
             {text}
           </Typography>

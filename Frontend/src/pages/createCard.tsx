@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Header from "@/Components/Header";
 import {Button, CircularProgress, Divider, Stack} from "@mui/material";
 import {useGetQuestion} from "@/api/getQuestion";
+import { env } from 'process';
 
 export default function CreateCard() {
 
@@ -29,7 +30,7 @@ export default function CreateCard() {
     const handleClose =()=> {
         setQuestion("")
         setAnswer("")
-        window.location.href="/createSet"
+        window.location.href= env.BASE_PATH ?? "" + "/createSet"
         //TODO: cancel edit and go one page back ??
     }
     const hanldeDelete = (questionID: number | undefined) => {
@@ -49,7 +50,7 @@ export default function CreateCard() {
             return
         }
         handleSave(questionID)
-        window.location.href = "/createCard" // TODO: createNewID
+        window.location.href = env.BASE_PATH ?? "" + "/createCard" // TODO: createNewID
         console.log("save:", questionID, "open new createCard")
     }
 
