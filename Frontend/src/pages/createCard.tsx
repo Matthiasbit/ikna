@@ -30,6 +30,7 @@ export default function CreateCard() {
     const handleClose =()=> {
         setQuestion("")
         setAnswer("")
+        console.log(env.BASE_PATH)
         window.location.href= env.BASE_PATH ?? "" + "/createSet"
         //TODO: cancel edit and go one page back ??
     }

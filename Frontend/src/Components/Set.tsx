@@ -37,6 +37,7 @@ export default function Set({data}: SetProps) {
     const dataId = useGetNextFreeDataId().data;
 
     function handleClick() {
+        console.log(env.BASE_PATH)
         if (data === null) {
         window.location.href = env.BASE_PATH ?? "" + "/createSet?id=" + dataId;
         } else {
