@@ -37,13 +37,11 @@ export default function Set({data}: SetProps) {
     const dataId = useGetNextFreeDataId().data;
 
     function handleClick() {
-        console.log(env.BASE_PATH)
-        console.log(dataId)
-        /*if (data === null) {
+        if (data === null) {
         window.location.href = env.BASE_PATH ?? "" + "/createSet?id=" + dataId;
         } else {
             window.location.href = env.BASE_PATH ?? "" + "/Lernseite?id=" + data.id;
-        }*/
+        }
     }
 
     if (data === null) {
