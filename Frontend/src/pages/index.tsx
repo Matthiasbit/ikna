@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { Autocomplete, CircularProgress, Grid2, IconButton, Stack, TextField } from "@mui/material";
 import {  useEffect, useState, useRef } from "react";
 import { Sets, useGetSets } from "@/api/getSets";
+import "../app/bodyfix.css";
 
 
 export default function Startseite() {

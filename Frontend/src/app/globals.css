@@ -40,15 +40,3 @@ a {
     color-scheme: dark;
   }
 }
-/*das war mal der Bodyfixfunktionierte ohne falls nochmal gebraucht lag er in bodyfix.css und direkt in die seiten importiert*/
-/*
-body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  *, *::before, *::after {
-    box-sizing: inherit;
-  }
-*/

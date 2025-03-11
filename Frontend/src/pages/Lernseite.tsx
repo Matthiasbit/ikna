@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, Typography, Card, CardContent, Chip } from '@mui/material';
 import Header from '@/Components/Header';
 import useGetCards from '@/api/getCards';
+  import "../app/bodyfix.css";
 
 export type Cards = {
   id: string;
@@ -22,9 +23,10 @@ export function Lernseite() {
 
   async function handleButtonClick(value: boolean) {
     setShowAnswer(false);
+    updateCardStatus(cards[currentCardIndex].id, value, selectedChip);
     setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
     setSelectedChip(null);
-    updateCardStatus(cards[currentCardIndex].id, value, selectedChip);
+   
   };
 
   function handleChipClick(chipLabel: string){
@@ -40,7 +42,7 @@ export function Lernseite() {
   return (
     <div>
       <Header text="Lernseite" />
-      <Box sx={{ maxWidth:'90vw', margin: 'auto', paddingTop: '20vh' }}>
+      <Box sx={{ maxWidth:'90vw', margin: 'auto', paddingTop: '20px' }}>
         {showAnswer ? (
           <Card sx={{ minHeight: '70vh', borderRadius: '16px', backgroundColor: '#E3F2FD', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
             <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
