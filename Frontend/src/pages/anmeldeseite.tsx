@@ -3,6 +3,7 @@ import { TextField, Stack, Button, FormControl, InputLabel, OutlinedInput, IconB
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import Header from '@/Components/Header';
+import "../app/bodyfix.css";
 
 export function Anmeldeseite() {
   
