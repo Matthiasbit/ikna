@@ -8,7 +8,6 @@ import {useEffect, useState} from "react";
 import { useGetSet } from "@/api/getSet";
 import { useSearchParams } from "next/navigation";
 import { useGetNextFreeDataId } from "@/api/getNextFreeDataId";
-import { env } from "process";
 
 
 export default function CreateSet() {
@@ -41,17 +40,14 @@ export default function CreateSet() {
     }, [data]);
 
     const handleAddCard = () => {
-        // TODO: newID -> empty createCard
-        window.location.href = env.BASE_PATH ?? "" + `/createCard?question${newQuestionId}`
+        window.location.href = `/ikna/createCard?question${newQuestionId}`
         console.log("createNewID")
     }
     const handleEditCard = (questionID: number) => {
-        // TODO: cardID
-        window.location.href = env.BASE_PATH ?? "" + `/createCard?set=${setID}&question=${questionID}`
+        window.location.href = `/ikna/createCard?set=${setID}&question=${questionID}`
         console.log("navigate to createCard with the ID", questionID)
     }
     const handleDeleteCard =(questionID: number)=> {
-        // TODO: delete card by ID
         console.log("delete card by ID", questionID)
     }
 
