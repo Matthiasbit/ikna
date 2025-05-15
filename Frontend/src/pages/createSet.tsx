@@ -8,17 +8,17 @@ import {useEffect, useState} from "react";
 import { useGetSet } from "@/api/getSet";
 import { useSearchParams } from "next/navigation";
 import { useGetNextFreeDataId } from "@/api/getNextFreeDataId";
+import "../app/bodyfix.css";
 
 
 export default function CreateSet() {
-
     const serachParams = useSearchParams();
     const [setID, setSetID] = useState(0);
     const newQuestionId = useGetNextFreeDataId().data;
     const questionsArray = useGetQuestions();
     const data = useGetSet();
-    const [newSetname, setNewSetname] = useState("")
-    const [newCategory, setNewCategory] = useState("")
+    const [newSetname, setNewSetname] = useState("");
+    const [newCategory, setNewCategory] = useState("");
 
     function saveSet() {
         console.log("save set" + newSetname + newCategory);
@@ -47,7 +47,7 @@ export default function CreateSet() {
         window.location.href = `/ikna/createCard?set=${setID}&question=${questionID}`
         console.log("navigate to createCard with the ID", questionID)
     }
-    const handleDeleteCard =(questionID: number)=> {
+    const handleDeleteCard = (questionID: number) => {
         console.log("delete card by ID", questionID)
     }
 

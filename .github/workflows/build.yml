@@ -1,0 +1,41 @@
+name: Lint, Typecheck and Build
+
+on:
+  push:
+    branches: "main"
+  pull_request:
+    branches: "main"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "npm"
+
+      - name: Install Packages 
+        run: cd Backend && npm ci --force
+
+      - name: Lint
+        run: cd Backend && npm run lint
+
+      - name: Typecheck
+        run: cd Backend && npm run typecheck
+
+      - name: Test
+        run: cd Backend && npm run test:once
+
+      - name: Build
+        run: cd Backend && npm run build
+
+      - name: Upload Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: dist/*
