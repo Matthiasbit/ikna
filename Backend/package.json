@@ -16,9 +16,11 @@
     "drizzle-orm": "latest",
     "dotenv": "latest",
     "@neondatabase/serverless": "1.0.1",
+    "cors": "^2.8.5",
     "express": "latest"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.18",
     "@types/express": "latest",
     "@types/node": "latest",
     "@vitest/ui": "latest",
