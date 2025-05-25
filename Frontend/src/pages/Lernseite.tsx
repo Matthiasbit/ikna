@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, Typography, Card, CardContent, Chip } from '@mui/material';
 import Header from '@/Components/Header';
 import useGetCards from '@/api/getCards';
-  import "../app/bodyfix.css";
+import "../app/bodyfix.css";
 
 export type Cards = {
   id: string;
@@ -11,7 +11,7 @@ export type Cards = {
   difficulty: number;
 };
 
-export function Lernseite() {
+export function lernseite() {
   const { cards } = useGetCards();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -88,4 +88,4 @@ export function Lernseite() {
   );
 }
 
-export default Lernseite;
+export default lernseite;
