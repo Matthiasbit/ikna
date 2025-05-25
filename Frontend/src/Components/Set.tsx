@@ -36,7 +36,7 @@ export default function Set({data}: SetProps) {
         if (data === null) {
             window.location.href = "/ikna/createSet" ;
         } else {
-            window.location.href = "/ikna/Lernseite?id=" + data.id;
+            window.location.href = "/ikna/lernseite?id=" + data.id;
         }
     }
 

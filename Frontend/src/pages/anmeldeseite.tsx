@@ -30,11 +30,11 @@ export function Anmeldeseite() {
   return (
     <div>
       <Header text={tabValue === "1" ? isResetPassword ? "Reset Password" : "Login" : "Sign up" } />
-      <Box sx={{ width: '100%',  marginTop: '20vh' }}>
-        <Box sx={{ maxWidth: { xs: '90%', sm: '70%', md: '50%', lg: '30%' }, margin: 'auto', height: '100vh', paddingTop: '5vh' }}>
+      <Box sx={{ width: '100%',  marginTop: '15vh' }}>
+        <Box sx={{ maxWidth: { xs: '90%', sm: '70%', md: '50%', lg: '30%' }, margin: 'auto'}}>
           <TabContext value={tabValue}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={(_event, value) => setTabValue(value)} centered style={{ width: '100%' }}>
+              <TabList onChange={(_event, value) => setTabValue(value)} centered>
                 <Tab label="Login" value="1"/>
                 <Tab label="Sign Up" value="2" />
               </TabList>
