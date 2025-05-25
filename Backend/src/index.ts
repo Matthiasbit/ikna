@@ -2,10 +2,13 @@ import express from "express";
 import cors from "cors";
 import {db} from "./db"
 import {set} from "./db/schema";
+import cardsRouter from "./routes/cards";
 
 const app = express();
 
 app.use(cors());
+
+app.use("/", cardsRouter);
 
 app.get("/", (_, res) => { 
   res.send("Hello express");
