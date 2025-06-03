@@ -1,13 +1,23 @@
-import {ListItem, ListItemText, ListItemIcon, List, ListItemButton, Button, Stack, TextField, Divider} from "@mui/material";
+import {
+    ListItem,
+    ListItemText,
+    ListItemIcon,
+    List,
+    ListItemButton,
+    Button,
+    Stack,
+    TextField,
+    Divider
+} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import Header from "@/Components/Header";
 import {useGetQuestions} from "@/api/getQuestions";
 import {Delete} from "@mui/icons-material";
 import {useEffect, useState} from "react";
-import { useGetSet } from "@/api/getSet";
-import { useSearchParams } from "next/navigation";
-import { useGetNextFreeDataId } from "@/api/getNextFreeDataId";
+import {useGetSet} from "@/api/getSet";
+import {useSearchParams} from "next/navigation";
+import {useGetNextFreeDataId} from "@/api/getNextFreeDataId";
 import "../app/bodyfix.css";
 
 
@@ -25,7 +35,6 @@ export default function CreateSet() {
     }
 
 
-
     useEffect(() => {
         if (data.data === undefined) {
             return;
@@ -35,8 +44,12 @@ export default function CreateSet() {
         }
         const setParam = serachParams.get("set");
         setSetID(setParam !== null ? parseInt(setParam) : 0);
-        setNewSetname(data.data.name)
-        setNewCategory(data.data.category ?? "")
+        if (newSetname === "") {
+            setNewSetname(data.data.name)
+        }
+        if (newCategory === "") {
+            setNewCategory(data.data.category ?? "")
+        }
     }, [data]);
 
     const handleAddCard = () => {
@@ -55,22 +68,34 @@ export default function CreateSet() {
         <>
             <Header text={'edit-set-page'}/>
             <Stack direction="column" spacing={2} style={{padding: '10px'}}>
-                <TextField 
+                <TextField
                     label='setname'
                     value={newSetname}
-                    onChange={(event) => setNewSetname(event.target.value) }
+                    onChange={(event) => {
+                        setNewSetname(event.target.value);
+                        console.log(event.target.value);
+                    }}
                     onBlur={saveSet}
-                    />
-                <TextField 
+                />
+
+                <TextField
                     label='category'
                     value={newCategory}
-                    onChange={(event) => setNewCategory(event.target.value)}
+                    onChange={(event) => {
+                        setNewCategory(event.target.value);
+                        console.log(event.target.value);
+                    }}
                     onBlur={saveSet}
-                    />
+                />
 
                 <Divider/>
 
-                <Button style={{justifyContent: 'center', border: '1px solid lightgrey', marginLeft: '10px', marginRight: '10px'}}>  
+                <Button style={{
+                    justifyContent: 'center',
+                    border: '1px solid lightgrey',
+                    marginLeft: '10px',
+                    marginRight: '10px'
+                }}>
                     <AddIcon onClick={handleAddCard}/>
                 </Button>
 
@@ -83,7 +108,7 @@ export default function CreateSet() {
                                 </ListItemButton>
                                 <ListItemIcon>
                                     <ListItemButton style={{padding: '12px', border: '1px solid lightgrey'}}>
-                                        <EditIcon onClick={()=>handleEditCard(question.id)}/>
+                                        <EditIcon onClick={() => handleEditCard(question.id)}/>
                                     </ListItemButton>
                                     <ListItemButton style={{padding: '12px', border: '1px solid lightgrey'}}>
                                         <Delete onClick={() => handleDeleteCard(question.id)}/>
