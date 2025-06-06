@@ -7,7 +7,7 @@ import {
     Button,
     Stack,
     TextField,
-    Divider
+    Divider, Box
 } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -19,6 +19,7 @@ import {useGetSet} from "@/api/getSet";
 import {useSearchParams} from "next/navigation";
 import {useGetNextFreeDataId} from "@/api/getNextFreeDataId";
 import "../app/bodyfix.css";
+import Card from "@mui/material/Card";
 
 
 export default function CreateSet() {
@@ -67,59 +68,87 @@ export default function CreateSet() {
     return (
         <>
             <Header text={'edit-set-page'}/>
-            <Stack direction="column" spacing={2} style={{padding: '10px'}}>
-                <TextField
-                    label='setname'
-                    value={newSetname}
-                    onChange={(event) => {
-                        setNewSetname(event.target.value);
-                        console.log(event.target.value);
-                    }}
-                    onBlur={saveSet}
-                />
 
-                <TextField
-                    label='category'
-                    value={newCategory}
-                    onChange={(event) => {
-                        setNewCategory(event.target.value);
-                        console.log(event.target.value);
-                    }}
-                    onBlur={saveSet}
-                />
+            <Box sx={{maxWidth: '90vw', margin: 'auto', paddingTop: '20px'}}>
 
-                <Divider/>
-
-                <Button style={{
-                    justifyContent: 'center',
-                    border: '1px solid lightgrey',
-                    marginLeft: '10px',
-                    marginRight: '10px'
+                <Card sx={{
+                    minHeight: '70vh',
+                    borderRadius: '16px',
+                    backgroundColor: '#E3F2FD',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    padding: '2vw'
                 }}>
-                    <AddIcon onClick={handleAddCard}/>
-                </Button>
 
-                {questionsArray.data.flatMap((question) => {
-                    return (
-                        <List>
-                            <ListItem>
-                                <ListItemButton style={{border: '1px solid lightgrey'}}>
-                                    <ListItemText primary={question.question}/>
-                                </ListItemButton>
-                                <ListItemIcon>
-                                    <ListItemButton style={{padding: '12px', border: '1px solid lightgrey'}}>
-                                        <EditIcon onClick={() => handleEditCard(question.id)}/>
-                                    </ListItemButton>
-                                    <ListItemButton style={{padding: '12px', border: '1px solid lightgrey'}}>
-                                        <Delete onClick={() => handleDeleteCard(question.id)}/>
-                                    </ListItemButton>
-                                </ListItemIcon>
-                            </ListItem>
-                        </List>
-                    )
-                })
-                }
-            </Stack>
+                    <Stack direction="column" spacing={2} style={{padding: '10px'}}>
+
+                        <TextField
+                            label='setname'
+                            value={newSetname}
+                            onChange={(event) => {
+                                setNewSetname(event.target.value);
+                                console.log(event.target.value);
+                            }}
+                            onBlur={saveSet}
+                        />
+
+                        <TextField
+                            label='category'
+                            value={newCategory}
+                            onChange={(event) => {
+                                setNewCategory(event.target.value);
+                                console.log(event.target.value);
+                            }}
+                            onBlur={saveSet}
+                        />
+
+                        <br/>
+                        <br/>
+                        <br/>
+
+                        <Divider/>
+
+                        <Button style={{
+                            justifyContent: 'center',
+                            border: '1px solid lightgrey',
+                            marginLeft: '10px',
+                            marginRight: '10px',
+                            width: '84vw'
+                        }}>
+                            <AddIcon onClick={handleAddCard}/>
+                        </Button>
+
+                        {questionsArray.data.flatMap((question) => {
+                            return (
+                                <List sx={{maxWidth:'84vw'}}>
+                                    <ListItem sx={{border: '1px solid lightgrey', borderRadius: '5px', padding:'0px',  marginLeft: '10px',
+                                        marginRight: '10px'}}>
+                                        <ListItemButton>
+                                            <ListItemText primary={question.question}/>
+                                        </ListItemButton>
+
+                                        <Divider orientation={"vertical"} flexItem/>
+
+                                        <ListItemIcon>
+                                            <ListItemButton style={{padding: '12px'}}>
+                                                <EditIcon onClick={() => handleEditCard(question.id)}/>
+                                            </ListItemButton>
+
+                                            <Divider orientation={"vertical"} flexItem/>
+
+                                            <ListItemButton style={{padding: '12px'}}>
+                                                <Delete onClick={() => handleDeleteCard(question.id)}/>
+                                            </ListItemButton>
+                                        </ListItemIcon>
+                                    </ListItem>
+                                </List>
+                            )
+                        })
+                        }
+                    </Stack>
+                </Card>
+            </Box>
         </>
     )
 }
