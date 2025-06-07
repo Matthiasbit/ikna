@@ -3,14 +3,14 @@ import Set from "@/Components/Set";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { Autocomplete, CircularProgress, Grid2, IconButton, Stack, TextField } from "@mui/material";
 import {  useEffect, useState, useRef } from "react";
-import { Sets, useGetSets } from "@/api/getSets";
+import { SetArrayType, useGetSets } from "@/api/getSets";
 import "../app/bodyfix.css";
 
 
 export default function Startseite() {
 
   const [page, setPage] = useState(0);
-  const pages = useRef<Array<Array<Sets>>>([]);
+  const pages = useRef<Array<Array<SetArrayType>>>([]);
 
   const data = useGetSets();
 
