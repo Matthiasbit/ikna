@@ -4,22 +4,37 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import Header from '@/Components/Header';
 import "../app/bodyfix.css";
+import useRegistrierung from "../api/registrierung";
+
 
 export function Anmeldeseite() {
   
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(false);
-  const [isResetPassword, setIsResetPassword] = useState(false);
-  const [tabValue, setTabValue] = useState<"1" | "2">("1");
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [showPassword, setShowPassword] = useState(false);
+const [localError, setLocalError] = useState(false); // <-- umbenannt
+const [isResetPassword, setIsResetPassword] = useState(false);
+const [tabValue, setTabValue] = useState<"1" | "2">("1");
+const { registrieren, loading, error, success } = useRegistrierung();
+
 
   function anmeldung() {
-    setError(true);
+    setLocalError(true);
     console.log('Email:', email);
     console.log('Password:', password);
     window.location.href =  "/ikna/";
   };
+
+  function registrierung() {
+    setLocalError(true);
+    registrieren(email, password)
+      .then(() => {
+        window.location.href = "/ikna/";
+      })
+      .catch(() => {
+        alert("Registrierung fehlgeschlagen");
+      });
+  }
   
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -53,7 +68,7 @@ export function Anmeldeseite() {
               </Typography>
               <Stack spacing={2} direction="column">
                 <TextField
-                  error={email === "" && error}
+                  error={email === "" && localError}
                   required 
                   id="email"
                   label="Email:"
@@ -62,10 +77,10 @@ export function Anmeldeseite() {
                   onChange={(event) => setEmail(event.target.value)} />
                 {!isResetPassword && (
                   <FormControl variant="outlined">
-                    <InputLabel htmlFor="password" error={password === "" && error}>Password</InputLabel>
+                    <InputLabel htmlFor="password" error={password === "" && localError}>Password</InputLabel>
                     <OutlinedInput
                       id="password"
-                      error={password === "" && error}
+                      error={password === "" && localError}
                       required 
                       type={showPassword ? 'text' : 'password'}
                       endAdornment={
@@ -96,7 +111,7 @@ export function Anmeldeseite() {
               </Typography>
               <Stack spacing={2} direction="column">
                 <TextField
-                  error={email === "" && error}
+                  error={email === "" && localError}
                   required
                   id="email"
                   label="Email:"
@@ -104,10 +119,10 @@ export function Anmeldeseite() {
                   value={email}
                   onChange={(event) => setEmail(event.target.value)} />
                 <FormControl variant="outlined">
-                  <InputLabel htmlFor="password" error={password === "" && error}>Password</InputLabel>
+                  <InputLabel htmlFor="password" error={password === "" && localError}>Password</InputLabel>
                   <OutlinedInput
                     id="password"
-                    error={password === "" && error}
+                    error={password === "" && localError}
                     required
                     type={showPassword ? 'text' : 'password'}
                     endAdornment={
@@ -126,7 +141,7 @@ export function Anmeldeseite() {
                     onChange={(event) => setPassword(event.target.value)}
                   />
                 </FormControl>
-                <Button onClick={anmeldung} variant="contained" color="primary">
+                <Button onClick={registrierung} variant="contained" color="primary">
                   Sign Up
                 </Button>
               </Stack>

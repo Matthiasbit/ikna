@@ -3,12 +3,15 @@ import cors from "cors";
 import {db} from "./db"
 import {set} from "./db/schema";
 import cardsRouter from "./routes/cards";
+import registrieren from "./routes/registrierung";
 
 const app = express();
-
+app.use(express.json());
 app.use(cors());
 
 app.use("/", cardsRouter);
+
+app.use("/", registrieren);
 
 app.get("/", (_, res) => { 
   res.send("Hello express");
