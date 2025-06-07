@@ -4,10 +4,10 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import Header from '@/Components/Header';
 import "../app/bodyfix.css";
-import useRegistrierung from "../api/registrierung";
+import useRegistration from '@/api/registration';
 
 
-export function Anmeldeseite() {
+export function Loginpage() {
   
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
@@ -15,7 +15,7 @@ const [showPassword, setShowPassword] = useState(false);
 const [localError, setLocalError] = useState(false); // <-- umbenannt
 const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
-const { registrieren, loading, error, success } = useRegistrierung();
+const { registration, loading, error, success } = useRegistration();
 
 
   function anmeldung() {
@@ -25,16 +25,16 @@ const { registrieren, loading, error, success } = useRegistrierung();
     window.location.href =  "/ikna/";
   };
 
-  function registrierung() {
-    setLocalError(true);
-    registrieren(email, password)
-      .then(() => {
-        window.location.href = "/ikna/";
-      })
-      .catch(() => {
-        alert("Registrierung fehlgeschlagen");
-      });
-  }
+function handleRegistration() {
+  setLocalError(true);
+  registration(email, password)
+    .then(() => {
+      window.location.href = "/ikna/";
+    })
+    .catch(() => {
+      alert("registration fehlgeschlagen");
+    });
+}
   
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -141,7 +141,7 @@ const { registrieren, loading, error, success } = useRegistrierung();
                     onChange={(event) => setPassword(event.target.value)}
                   />
                 </FormControl>
-                <Button onClick={registrierung} variant="contained" color="primary">
+                <Button onClick={handleRegistration} variant="contained" color="primary">
                   Sign Up
                 </Button>
               </Stack>
@@ -153,4 +153,4 @@ const { registrieren, loading, error, success } = useRegistrierung();
   );
 };
 
-export default Anmeldeseite;
+export default Loginpage;

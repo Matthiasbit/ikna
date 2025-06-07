@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-router.post("/registrieren", (_, res) => {
+router.post("/registration", (_, res) => {
   // Registrierungscode
   res.json({ message: "Registrierung erfolgreich" });
 });
