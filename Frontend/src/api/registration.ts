@@ -20,9 +20,14 @@ function useRegistration() {
       }
       setSuccess(true);
       return await response.json();
-    } catch (err: any) {
-      setError(err.message);
-      throw err;
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+        throw err;
+      } else {
+        setError("Unbekannter Fehler");
+        throw err;
+      }
     } finally {
       setLoading(false);
     }

@@ -15,7 +15,7 @@ const [showPassword, setShowPassword] = useState(false);
 const [localError, setLocalError] = useState(false); // <-- umbenannt
 const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
-const { registration, loading, error, success } = useRegistration();
+const { registration} = useRegistration();
 
 
   function anmeldung() {

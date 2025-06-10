@@ -11,7 +11,7 @@ export type Cards = {
   difficulty: number;
 };
 
-export function lernseite() {
+export function Learningpage() {
   const { cards } = useGetCards();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -88,4 +88,4 @@ export function lernseite() {
   );
 }
 
-export default lernseite;
+export default Learningpage;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Cards } from "@/pages/lernseite";
+import { Cards } from "@/pages/learningpage";
 
 function useGetCards() {
   const [cards, setCards] = useState<Cards[]>([]);
