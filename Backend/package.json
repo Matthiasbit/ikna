@@ -12,6 +12,10 @@
     "format": "prettier --write src/**/*.ts"
   },
   "dependencies": {
+    "drizzle-kit": "latest",
+    "drizzle-orm": "latest",
+    "dotenv": "latest",
+    "@neondatabase/serverless": "1.0.1",
     "express": "latest"
   },
   "devDependencies": {
