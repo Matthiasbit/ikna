@@ -12,6 +12,11 @@
     "format": "prettier --write src/**/*.ts"
   },
   "dependencies": {
+    "@neondatabase/serverless": "1.0.1",
+    "argon2": "^0.43.0",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "latest",
     "drizzle-kit": "latest",
     "drizzle-orm": "latest",
     "dotenv": "latest",
@@ -28,7 +33,7 @@
     "eslint-config-prettier": "latest",
     "nodemon": "latest",
     "prettier": "latest",
-    "typescript": "latest",
+    "typescript": "^5.7.3",
     "typescript-eslint": "latest",
     "vitest": "latest",
     "ts-node": "latest"

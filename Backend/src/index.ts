@@ -5,7 +5,7 @@ import settingsRouter from "./Settings/settings";
 import {db} from "./db"
 import {set} from "./db/schema";
 import cardsRouter from "./routes/cards";
-import registration from "./routes/registration";
+import registrationRouter from "./routes/registration";
 
 const app = express();
 app.use(express.json());
@@ -15,7 +15,8 @@ app.use("/", setRouter)
 app.use("/", settingsRouter);
 app.use("/", cardsRouter);
 
-app.use("/", registration);
+app.use(registrationRouter);
+
 
 app.get("/", (_, res) => { 
   res.send("Hello express");
