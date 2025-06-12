@@ -15,18 +15,20 @@ function useRegistration() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error("Registrierung fehlgeschlagen");
+        setError(data.error || "Registrierung fehlgeschlagen");
+        return;
       }
       setSuccess(true);
-      return await response.json();
-    } catch (err: unknown) {
+      return data;
+        } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
-        throw err;
+        return;
       } else {
         setError("Unbekannter Fehler");
-        throw err;
+        return;
       }
     } finally {
       setLoading(false);

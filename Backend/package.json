@@ -19,7 +19,8 @@
     "dotenv": "latest",
     "drizzle-kit": "latest",
     "drizzle-orm": "latest",
-    "express": "latest"
+    "express": "latest",
+    "zod": "^3.25.63"
   },
   "devDependencies": {
     "@types/cors": "^2.8.18",
