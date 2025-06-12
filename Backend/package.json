@@ -22,6 +22,7 @@
     "dotenv": "latest",
     "@neondatabase/serverless": "1.0.1",
     "express": "latest",
+    "zod": "^3.25.63",
     "cors": "latest"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Stack, Button, FormControl, InputLabel, OutlinedInput, IconButton, InputAdornment, Typography, Link, Tab, Box } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
@@ -15,7 +15,7 @@ const [showPassword, setShowPassword] = useState(false);
 const [localError, setLocalError] = useState(false); // <-- umbenannt
 const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
-const { registration} = useRegistration();
+const { registration, error, success} = useRegistration();
 
 
   function anmeldung() {
@@ -25,16 +25,18 @@ const { registration} = useRegistration();
     window.location.href =  "/ikna/";
   };
 
-function handleRegistration() {
-  setLocalError(true);
-  registration(email, password)
-    .then(() => {
+  useEffect(() => {
+    if (success) {
       window.location.href = "/ikna/";
-    })
-    .catch(() => {
-      alert("registration fehlgeschlagen");
-    });
-}
+    }
+  }, [success]);
+
+  function handleRegistration() {
+    setLocalError(true);
+    registration(email, password);
+  }
+
+
   
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -69,7 +71,6 @@ function handleRegistration() {
               <Stack spacing={2} direction="column">
                 <TextField
                   error={email === "" && localError}
-                  required 
                   id="email"
                   label="Email:"
                   placeholder="example@example.com"
@@ -81,7 +82,6 @@ function handleRegistration() {
                     <OutlinedInput
                       id="password"
                       error={password === "" && localError}
-                      required 
                       type={showPassword ? 'text' : 'password'}
                       endAdornment={
                         <InputAdornment position="end">
@@ -100,7 +100,7 @@ function handleRegistration() {
                     />
                   </FormControl>
                 )}
-                <Button onClick={anmeldung} variant="contained" color="primary">
+                <Button onClick={anmeldung} variant="contained" color="primary" type="button">
                   {isResetPassword ? "Reset Password" : "Login"}
                 </Button>
               </Stack>
@@ -141,9 +141,19 @@ function handleRegistration() {
                     onChange={(event) => setPassword(event.target.value)}
                   />
                 </FormControl>
-                <Button onClick={handleRegistration} variant="contained" color="primary">
+                <Button onClick={handleRegistration} variant="contained" color="primary" type="button">
                   Sign Up
                 </Button>
+                {error && (
+                  <Typography color="error" sx={{ mt: 2 }}>
+                    {error}
+                  </Typography>
+                )}
+                {success && (
+                  <Typography color="success.main" sx={{ mt: 2 }}>
+                    Registrierung erfolgreich!
+                  </Typography>
+                )}
               </Stack>
             </TabPanel>
           </TabContext>
