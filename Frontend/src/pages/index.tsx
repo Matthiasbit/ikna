@@ -15,6 +15,9 @@ export default function Startseite() {
   const data = useGetSets();
 
   useEffect(() => {
+    if (data.loading) {
+      return;
+    }
     for (let i = 0; i < data.data.length / 8; i++) {
       pages.current.push(data.data.slice(i * 8, i * 8 + 8));
     }

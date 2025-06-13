@@ -1,7 +1,6 @@
 import { Sets } from "@/api/getSets";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { Card, Stack, useMediaQuery, useTheme } from "@mui/material";
-import { useGetNextFreeDataId } from "@/api/getNextFreeDataId";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from "react";
@@ -33,11 +32,9 @@ export default function Set({data}: SetProps) {
         }
     }, [sm, lg, xl]);
 
-    const dataId = useGetNextFreeDataId().data;
-
     function handleClick() {
         if (data === null) {
-        window.location.href = "/ikna/createSet?id=" + dataId;
+            window.location.href = "/ikna/createSet" ;
         } else {
             window.location.href = "/ikna/Lernseite?id=" + data.id;
         }
