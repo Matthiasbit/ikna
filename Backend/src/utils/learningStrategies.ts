@@ -1,0 +1,1 @@
+//hier alle funktionen für lernmodi

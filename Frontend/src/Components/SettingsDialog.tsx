@@ -50,8 +50,8 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                     </Stack>
                     <h3>Account</h3>
                     <Stack direction="row" spacing={2}>
-                        <Button href="/ikna/anmeldeseite" style={{width: "163px"}}>Log In</Button>
-                        <Button href="/ikna/anmeldeseite" style={{width: "163px"}}>Sign Up</Button>
+                        <Button href="/ikna/loginpage" style={{width: "163px"}}>Log In</Button>
+                        <Button href="/ikna/loginpage" style={{width: "163px"}}>Sign Up</Button>
                         <Button style={{width: "163px"}}>Log Out</Button>
                         <Button style={{width: "163px"}}>Delete Account</Button>
                     </Stack>
