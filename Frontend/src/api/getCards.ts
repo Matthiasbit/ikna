@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { Cards } from "@/pages/learningpage";
 
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 function useGetCards() {
   const [cards, setCards] = useState<Cards[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    fetch('http://localhost:80/getCards', {
+    fetch(`${API_BASE_URL}/getCards`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     })
