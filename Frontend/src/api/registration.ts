@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 function useRegistration() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -10,7 +12,7 @@ function useRegistration() {
     setError(null);
     setSuccess(false);
     try {
-      const response = await fetch("http://localhost:80/registration", {
+      const response = await fetch(`${API_BASE_URL}/registration`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
