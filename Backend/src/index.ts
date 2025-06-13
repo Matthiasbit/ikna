@@ -20,6 +20,8 @@ app.get("/", (_, res) => {
 
 db.select().from(set).then((data) => {
   console.log("Data from database:", data);
+}).catch((error) => {
+  console.error("Error fetching data from database:", error);
 });
 
 app.post("/getQuestion", (_, res) => {
