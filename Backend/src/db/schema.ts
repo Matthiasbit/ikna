@@ -23,5 +23,5 @@ export const user = pgTable('USER', {
     leicht: integer('leicht').notNull(),
     mittel: integer('mittel').notNull(),
     schwer: integer('schwer').notNull(),
-    lernmethode: varchar('lernmethode'),
+    lernmethode: varchar('lernmethode').notNull(),
 });
