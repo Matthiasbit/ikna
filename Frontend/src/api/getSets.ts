@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export type Sets = {
     id: string;
@@ -13,22 +13,22 @@ export type Sets = {
 // noch erweitern was da alles drin steht
 
 export function useGetSets() {
-  const [data, setData] = useState<Array<Sets>>([{name: "Test", id: "1", zero: 50, twentyfive: 100, fifty: 7, seventyfive: 14, hundred: 44},{name: "Test", id: "1", zero: 50, twentyfive: 100, fifty: 7, seventyfive: 14, hundred: 44},{name: "Test", id: "1", zero: 50, twentyfive: 100, fifty: 7, seventyfive: 14, hundred: 44},{name: "Test", id: "1", zero: 50, twentyfive: 100, fifty: 7, seventyfive: 14, hundred: 44},{name: "Test", id: "1", zero: 50, twentyfive: 100, fifty: 7, seventyfive: 14, hundred: 44},{name: "Test", id: "1", zero: 50, twentyfive: 100, fifty: 7, seventyfive: 14, hundred: 44},{name: "Test", id: "1", zero: 50, twentyfive: 100, fifty: 7, seventyfive: 14, hundred: 44},{name: "Test", id: "1", zero: 50, twentyfive: 100, fifty: 7, seventyfive: 14, hundred: 44},{name: "Test", id: "1", zero: 50, twentyfive: 100, fifty: 7, seventyfive: 14, hundred: 44},]);
+  const [data, setData] = useState<Array<Sets>>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setData([]);
-    setLoading(false);
-  }, []);
-
- /* useEffect(() => {
-    fetch("/api/sets")
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      });
-  }, [setData]); */
-
+  if (loading) {
+    fetch('http://localhost:80/Sets', {method: 'GET',  headers: { 'Content-Type': 'application/json' }})
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Fehlerhafte Antwort vom Server');
+            }
+            return response.json();
+        }).then(data => {
+            setData(data);
+            setLoading(false);
+        }).catch(error => {
+            console.error('Fehler beim Senden der Anfrage:', error);
+        });
+    }
   return { data, loading };
 }

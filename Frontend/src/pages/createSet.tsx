@@ -7,14 +7,12 @@ import {Delete} from "@mui/icons-material";
 import {useEffect, useState} from "react";
 import { useGetSet } from "@/api/getSet";
 import { useSearchParams } from "next/navigation";
-import { useGetNextFreeDataId } from "@/api/getNextFreeDataId";
 import "../app/bodyfix.css";
 
 
 export default function CreateSet() {
     const serachParams = useSearchParams();
     const [setID, setSetID] = useState(0);
-    const newQuestionId = useGetNextFreeDataId().data;
     const questionsArray = useGetQuestions();
     const data = useGetSet();
     const [newSetname, setNewSetname] = useState("");
@@ -40,7 +38,7 @@ export default function CreateSet() {
     }, [data]);
 
     const handleAddCard = () => {
-        window.location.href = `/ikna/createCard?question${newQuestionId}`
+        window.location.href = `/ikna/createCard`
         console.log("createNewID")
     }
     const handleEditCard = (questionID: number) => {

@@ -67,7 +67,11 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                     Cancel
                 </Button>
                 <Button onClick={() => {
-                    console.log(options);
+                    fetch('http://localhost:80/Settings', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(options)
+                    })
                     handleClose();
                 }} color="primary">
                     Apply

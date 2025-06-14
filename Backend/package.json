@@ -4,7 +4,7 @@
   "scripts": {
     "test": "vitest --ui",
     "test:once": "vitest run",
-    "dev": "nodemon --ext ts --exec 'tsc && node dist/index.js'",
+    "dev": "nodemon --ext ts --exec tsc --exec node 'dist/index.js'",
     "build": "tsc",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
@@ -16,9 +16,11 @@
     "drizzle-orm": "latest",
     "dotenv": "latest",
     "@neondatabase/serverless": "1.0.1",
-    "express": "latest"
+    "express": "latest",
+    "cors": "latest"
   },
   "devDependencies": {
+    "@types/cors": "latest",
     "@types/express": "latest",
     "@types/node": "latest",
     "@vitest/ui": "latest",
@@ -28,6 +30,7 @@
     "prettier": "latest",
     "typescript": "latest",
     "typescript-eslint": "latest",
-    "vitest": "latest"
+    "vitest": "latest",
+    "ts-node": "latest"
   }
 }
