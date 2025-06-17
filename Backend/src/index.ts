@@ -1,5 +1,5 @@
 import express from "express";
-import setRouter from "./Set/set";
+import setRouter from "./Set/Set";
 import cors from "cors";
 import settingsRouter from "./Settings/settings";
 
