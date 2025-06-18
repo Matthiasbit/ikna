@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import argon2 from "argon2";
 import { db } from "../db";
-import { userData } from "../db/schema";
+import { user } from "../db/schema";
 import { z } from "zod";
 
 const router = Router();
@@ -20,7 +20,7 @@ router.post("/registration", async (req: Request, res: Response): Promise<void> 
   const { email, password } = parseResult.data;
   try {
     const passwordHash = await argon2.hash(password, { type: argon2.argon2id });
-    await db.insert(userData).values([{ email, password: passwordHash }]);
+    await db.insert(user).values([{ email, password: passwordHash }]); // musst noch anpassen weil es mehr felder gibt inziwschen
     res.json({ message: "Registrierung erfolgreich" });
   } catch (e) {
     console.error(e);
