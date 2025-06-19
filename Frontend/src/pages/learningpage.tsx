@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, Card, CardContent, Chip } from '@mui/material';
 import Header from '@/Components/Header';
-import useGetCards from '@/api/getCards';
+import useGetCards from '@/api/cards';
 import "../app/bodyfix.css";
 
 export type Cards = {
@@ -48,31 +48,31 @@ export function Learningpage() {
             <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Typography variant="h5" align="center">{currentCard.answer}</Typography>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '8px', padding: '8px' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '8px', padding: '8px', height: '8vh' }}>
               <Chip
                 label="Leicht"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Leicht' ? 'lightblue' : 'inherit' }}
+                sx={{ width: '100%', backgroundColor: selectedChip === 'Leicht' ? 'lightblue' : 'inherit', height: '100%' }}
                 clickable
                 onClick={() => handleChipClick('Leicht')}
               />
               <Chip
                 label="Mittel"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Mittel' ? 'lightblue' : 'inherit' }}
+                sx={{ width: '100%', backgroundColor: selectedChip === 'Mittel' ? 'lightblue' : 'inherit', height: '100%'}}
                 clickable
                 onClick={() => handleChipClick('Mittel')}
               />
               <Chip
                 label="Schwer"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Schwer' ? 'lightblue' : 'inherit' }}
+                sx={{ width: '100%', backgroundColor: selectedChip === 'Schwer' ? 'lightblue' : 'inherit', height: '100%' }}
                 clickable
                 onClick={() => handleChipClick('Schwer')}
               />
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', padding: '16px' }}>
-              <Button onClick={() => handleButtonClick(false)} color="secondary" variant="text" sx={{ width: '100%' }}>Incorrect</Button>
+              <Button onClick={() => handleButtonClick(false)} color="secondary" variant="text" sx={{ width: '100%','&:hover': {borderColor: '#d32f2f', backgroundColor: 'rgba(239,154,154,0.1)',}, }}>Incorrect</Button>
               <Button onClick={() => handleButtonClick(true)} color="primary" variant="text" sx={{ width: '100%' }}>Correct</Button>
             </Box>
           </Card>

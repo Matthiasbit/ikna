@@ -9,7 +9,7 @@ const router = Router();
 
 const registrationSchema = z.object({
   email: z.string().email(),
-  password: z.string(), 
+  password: z.string().min(1), 
 });
 
 router.post("/registration", async (req: Request, res: Response): Promise<void> => {
