@@ -34,4 +34,27 @@ function useGetCards() {
   return { cards, loading };
 }
 
-export default useGetCards;
+async function updateCardDifficulty(cardId: string, chipLabel: string | null) {
+  if (!chipLabel) return;
+
+  let difficultyValue = "";
+  if (chipLabel === "Leicht") difficultyValue = "leicht";
+  else if (chipLabel === "Mittel") difficultyValue = "mittel";
+  else if (chipLabel === "Schwer") difficultyValue = "schwer";
+  else return;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/updateCard/${cardId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ difficulty: difficultyValue }),
+    });
+    if (!response.ok) {
+      throw new Error("Fehlerhafte Antwort vom Server beim Aktualisieren der Karte");
+    }
+  } catch (error) {
+    console.error("Fehler beim Aktualisieren der Karte:", error);
+  }
+}
+
+export { updateCardDifficulty, useGetCards as default };
