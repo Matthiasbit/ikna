@@ -30,9 +30,9 @@ router.post("/registration", async (req: Request, res: Response): Promise<void> 
     await db.insert(user).values([{
       email,
       password: passwordHash,
-      leicht: 0,
-      mittel: 0,
-      schwer: 0,
+      leicht: 3,
+      mittel: 5,
+      schwer: 7,
       lernmethode: "default"
     }]);
     res.json({ message: "Registrierung erfolgreich" });
