@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, Card, CardContent, Chip } from '@mui/material';
 import Header from '@/Components/Header';
-import useGetCards from '@/api/cards';
+import useGetCards, { updateCardDifficulty } from '@/api/cards';
 import "../app/bodyfix.css";
 
 export type Cards = {
@@ -17,16 +17,11 @@ export function Learningpage() {
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
 
-  const updateCardStatus = async (cardId: string, status: boolean, chipLabel: string | null) => {
-    console.log(`Card ${cardId} status updated to ${status ? 'correct' : 'incorrect'} as ${chipLabel}`);
-  };
-
   async function handleButtonClick(value: boolean) {
     setShowAnswer(false);
-    updateCardStatus(cards[currentCardIndex].id, value, selectedChip);
+    await updateCardDifficulty(cards[currentCardIndex].id, selectedChip);    
     setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
     setSelectedChip(null);
-   
   };
 
   function handleChipClick(chipLabel: string){
