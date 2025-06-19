@@ -56,9 +56,8 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                             label="Learning Method"
                             onChange={(event) => {setOptions({...options, lernmethode: event.target.value})}}
                         >
-                            <MenuItem value="Runden">Roundsystem</MenuItem>
-                            <MenuItem value="default">nächste Lernmethode</MenuItem>
-                            <MenuItem value="def">noch Eine </MenuItem>
+                            <MenuItem value="leitner">Leitner-System</MenuItem>
+                            <MenuItem value="difficulty">Nach Schwierigkeit</MenuItem>
                         </Select>
                     </FormControl>
                     <Stack direction="row" spacing={2}>

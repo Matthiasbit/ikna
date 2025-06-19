@@ -31,9 +31,9 @@ router.post("/registration", async (req: Request, res: Response): Promise<void> 
     const returnedUser = await db.insert(user).values([{
       email,
       password: passwordHash,
-      leicht: 0,
-      mittel: 0,
-      schwer: 0,
+      leicht: 3,
+      mittel: 5,
+      schwer: 7,
       lernmethode: "default"
     }]).returning();
     const token = jwt.sign({ id: returnedUser[0].id, email: returnedUser[0].email }, process.env.JWT_SECRET!, { expiresIn: '1h' });

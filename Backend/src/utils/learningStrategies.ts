@@ -15,37 +15,46 @@ interface UserIntervals {
 }
 
 // Sortiert Karten: schwer > mittel > leicht
-function sortByDifficulty(cards: Card[]): Card[] {
-  function difficultyToNumber(difficulty: string): number {
+function sortByDifficulty(cards: Card[], userIntervals: UserIntervals): Card[] {
+  function difficultyToWeight(difficulty: string): number {
     switch (difficulty.toLowerCase()) {
-      case "schwer": return 3;
-      case "mittel": return 2;
-      case "leicht": return 1;
-      default: return 0;
+      case "schwer": return userIntervals.schwer;
+      case "mittel": return userIntervals.mittel;
+      case "leicht": return userIntervals.leicht;
+      default: return 5;
     }
   }
 
   return [...cards].sort(
-    (a, b) => difficultyToNumber(b.difficulty) - difficultyToNumber(a.difficulty)
+    (a, b) => difficultyToWeight(b.difficulty) - difficultyToWeight(a.difficulty)
   );
 }
 
-// Leitner-System: Karten werden nach Fälligkeit (basierend auf Box) sortiert(Spaced Repetition)
-function getNextReviewDate(status: number, lastReviewed: string | undefined): Date {
-  const intervals = [0, 1, 3, 7, 14, 30];
-  const interval = intervals[status] ?? 30;
+// Leitner-System: Karten werden nach Fälligkeit (basierend auf Box und User-Intervallen) sortiert
+function getNextReviewDate(
+  status: number,
+  lastReviewed: string | undefined,
+  difficulty: string,
+  userIntervals: UserIntervals
+): Date {
+  const intervals = {
+    leicht: userIntervals.leicht,
+    mittel: userIntervals.mittel,
+    schwer: userIntervals.schwer,
+  };
+  const interval = intervals[difficulty.toLowerCase() as keyof UserIntervals] ?? 1;
   const last = lastReviewed ? new Date(lastReviewed) : new Date();
   const next = new Date(last);
-  next.setDate(last.getDate() + interval);
+  next.setDate(last.getDate() + interval * (status || 1));
   return next;
 }
 
-function leitnerSpacedRepetition(cards: Card[]): Card[] {
+function leitnerSpacedRepetition(cards: Card[], userIntervals: UserIntervals): Card[] {
   const today = new Date();
 
   return [...cards].sort((a, b) => {
-    const aNext = getNextReviewDate(a.status, a.lastReviewed);
-    const bNext = getNextReviewDate(b.status, b.lastReviewed);
+    const aNext = getNextReviewDate(a.status, a.lastReviewed, a.difficulty, userIntervals);
+    const bNext = getNextReviewDate(b.status, b.lastReviewed, b.difficulty, userIntervals);
 
     const aDue = aNext <= today ? 0 : 1;
     const bDue = bNext <= today ? 0 : 1;
@@ -59,10 +68,10 @@ function leitnerSpacedRepetition(cards: Card[]): Card[] {
 
     function difficultyToNumber(difficulty: string): number {
       switch (difficulty.toLowerCase()) {
-        case "schwer": return 3;
-        case "mittel": return 2;
-        case "leicht": return 1;
-        default: return 0;
+        case "schwer": return userIntervals.schwer;
+        case "mittel": return userIntervals.mittel;
+        case "leicht": return userIntervals.leicht;
+        default: return 5;
       }
     }
     return difficultyToNumber(b.difficulty) - difficultyToNumber(a.difficulty);

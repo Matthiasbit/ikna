@@ -1,28 +1,48 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, Card, CardContent, Chip } from '@mui/material';
 import Header from '@/Components/Header';
-import useGetCards, { updateCardDifficulty } from '@/api/cards';
+import useGetCards from '@/api/getCards';
+import updateCard from '@/api/updateCard';
 import "../app/bodyfix.css";
 
 export type Cards = {
   id: string;
   question: string;
   answer: string;
-  difficulty: number;
+  status?: number;
+  difficulty: string;
 };
 
 export function Learningpage() {
-  const { cards } = useGetCards();
+  const { cards, refetch } = useGetCards();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
 
-  async function handleButtonClick(value: boolean) {
-    setShowAnswer(false);
-    await updateCardDifficulty(cards[currentCardIndex].id, selectedChip);    
-    setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
-    setSelectedChip(null);
+  async function handleButtonClick(isCorrect: boolean) {
+  setShowAnswer(false);
+
+  const current = cards[currentCardIndex];
+  let newStatus = isCorrect
+    ? (current.status ?? 0) + 1
+    : (current.status ?? 0) - 1;
+
+  newStatus = Math.max(0, Math.min(10, newStatus));
+
+  const updateObj: any = {
+    id: Number(current.id),
+    status: newStatus,
   };
+  if (selectedChip !== null) {
+    updateObj.difficulty = selectedChip;
+  }
+
+  await updateCard(updateObj);
+  refetch();
+
+  setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
+  setSelectedChip(null);
+}
 
   function handleChipClick(chipLabel: string){
     setSelectedChip(chipLabel);
@@ -47,23 +67,23 @@ export function Learningpage() {
               <Chip
                 label="Leicht"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Leicht' ? 'lightblue' : 'inherit', height: '100%' }}
+                sx={{ width: '100%', backgroundColor: selectedChip === 'leicht' ? 'lightblue' : 'inherit', height: '100%' }}
                 clickable
-                onClick={() => handleChipClick('Leicht')}
+                onClick={() => handleChipClick('leicht')}
               />
               <Chip
                 label="Mittel"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Mittel' ? 'lightblue' : 'inherit', height: '100%'}}
+                sx={{ width: '100%', backgroundColor: selectedChip === 'mittel' ? 'lightblue' : 'inherit', height: '100%'}}
                 clickable
-                onClick={() => handleChipClick('Mittel')}
+                onClick={() => handleChipClick('mittel')}
               />
               <Chip
                 label="Schwer"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Schwer' ? 'lightblue' : 'inherit', height: '100%' }}
+                sx={{ width: '100%', backgroundColor: selectedChip === 'schwer' ? 'lightblue' : 'inherit', height: '100%' }}
                 clickable
-                onClick={() => handleChipClick('Schwer')}
+                onClick={() => handleChipClick('schwer')}
               />
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', padding: '16px' }}>

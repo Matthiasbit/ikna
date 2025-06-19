@@ -3,6 +3,9 @@ import { db } from "../db";
 import { card } from "../db/schema";
 import { eq } from "drizzle-orm";
 import z from "zod";
+import { sortByDifficulty, leitnerSpacedRepetition } from "../utils/learningStrategies";
+import { user as userTable } from "../db/schema";
+
 
 const router = Router();
 
@@ -16,10 +19,38 @@ const updateCardSchema = z.object({
 });
 
 //Alle Karten abrufen
-router.get("/getCards", async (_: Request, res: Response) => {
+router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
   try {
+    const userId = Number(req.query.userId);
+
+    if (!userId) {
+      res.status(400).json({ error: "UserId fehlt" });
+      return;
+    }
+    
+    const user = await db.select().from(userTable).where(eq(userTable.id, userId)).limit(1);
+    if (!user[0]) {
+      res.status(404).json({ error: "User nicht gefunden" });
+      return;
+    }
     const cards = await db.select().from(card);
-    res.json(cards);
+    const userIntervals = {
+      leicht: user[0].leicht,
+      mittel: user[0].mittel,
+      schwer: user[0].schwer,
+    };
+
+    const lernmethode = user[0].lernmethode;
+
+    let sortedCards;
+    if (lernmethode === "leitner") {
+      sortedCards = leitnerSpacedRepetition(cards, userIntervals);
+    } else if (lernmethode === "difficulty") {
+      sortedCards = sortByDifficulty(cards, userIntervals);
+    } else {
+      sortedCards = cards;
+    }
+    res.json(sortedCards);
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Fehler beim Laden der Karten" });
