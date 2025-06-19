@@ -1,14 +1,14 @@
-import { pgTable, integer, varchar } from "drizzle-orm/pg-core";
+import { pgTable, integer, varchar, serial } from "drizzle-orm/pg-core";
 
-export const set = pgTable('SET', {
-    id: integer('id').primaryKey(),
+export const set = pgTable('SETS', {
+    id: serial('id').primaryKey(),
     name: varchar('name'),
     user: integer('user'),
     kategorie: varchar('kategorie'),
 });
 
 export const card = pgTable('CARD', {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     set: integer('set'),
     question: varchar('question'),
     answer: varchar('answer'),
@@ -17,7 +17,7 @@ export const card = pgTable('CARD', {
 });
 
 export const user = pgTable('USER', {
-    id: integer('id').primaryKey(),
+    id: serial('id').primaryKey(),
     email: varchar('email'),
     password: varchar('password'),
     leicht: integer('leicht').notNull(),

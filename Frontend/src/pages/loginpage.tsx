@@ -12,7 +12,7 @@ export function Loginpage() {
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 const [showPassword, setShowPassword] = useState(false);
-const [localError, setLocalError] = useState(false); // <-- umbenannt
+const [localError, setLocalError] = useState(false);
 const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
 const { registration, error, success} = useRegistration();
