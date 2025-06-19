@@ -17,7 +17,7 @@ type Options = {
 
 export default function SettingsDialog({open , handleClose }:SettingsDialogProps): ReactElement {
     const [options, setOptions] = useState<Options>({
-        lernmethode: "Runden",
+        lernmethode: "difficulty",
         easy: 3,
         medium: 5,
         hard: 7,

@@ -33,7 +33,7 @@ router.post("/registration", async (req: Request, res: Response): Promise<void> 
       leicht: 3,
       mittel: 5,
       schwer: 7,
-      lernmethode: "default"
+      lernmethode: "difficulty"
     }]);
     res.json({ message: "Registrierung erfolgreich" });
   } catch (e) {

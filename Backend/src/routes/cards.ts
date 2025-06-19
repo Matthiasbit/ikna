@@ -27,13 +27,25 @@ router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
       res.status(400).json({ error: "UserId fehlt" });
       return;
     }
-    
+
     const user = await db.select().from(userTable).where(eq(userTable.id, userId)).limit(1);
     if (!user[0]) {
       res.status(404).json({ error: "User nicht gefunden" });
       return;
     }
-    const cards = await db.select().from(card);
+
+    const rawCards = await db.select().from(card);
+
+    const cards = rawCards.map(c => ({
+      ...c,
+      set: c.set ?? 0,
+      question: c.question ?? "",
+      answer: c.answer ?? "",
+      status: c.status ?? 0,
+      difficulty: c.difficulty ?? "leicht",
+      lastreview: c.lastreview ?? "",
+    }));
+
     const userIntervals = {
       leicht: user[0].leicht,
       mittel: user[0].mittel,
