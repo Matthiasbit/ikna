@@ -7,12 +7,12 @@ function useRegistration() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  async function registration(email: string, password: string) {
+  async function registration(email: string, password: string, registration: boolean) {
     setLoading(true);
     setError(null);
     setSuccess(false);
     try {
-      const response = await fetch(`${API_BASE_URL}/registration`, {
+      const response = await fetch(`${API_BASE_URL}/${registration ? "registration" : "login"}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -23,6 +23,7 @@ function useRegistration() {
         return;
       }
       setSuccess(true);
+      sessionStorage.setItem("token", data);
       return data;
         } catch (err: unknown) {
       if (err instanceof Error) {

@@ -19,7 +19,7 @@ export const card = pgTable('CARD', {
 export const user = pgTable('USER', {
     id: serial('id').primaryKey(),
     email: varchar('email'),
-    password: varchar('password'),
+    password: varchar('password').notNull(),
     leicht: integer('leicht').notNull(),
     mittel: integer('mittel').notNull(),
     schwer: integer('schwer').notNull(),

@@ -17,26 +17,16 @@ const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
 const { registration, error, success} = useRegistration();
 
-
-  function anmeldung() {
+  function logInOrSignUp(signUp: boolean) {
     setLocalError(true);
-    console.log('Email:', email);
-    console.log('Password:', password);
-    window.location.href =  "/ikna/";
-  };
+    registration(email, password, signUp);
+  }
 
   useEffect(() => {
     if (success) {
       window.location.href = "/ikna/";
     }
   }, [success]);
-
-  function handleRegistration() {
-    setLocalError(true);
-    registration(email, password);
-  }
-
-
   
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -100,7 +90,7 @@ const { registration, error, success} = useRegistration();
                     />
                   </FormControl>
                 )}
-                <Button onClick={anmeldung} variant="contained" color="primary" type="button">
+                <Button onClick={() => logInOrSignUp(false)} variant="contained" color="primary" type="button">
                   {isResetPassword ? "Reset Password" : "Login"}
                 </Button>
               </Stack>
@@ -141,7 +131,7 @@ const { registration, error, success} = useRegistration();
                     onChange={(event) => setPassword(event.target.value)}
                   />
                 </FormControl>
-                <Button onClick={handleRegistration} variant="contained" color="primary" type="button">
+                <Button onClick={() => logInOrSignUp(true)} variant="contained" color="primary" type="button">
                   Sign Up
                 </Button>
                 {error && (
