@@ -40,8 +40,12 @@ export default function Startseite() {
     }
   }
 
-  if (pages.current[page] === undefined) {
-    return <CircularProgress />
+  if (data.loading) {
+    return (
+      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', width: '100vw'}}>
+        <CircularProgress />
+      </div>
+    );
   }
   
   return (
@@ -57,7 +61,13 @@ export default function Startseite() {
             <ChevronLeft color="primary" />
           </IconButton>
           <Grid2 container spacing={3} style={{width: '100%'}}>
-            {pages.current[page].map((_set, index) => {
+            { pages.current[page] === undefined ? <Stack>
+              <h2>Keine Sets gefunden!!!</h2>
+              <p>Erstelle dein erstes Set!</p>
+              <p>Drücke auf das Plus nebendran</p>
+            </Stack> 
+            :
+            pages.current[page].map((_set, index) => {
               return (
               <Grid2 key={index} size={{xs: 12, md: 6, lg: 4}} >
                 <Set  data={pages.current[page][index]} />

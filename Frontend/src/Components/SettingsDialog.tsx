@@ -1,12 +1,13 @@
-import { Dialog ,DialogTitle, Button, DialogActions, DialogContent, FormControl, InputLabel, Select, MenuItem, Stack, TextField, Switch, FormControlLabel} from '@mui/material';
-import { ReactElement, useState } from 'react';
+import { Dialog ,DialogTitle, Button, DialogActions, DialogContent, FormControl, InputLabel, Select, MenuItem, Stack, TextField, Switch, FormControlLabel, CircularProgress} from '@mui/material';
+import { ReactElement, useEffect, useState } from 'react';
+import { useGetSettings } from '@/api/getSettings';
 
 type SettingsDialogProps = {
     open: boolean;
     handleClose: () => void;
 }
 
-type Options = {
+export type Options = {
     lernmethode: string;
     easy: number;
     medium: number;
@@ -16,15 +17,32 @@ type Options = {
 }
 
 export default function SettingsDialog({open , handleClose }:SettingsDialogProps): ReactElement {
+    const {data, loading} = useGetSettings();
     const [options, setOptions] = useState<Options>({
-        lernmethode: "Runden",
-        easy: 3,
-        medium: 5,
-        hard: 7,
+        lernmethode: data?.lernmethode || "difficulty",
+        easy: data?.easy || 3,
+        medium: data?.medium || 5,
+        hard: data?.hard || 7,
         shareSets: false,
-        shareStats: false
+        shareStats: false,
     });
     
+    useEffect(() => {
+        if (data) {
+            setOptions({
+                lernmethode: data.lernmethode,
+                easy: data.easy,
+                medium: data.medium,
+                hard: data.hard,
+                shareSets: data.shareSets ,
+                shareStats: data.shareStats,
+            });
+        }
+    }, [data]);
+
+    if (loading) {
+        return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%'}}><CircularProgress /></div>;
+    }
     return (
         <Dialog open={open} onClose={handleClose} maxWidth="lg" >
             <DialogTitle>Settings</DialogTitle>
@@ -38,9 +56,8 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                             label="Learning Method"
                             onChange={(event) => {setOptions({...options, lernmethode: event.target.value})}}
                         >
-                            <MenuItem value="Runden">Roundsystem</MenuItem>
-                            <MenuItem value="abc">nächste Lernmethode</MenuItem>
-                            <MenuItem value="def">noch Eine </MenuItem>
+                            <MenuItem value="leitner">Leitner-System</MenuItem>
+                            <MenuItem value="difficulty">Nach Schwierigkeit</MenuItem>
                         </Select>
                     </FormControl>
                     <Stack direction="row" spacing={2}>
@@ -50,8 +67,6 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                     </Stack>
                     <h3>Account</h3>
                     <Stack direction="row" spacing={2}>
-                        <Button href="/ikna/anmeldeseite" style={{width: "163px"}}>Log In</Button>
-                        <Button href="/ikna/anmeldeseite" style={{width: "163px"}}>Sign Up</Button>
                         <Button style={{width: "163px"}}>Log Out</Button>
                         <Button style={{width: "163px"}}>Delete Account</Button>
                     </Stack>
