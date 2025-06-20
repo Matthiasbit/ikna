@@ -13,7 +13,7 @@ function useRegistration() {
   const [errormessage, setErrorMessage] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  async function registration(email: string, password: string) {
+  async function registration(email: string, password: string, registration: boolean) {
     setLoading(true);
     setErrorMessage(null);
     setSuccess(false);
@@ -26,7 +26,7 @@ function useRegistration() {
     }
     
     try {
-      const response = await fetch(`${API_BASE_URL}/registration`, {
+      const response = await fetch(`${API_BASE_URL}/${registration ? "registration" : "login"}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -34,6 +34,10 @@ function useRegistration() {
       const data = await response.json();
       if (!response.ok) setErrorMessage(data.error || "Registrierung fehlgeschlagen");
       else setSuccess(true);
+<<<<<<< HEAD
+=======
+      sessionStorage.setItem("token", data);
+>>>>>>> c9e645a6adaca4c4d5a053432185a9ef6039ca8a
       return data;
     } catch (err: any) {
       setErrorMessage(err?.message || "Unbekannter Fehler");

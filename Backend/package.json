@@ -20,9 +20,11 @@
     "drizzle-kit": "latest",
     "drizzle-orm": "latest",
     "express": "^5.1.0",
-    "zod": "^3.25.67"
+    "zod": "^3.25.67",
+    "jsonwebtoken": "latest"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "latest",
     "@types/cors": "latest",
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.3",

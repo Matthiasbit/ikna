@@ -17,6 +17,7 @@ const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
 const { registration, errormessage, success} = useRegistration();
 
+<<<<<<< HEAD
 
   function anmeldung() {
     setValidationError(true);
@@ -24,6 +25,12 @@ const { registration, errormessage, success} = useRegistration();
     console.log('Password:', password);
     window.location.href =  "/ikna/";
   };
+=======
+  function logInOrSignUp(signUp: boolean) {
+    setValidationError(true);
+    registration(email, password, signUp);
+  }
+>>>>>>> c9e645a6adaca4c4d5a053432185a9ef6039ca8a
 
   useEffect(() => {
     if (success) {
@@ -31,6 +38,7 @@ const { registration, errormessage, success} = useRegistration();
     }
   }, [success]);
 
+<<<<<<< HEAD
   function handleRegistration() {
     setValidationError(true);
     registration(email, password);
@@ -38,6 +46,8 @@ const { registration, errormessage, success} = useRegistration();
 
 
   
+=======
+>>>>>>> c9e645a6adaca4c4d5a053432185a9ef6039ca8a
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleResetLinkClick = () => {
@@ -100,7 +110,7 @@ const { registration, errormessage, success} = useRegistration();
                     />
                   </FormControl>
                 )}
-                <Button onClick={anmeldung} variant="contained" color="primary" type="button">
+                <Button onClick={() => logInOrSignUp(false)} variant="contained" color="primary" type="button">
                   {isResetPassword ? "Reset Password" : "Login"}
                 </Button>
               </Stack>
@@ -141,7 +151,7 @@ const { registration, errormessage, success} = useRegistration();
                     onChange={(event) => setPassword(event.target.value)}
                   />
                 </FormControl>
-                <Button onClick={handleRegistration} variant="contained" color="primary" type="button">
+                <Button onClick={() => logInOrSignUp(true)} variant="contained" color="primary" type="button">
                   Sign Up
                 </Button>
                 {errormessage && (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type Sets = {
     id: string;
@@ -16,8 +16,8 @@ export function useGetSets() {
   const [data, setData] = useState<Array<Sets>>([]);
   const [loading, setLoading] = useState(true);
 
-  if (loading) {
-    fetch('http://localhost:80/Sets', {method: 'GET',  headers: { 'Content-Type': 'application/json' }})
+  useEffect(() => {
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL! + "/Sets", {method: 'GET',  headers: { 'Content-Type': 'application/json', 'authorization' : "Bearer " + sessionStorage.getItem('token') || "Bearer " + '' }})
         .then(response => {
             if (!response.ok) {
                 throw new Error('Fehlerhafte Antwort vom Server');
@@ -29,6 +29,6 @@ export function useGetSets() {
         }).catch(error => {
             console.error('Fehler beim Senden der Anfrage:', error);
         });
-    }
+    }, []);
   return { data, loading };
 }

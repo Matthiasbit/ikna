@@ -1,7 +1,7 @@
 import express from "express";
-import setRouter from "./Set/Set";
+import setRouter from "./routes/Set";
 import cors from "cors";
-import settingsRouter from "./Settings/settings";
+import settingsRouter from "./routes/settings";
 import cardsRouter from "./routes/cards";
 import registrationRouter from "./routes/registration";
 
