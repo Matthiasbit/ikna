@@ -34,10 +34,7 @@ function useRegistration() {
       const data = await response.json();
       if (!response.ok) setErrorMessage(data.error || "Registrierung fehlgeschlagen");
       else setSuccess(true);
-<<<<<<< HEAD
-=======
       sessionStorage.setItem("token", data);
->>>>>>> c9e645a6adaca4c4d5a053432185a9ef6039ca8a
       return data;
     } catch (err: any) {
       setErrorMessage(err?.message || "Unbekannter Fehler");

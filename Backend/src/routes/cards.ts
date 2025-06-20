@@ -27,17 +27,12 @@ router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
       res.status(400).json({ error: "UserId fehlt" });
       return;
     }
-<<<<<<< HEAD
-
-=======
     
->>>>>>> c9e645a6adaca4c4d5a053432185a9ef6039ca8a
     const user = await db.select().from(userTable).where(eq(userTable.id, userId)).limit(1);
     if (!user[0]) {
       res.status(404).json({ error: "User nicht gefunden" });
       return;
     }
-<<<<<<< HEAD
 
     const rawCards = await db.select().from(card);
 
@@ -51,9 +46,6 @@ router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
       lastreview: c.lastreview ?? "",
     }));
 
-=======
-    const cards = await db.select().from(card);
->>>>>>> c9e645a6adaca4c4d5a053432185a9ef6039ca8a
     const userIntervals = {
       leicht: user[0].leicht,
       mittel: user[0].mittel,

@@ -34,16 +34,10 @@ router.post("/registration", async (req: Request, res: Response): Promise<void> 
       leicht: 3,
       mittel: 5,
       schwer: 7,
-<<<<<<< HEAD
       lernmethode: "difficulty"
-    }]);
-    res.json({ message: "Registrierung erfolgreich" });
-=======
-      lernmethode: "default"
     }]).returning();
     const token = jwt.sign({ id: returnedUser[0].id, email: returnedUser[0].email }, process.env.JWT_SECRET!, { expiresIn: '1h' });
     res.status(200).json(token);
->>>>>>> c9e645a6adaca4c4d5a053432185a9ef6039ca8a
   } catch (e) {
     console.error(e);
     res.status(400).json({ error: "Registrierung fehlgeschlagen" });

@@ -17,20 +17,10 @@ const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
 const { registration, errormessage, success} = useRegistration();
 
-<<<<<<< HEAD
-
-  function anmeldung() {
-    setValidationError(true);
-    console.log('Email:', email);
-    console.log('Password:', password);
-    window.location.href =  "/ikna/";
-  };
-=======
   function logInOrSignUp(signUp: boolean) {
     setValidationError(true);
     registration(email, password, signUp);
   }
->>>>>>> c9e645a6adaca4c4d5a053432185a9ef6039ca8a
 
   useEffect(() => {
     if (success) {
@@ -38,16 +28,6 @@ const { registration, errormessage, success} = useRegistration();
     }
   }, [success]);
 
-<<<<<<< HEAD
-  function handleRegistration() {
-    setValidationError(true);
-    registration(email, password);
-  }
-
-
-  
-=======
->>>>>>> c9e645a6adaca4c4d5a053432185a9ef6039ca8a
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleResetLinkClick = () => {

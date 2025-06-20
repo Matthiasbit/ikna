@@ -19,17 +19,10 @@ export type Options = {
 export default function SettingsDialog({open , handleClose }:SettingsDialogProps): ReactElement {
     const {data, loading} = useGetSettings();
     const [options, setOptions] = useState<Options>({
-<<<<<<< HEAD
-        lernmethode: "difficulty",
-        easy: 3,
-        medium: 5,
-        hard: 7,
-=======
-        lernmethode: data?.lernmethode || "Runden",
-        easy: data?.easy || 0,
-        medium: data?.medium || 0,
-        hard: data?.hard || 0,
->>>>>>> c9e645a6adaca4c4d5a053432185a9ef6039ca8a
+        lernmethode: data?.lernmethode || "difficulty",
+        easy: data?.easy || 3,
+        medium: data?.medium || 5,
+        hard: data?.hard || 7,
         shareSets: false,
         shareStats: false,
     });
