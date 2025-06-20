@@ -1,25 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Stack, Button, FormControl, InputLabel, OutlinedInput, IconButton, InputAdornment, Typography, Link, Tab, Box } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import Header from '@/Components/Header';
 import "../app/bodyfix.css";
+import useRegistration from '@/api/registration';
 
-export function Anmeldeseite() {
+
+export function Loginpage() {
   
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState(false);
-  const [isResetPassword, setIsResetPassword] = useState(false);
-  const [tabValue, setTabValue] = useState<"1" | "2">("1");
+const [email, setEmail] = useState("");
+const [password, setPassword] = useState("");
+const [showPassword, setShowPassword] = useState(false);
+const [localError, setLocalError] = useState(false);
+const [isResetPassword, setIsResetPassword] = useState(false);
+const [tabValue, setTabValue] = useState<"1" | "2">("1");
+const { registration, error, success} = useRegistration();
 
-  function anmeldung() {
-    setError(true);
-    console.log('Email:', email);
-    console.log('Password:', password);
-    window.location.href =  "/ikna/";
-  };
+  function logInOrSignUp(signUp: boolean) {
+    setLocalError(true);
+    registration(email, password, signUp);
+  }
+
+  useEffect(() => {
+    if (success) {
+      window.location.href = "/ikna/";
+    }
+  }, [success]);
   
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -30,11 +37,11 @@ export function Anmeldeseite() {
   return (
     <div>
       <Header text={tabValue === "1" ? isResetPassword ? "Reset Password" : "Login" : "Sign up" } />
-      <Box sx={{ width: '100%',  marginTop: '20vh' }}>
-        <Box sx={{ maxWidth: { xs: '90%', sm: '70%', md: '50%', lg: '30%' }, margin: 'auto', height: '100vh', paddingTop: '5vh' }}>
+      <Box sx={{ width: '100%',  marginTop: '15vh' }}>
+        <Box sx={{ maxWidth: { xs: '90%', sm: '70%', md: '50%', lg: '30%' }, margin: 'auto'}}>
           <TabContext value={tabValue}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={(_event, value) => setTabValue(value)} centered style={{ width: '100%' }}>
+              <TabList onChange={(_event, value) => setTabValue(value)} centered>
                 <Tab label="Login" value="1"/>
                 <Tab label="Sign Up" value="2" />
               </TabList>
@@ -53,8 +60,7 @@ export function Anmeldeseite() {
               </Typography>
               <Stack spacing={2} direction="column">
                 <TextField
-                  error={email === "" && error}
-                  required 
+                  error={email === "" && localError}
                   id="email"
                   label="Email:"
                   placeholder="example@example.com"
@@ -62,11 +68,10 @@ export function Anmeldeseite() {
                   onChange={(event) => setEmail(event.target.value)} />
                 {!isResetPassword && (
                   <FormControl variant="outlined">
-                    <InputLabel htmlFor="password" error={password === "" && error}>Password</InputLabel>
+                    <InputLabel htmlFor="password" error={password === "" && localError}>Password</InputLabel>
                     <OutlinedInput
                       id="password"
-                      error={password === "" && error}
-                      required 
+                      error={password === "" && localError}
                       type={showPassword ? 'text' : 'password'}
                       endAdornment={
                         <InputAdornment position="end">
@@ -85,7 +90,7 @@ export function Anmeldeseite() {
                     />
                   </FormControl>
                 )}
-                <Button onClick={anmeldung} variant="contained" color="primary">
+                <Button onClick={() => logInOrSignUp(false)} variant="contained" color="primary" type="button">
                   {isResetPassword ? "Reset Password" : "Login"}
                 </Button>
               </Stack>
@@ -96,7 +101,7 @@ export function Anmeldeseite() {
               </Typography>
               <Stack spacing={2} direction="column">
                 <TextField
-                  error={email === "" && error}
+                  error={email === "" && localError}
                   required
                   id="email"
                   label="Email:"
@@ -104,10 +109,10 @@ export function Anmeldeseite() {
                   value={email}
                   onChange={(event) => setEmail(event.target.value)} />
                 <FormControl variant="outlined">
-                  <InputLabel htmlFor="password" error={password === "" && error}>Password</InputLabel>
+                  <InputLabel htmlFor="password" error={password === "" && localError}>Password</InputLabel>
                   <OutlinedInput
                     id="password"
-                    error={password === "" && error}
+                    error={password === "" && localError}
                     required
                     type={showPassword ? 'text' : 'password'}
                     endAdornment={
@@ -126,9 +131,19 @@ export function Anmeldeseite() {
                     onChange={(event) => setPassword(event.target.value)}
                   />
                 </FormControl>
-                <Button onClick={anmeldung} variant="contained" color="primary">
+                <Button onClick={() => logInOrSignUp(true)} variant="contained" color="primary" type="button">
                   Sign Up
                 </Button>
+                {error && (
+                  <Typography color="error" sx={{ mt: 2 }}>
+                    {error}
+                  </Typography>
+                )}
+                {success && (
+                  <Typography color="success.main" sx={{ mt: 2 }}>
+                    Registrierung erfolgreich!
+                  </Typography>
+                )}
               </Stack>
             </TabPanel>
           </TabContext>
@@ -138,4 +153,4 @@ export function Anmeldeseite() {
   );
 };
 
-export default Anmeldeseite;
+export default Loginpage;
