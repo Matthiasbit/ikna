@@ -28,6 +28,9 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
     });
     
     useEffect(() => {
+        if (loading) {
+            return;
+        }
         if (data) {
             setOptions({
                 lernmethode: data.lernmethode,
@@ -41,7 +44,7 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
     }, [data]);
 
     if (loading) {
-        return <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%'}}><CircularProgress /></div>;
+        return <Dialog open={open} onClose={handleClose} maxWidth="lg"><div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%'}}><CircularProgress /></div></Dialog>;
     }
     return (
         <Dialog open={open} onClose={handleClose} maxWidth="lg" >

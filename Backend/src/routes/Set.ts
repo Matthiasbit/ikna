@@ -7,6 +7,17 @@ import jwt from "jsonwebtoken";
 const router = Router();
 
 router.get("/Sets", (req, res) => {
+    let authorized = true;
+    jwt.verify(req.headers.authorization?.split(" ")[1] || "", process.env.JWT_SECRET!, (err) => {
+        if (err) {
+            res.status(401).json({ error: "Unauthorized" });
+            authorized = false;
+            return;
+        }
+    });
+    if (!authorized) {
+        return;
+    }
     const decode = jwt.decode(req.headers.authorization?.split(" ")[1] || "") as { id: number , email: string, iat: number, exp: number};
     db.select().from(user).where(eq(user.id, decode.id))
         .then(userData => {

@@ -20,6 +20,9 @@ export function useGetSets() {
     fetch(process.env.NEXT_PUBLIC_API_BASE_URL! + "/Sets", {method: 'GET',  headers: { 'Content-Type': 'application/json', 'authorization' : "Bearer " + sessionStorage.getItem('token') || "Bearer " + '' }})
         .then(response => {
             if (!response.ok) {
+                if (response.status === 401) {
+                    window.location.href = 'ikna/loginpage';
+                }
                 throw new Error('Fehlerhafte Antwort vom Server');
             }
             return response.json();

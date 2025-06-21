@@ -7,10 +7,13 @@ export function useGetSettings() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (sessionStorage.getItem('token') === null) {
+        return;
+    }
     fetch(process.env.NEXT_PUBLIC_API_BASE_URL! + "/Settings", {method: 'GET',  headers: { 'Content-Type': 'application/json', 'authorization' : "Bearer " + sessionStorage.getItem('token') || "Bearer " + '' }})
         .then(response => {
             if (!response.ok) {
-                throw new Error('Fehlerhafte Antwort vom Server');
+                throw new Error(response.statusText);
             }
             return response.json();
         }).then(data => {
