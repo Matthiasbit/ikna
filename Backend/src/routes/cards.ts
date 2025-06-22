@@ -6,9 +6,25 @@ import z from "zod";
 import { sortByDifficulty, leitnerSpacedRepetition } from "../utils/learningStrategies";
 import { user as userTable } from "../db/schema";
 
+import { eq } from "drizzle-orm";
+import z from "zod";
+import { sortByDifficulty, leitnerSpacedRepetition } from "../utils/learningStrategies";
+import { user as userTable } from "../db/schema";
+
 
 const router = Router();
 
+const updateCardSchema = z.object({
+  set: z.number().optional(),
+  question: z.string().optional(),
+  answer: z.string().optional(),
+  status: z.number().optional(),
+  difficulty: z.string().optional(),
+  lastreview: z.string().optional(),
+});
+
+//Alle Karten abrufen
+router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
 const updateCardSchema = z.object({
   set: z.number().optional(),
   question: z.string().optional(),
@@ -27,7 +43,7 @@ router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
       res.status(400).json({ error: "UserId fehlt" });
       return;
     }
-    
+
     const user = await db.select().from(userTable).where(eq(userTable.id, userId)).limit(1);
     if (!user[0]) {
       res.status(404).json({ error: "User nicht gefunden" });
@@ -97,6 +113,45 @@ router.put("/updateCard/:id", async (req: Request, res: Response): Promise<void>
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Fehler beim Aktualisieren der Karte" });
+  }
+});
+
+// create a new card with POST
+router.post("/createCard", async (req: Request, res: Response): Promise<void> => {
+  const parseResult = updateCardSchema.safeParse(req.body);
+
+  if(!parseResult.success){
+    res.status(400).json({error: "Ungültige Eingabedaten", details: parseResult.error.errors});
+    return ;
+  }
+
+  const newCard = parseResult.data;
+
+  try {
+    const inserted = await db.insert(card).values(newCard).returning();
+
+    res.status(201).json({ message: "Karte erfolgreich erstellt", card: inserted[0]});
+  } catch (e){
+    console.error(e);
+    res.status(500).json({error: "Fehler beim Erstellen der Karte"});
+  }
+});
+
+// delete card by id
+router.delete("/deleteCard/:id", async (req: Request, res: Response): Promise<void> => {
+  const {id} = req.params;
+
+  try {
+    const deleted = await db.delete(card).where(eq(card.id, Number(id))).returning();
+
+    if(!deleted || deleted.length === 0){
+      res.status(404).json({ error: "Karte nicht gefunden"});
+      return;
+    }
+    res.json({ message: "Karte erfolgreich gelöscht"});
+  } catch (e){
+    console.error(e);
+    res.status(500).json({error: "Fehler beim Löschen der Karte"});
   }
 });
 
