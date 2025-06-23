@@ -13,6 +13,12 @@ export type Cards = {
   difficulty: string;
 };
 
+interface UpdateCardPayload {
+  id: number;
+  status: number;
+  difficulty?: string;
+}
+
 export function Learningpage() {
   const { cards, refetch } = useGetCards();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -29,7 +35,7 @@ export function Learningpage() {
 
   newStatus = Math.max(0, Math.min(10, newStatus));
 
-  const updateObj: any = {
+  const updateObj: UpdateCardPayload = {
     id: Number(current.id),
     status: newStatus,
   };
