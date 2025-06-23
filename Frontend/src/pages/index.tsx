@@ -2,7 +2,7 @@ import Header from "@/Components/Header";
 import Set from "@/Components/Set";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { Autocomplete, CircularProgress, Grid2, IconButton, Stack, TextField } from "@mui/material";
-import {  useEffect, useState, useRef } from "react";
+import { useState, useMemo } from "react";
 import { Sets, useGetSets } from "@/api/getSets";
 import "../app/bodyfix.css";
 
@@ -10,38 +10,41 @@ import "../app/bodyfix.css";
 export default function Startseite() {
 
   const [page, setPage] = useState(0);
-  const pages = useRef<Array<Array<Sets>>>([]);
 
   const data = useGetSets();
 
-  useEffect(() => {
-    if (data.loading) {
-      return;
+   const pages = useMemo(() => {
+    if (data.loading || !data.data) return [];
+    const result: Array<Array<Sets>> = [];
+    for (let i = 0; i < data.data.length; i += 8) {
+      result.push(data.data.slice(i, i + 8));
     }
-    for (let i = 0; i < data.data.length / 8; i++) {
-      pages.current.push(data.data.slice(i * 8, i * 8 + 8));
-    }
-  }, [data]);
+    return result;
+  }, [data.data, data.loading]);
   
 
   function handleChange(next: boolean) {
     if (next) {
-      if(page === pages.current.length - 1) {
+      if(page === pages.length - 1) {
         setPage(0);
       } else {
         setPage(page + 1);
       }
     } else {
       if (page === 0) {
-        setPage(pages.current.length - 1);
+        setPage(pages.length - 1);
       } else {  
         setPage(page - 1);
       }
     }
   }
 
-  if (pages.current[page] === undefined) {
-    return <CircularProgress />
+  if (data.loading) {
+    return (
+      <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', width: '100vw'}}>
+        <CircularProgress />
+      </div>
+    );
   }
   
   return (
@@ -57,10 +60,17 @@ export default function Startseite() {
             <ChevronLeft color="primary" />
           </IconButton>
           <Grid2 container spacing={3} style={{width: '100%'}}>
-            {pages.current[page].map((_set, index) => {
+            {data.data.length === 0 ? 
+            <Stack>
+              <h2>Keine Sets gefunden!!!</h2>
+              <p>Erstelle dein erstes Set!</p>
+              <p>Drücke auf das Plus nebendran</p>
+            </Stack> 
+            :
+            pages[page].map((_set, index) => {
               return (
               <Grid2 key={index} size={{xs: 12, md: 6, lg: 4}} >
-                <Set  data={pages.current[page][index]} />
+                <Set  data={pages[page][index]} />
               </Grid2>)
             })}
             <Grid2 size={{xs: 12, md: 6, lg: 4}}>

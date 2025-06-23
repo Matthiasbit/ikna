@@ -12,25 +12,30 @@
     "format": "prettier --write src/**/*.ts"
   },
   "dependencies": {
+    "@neondatabase/serverless": "1.0.1",
+    "argon2": "^0.43.0",
+    "bcryptjs": "^3.0.2",
+    "cors": "latest",
+    "dotenv": "latest",
     "drizzle-kit": "latest",
     "drizzle-orm": "latest",
-    "dotenv": "latest",
-    "@neondatabase/serverless": "1.0.1",
-    "express": "latest",
-    "cors": "latest"
+    "express": "^5.1.0",
+    "zod": "^3.25.67",
+    "jsonwebtoken": "latest"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "latest",
     "@types/cors": "latest",
-    "@types/express": "latest",
-    "@types/node": "latest",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.3",
     "@vitest/ui": "latest",
     "eslint": "latest",
     "eslint-config-prettier": "latest",
     "nodemon": "latest",
     "prettier": "latest",
-    "typescript": "latest",
+    "ts-node": "latest",
+    "typescript": "^5.8.3",
     "typescript-eslint": "latest",
-    "vitest": "latest",
-    "ts-node": "latest"
+    "vitest": "latest"
   }
 }

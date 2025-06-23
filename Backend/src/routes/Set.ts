@@ -2,11 +2,24 @@ import { Router } from "express";
 import { db } from "../db";
 import { set, card, user } from "../db/schema";
 import { eq } from "drizzle-orm";
+import jwt from "jsonwebtoken";
 
 const router = Router();
 
 router.get("/Sets", (req, res) => {
-    db.select().from(user).where(eq(user.id, 1))
+    let authorized = true;
+    jwt.verify(req.headers.authorization?.split(" ")[1] || "", process.env.JWT_SECRET!, (err) => {
+        if (err) {
+            res.status(401).json({ error: "Unauthorized" });
+            authorized = false;
+            return;
+        }
+    });
+    if (!authorized) {
+        return;
+    }
+    const decode = jwt.decode(req.headers.authorization?.split(" ")[1] || "") as { id: number , email: string, iat: number, exp: number};
+    db.select().from(user).where(eq(user.id, decode.id))
         .then(userData => {
             if (userData.length === 0) {
                 res.status(404).json({ error: "User not found" });
@@ -19,7 +32,7 @@ router.get("/Sets", (req, res) => {
                 schwer: userData[0].schwer,
                 lernmethode: userData[0].lernmethode
             };
-            return db.select().from(set).then(data => {
+            return db.select().from(set).where(eq(set.user, decode.id)).then(data => {
                 return Promise.all(
                     data.map(item =>
                         db.select().from(card).where(eq(card.set, item.id)).then(cards => {
