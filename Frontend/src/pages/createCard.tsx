@@ -11,51 +11,86 @@ import {useGetQuestion} from "@/api/getQuestion";
 
 export default function CreateCard() {
 
-    const questionBackend = useGetQuestion();
-
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
 
-    useEffect(() => {
-        if (questionBackend.data === undefined) {
-            return
-        }
-        setQuestion(questionBackend.data.question)
-        setAnswer(questionBackend.data.answer)
-    }, [questionBackend.data])
+    const questionBackend = useGetQuestion();
 
-    console.log(question, answer) // TODO: API call an Backend
+    const cardId = questionBackend.data?.id;
+    const newCard = cardId === undefined;
 
-    const handleClose =()=> {
-        setQuestion("")
-        setAnswer("")
-       
-        window.location.href= "ikna/createSet"
-        //TODO: cancel edit and go one page back ??
-    }
-    const hanldeDelete = (questionID: number | undefined) => {
-        if (questionID === undefined) {
-            return
+    const handleSave = async (questionID: number | undefined) => {
+        const payload = {question, answer, difficulty, status: 0};
+
+        try {
+            if (newCard) {
+                const response = await fetch("/api/cards/createCard", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(payload),
+                });
+                const data = await response.json();
+                console.log("Neue Karte erstellt: ", data);
+            } else {
+                const response = await fetch(`/api/cards/updateCard/${questionID}`, {
+                    method: "PUT",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(payload),
+                });
+                const data = await response.json();
+                console.log("Karte aktualisiert: ", data);
+            }
+        } catch (e) {
+            console.error("Fehler beim Speichern der Karte: ", e);
         }
-        console.log("delete: " , questionID)
-    }
-    const handleSave = (questionID: number | undefined) => {
-        if (questionID === undefined) {
-            return
+    };
+
+    const handleDelete = async (questionID: number | undefined) => {
+        if (!questionID) return;
+        try {
+            const response = await fetch(`api/cards/deleteCard/${questionID}`, {
+                method: "DELETE",
+            });
+            const data = await response.json();
+            console.log("Karte gelöscht: ", data);
+            window.location.href = "/ikna/createCard";
+        } catch (e) {
+            console.error("Fehler beim Löschen: ", e);
         }
-        console.log("save: " , questionID, "in setID" )
-    }
-    const handleNext = (questionID: number | undefined) => {
-        if (questionID === undefined) {
-            return
-        }
-        handleSave(questionID)
+    };
+
+    const [difficulty, setDifficulty] = useState<"leicht" | "mittel" | "schwer">("mittel");
+
+    const handleNext = async (questionID: number | undefined) => {
+        if (!questionID && !newCard) return;
+
+        await handleSave(questionID);
         window.location.href = "/ikna/createCard"
-        console.log("save:", questionID, "open new createCard")
     }
+
 
     if (questionBackend.data === undefined) {
-        return <CircularProgress />
+        return <CircularProgress/>
+    }
+    ;
+
+
+    useEffect(() => {
+        if (!questionBackend.data || newCard) return;
+
+        setQuestion(questionBackend.data.question);
+        setAnswer(questionBackend.data.answer);
+        setDifficulty(questionBackend.data.difficulty || "mittel");
+    }, [questionBackend.data]);
+
+
+    // console.log(question, answer) // TODO: API call an Backend
+
+    const handleClose = () => {
+        setQuestion("")
+        setAnswer("")
+
+        window.location.href = "/ikna/createSet"
     }
 
     return (
@@ -69,7 +104,8 @@ export default function CreateCard() {
                       padding: '5vw',
                       paddingTop: '2vw'
                   }}>
-                <Box style={{textAlign: 'right', cursor: "pointer", padding: "5px"}}> <CloseIcon onClick={handleClose}/> </Box>
+                <Box style={{textAlign: 'right', cursor: "pointer", padding: "5px"}}> <CloseIcon onClick={handleClose}/>
+                </Box>
                 <Box>
                     <Card variant={'outlined'} style={{
                         border: '2px solid black',
@@ -101,17 +137,23 @@ export default function CreateCard() {
                     </Card>
                 </Box>
                 <Box style={{display: 'flex', justifyContent: 'center', border: '1px solid black'}}>
-                    <Button style={{width: '33.33%', backgroundColor: 'lightgreen', height: '10vw', color: "black"}}> easy</Button>
-                    <Button style={{width: '33.33%', backgroundColor: 'yellow', height: '10vw' , color: "black"}}> middle</Button>
-                    <Button style={{width: '33.33%', backgroundColor: 'coral', height: '10vw', color: "black"}}> hard</Button>
+                    <Button style={{width: '33.33%', backgroundColor: 'lightgreen', height: '10vw', color: "black"}}
+                            onClick={() => setDifficulty("leicht")}> easy</Button>
+                    <Button style={{width: '33.33%', backgroundColor: 'yellow', height: '10vw', color: "black"}}
+                            onClick={() => setDifficulty("mittel")}> middle</Button>
+                    <Button style={{width: '33.33%', backgroundColor: 'coral', height: '10vw', color: "black"}}
+                            onClick={() => setDifficulty("schwer")}> hard</Button>
                 </Box>
                 <br/>
 
                 <Divider/>
-                <Stack direction="row" spacing={2} key={questionBackend.data.id} style={{width: "100%"}} justifyContent="space-between">
-                    <Button style={{width: "25%"}}><DeleteForeverIcon onClick={() => hanldeDelete(questionBackend.data?.id)}/></Button>
+                <Stack direction="row" spacing={2} key={questionBackend.data.id} style={{width: "100%"}}
+                       justifyContent="space-between">
+                    <Button style={{width: "25%"}}><DeleteForeverIcon
+                        onClick={() => handleDelete(questionBackend.data?.id)}/></Button>
                     <Button onClick={() => handleSave(questionBackend.data?.id)} style={{width: "25%"}}> Save </Button>
-                    <Button onClick={() => handleNext(questionBackend.data?.id)} style={{width: "25%"}}> next card</Button>
+                    <Button onClick={() => handleNext(questionBackend.data?.id)} style={{width: "25%"}}> next
+                        card</Button>
                 </Stack>
             </Card>
         </>

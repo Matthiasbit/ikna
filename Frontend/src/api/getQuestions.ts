@@ -1,24 +1,33 @@
 import {useEffect, useState} from "react";
+import { useQuery } from "@tanstack/react-query";
 
-export type QuestionArrayType = {
+export type CardType = {
     id: number,
     question: string,
     answer: string,
-    category?: string,
+    difficulty: string,
+    status: number,
+    set?: number,
+    lastreview?: string;
 }
 
-const exampleQuestion: QuestionArrayType[] = [
-    {id: 1, question: 'question 1', answer: "123"},
-    {id: 2, question: 'question 2', answer: "234"}
-]
+export function useGetQuestions(userId: number) {
+  return useQuery<CardType[]>({
+      queryKey: ["cards, userId"],
+      queryFn: async ()=> {
+          const res = await fetch(`api/cards/getCards?userId=${userId}`);
+          if(!res.ok) throw new Error("Fehler beim Laden der Karten");
+          return res.json();
+      }
+  });
 
-export function useGetQuestions() {
-    const [data, setData] = useState(exampleQuestion)
-    const [loading, setLoading] = useState(false)
+   /* const [loading, setLoading] = useState(false)
     useEffect(() => {
         setData(exampleQuestion);
         setLoading(false);
 
     }, []);
     return {data, loading}
+
+    */
 }
