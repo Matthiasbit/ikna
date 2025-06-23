@@ -10,7 +10,7 @@ const router = Router();
 
 const registrationSchema = z.object({
   email: z.string().email(),
-  password: z.string(), 
+  password: z.string().min(1), 
 });
 
 router.post("/registration", async (req: Request, res: Response): Promise<void> => {
@@ -31,10 +31,10 @@ router.post("/registration", async (req: Request, res: Response): Promise<void> 
     const returnedUser = await db.insert(user).values([{
       email,
       password: passwordHash,
-      leicht: 0,
-      mittel: 0,
-      schwer: 0,
-      lernmethode: "default"
+      leicht: 3,
+      mittel: 5,
+      schwer: 7,
+      lernmethode: "difficulty"
     }]).returning();
     const token = jwt.sign({ id: returnedUser[0].id, email: returnedUser[0].email }, process.env.JWT_SECRET!, { expiresIn: '1h' });
     res.status(200).json(token);

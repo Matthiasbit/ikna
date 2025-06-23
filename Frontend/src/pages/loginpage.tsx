@@ -12,13 +12,13 @@ export function Loginpage() {
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 const [showPassword, setShowPassword] = useState(false);
-const [localError, setLocalError] = useState(false);
+const [validationError, setValidationError] = useState(false);
 const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
-const { registration, error, success} = useRegistration();
+const { registration, errormessage, success} = useRegistration();
 
   function logInOrSignUp(signUp: boolean) {
-    setLocalError(true);
+    setValidationError(true);
     registration(email, password, signUp);
   }
 
@@ -27,7 +27,7 @@ const { registration, error, success} = useRegistration();
       window.location.href = "/ikna/";
     }
   }, [success]);
-  
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleResetLinkClick = () => {
@@ -60,7 +60,7 @@ const { registration, error, success} = useRegistration();
               </Typography>
               <Stack spacing={2} direction="column">
                 <TextField
-                  error={email === "" && localError}
+                  error={email === "" && validationError}
                   id="email"
                   label="Email:"
                   placeholder="example@example.com"
@@ -68,10 +68,10 @@ const { registration, error, success} = useRegistration();
                   onChange={(event) => setEmail(event.target.value)} />
                 {!isResetPassword && (
                   <FormControl variant="outlined">
-                    <InputLabel htmlFor="password" error={password === "" && localError}>Password</InputLabel>
+                    <InputLabel htmlFor="password" error={password === "" && validationError}>Password</InputLabel>
                     <OutlinedInput
                       id="password"
-                      error={password === "" && localError}
+                      error={password === "" && validationError}
                       type={showPassword ? 'text' : 'password'}
                       endAdornment={
                         <InputAdornment position="end">
@@ -101,7 +101,7 @@ const { registration, error, success} = useRegistration();
               </Typography>
               <Stack spacing={2} direction="column">
                 <TextField
-                  error={email === "" && localError}
+                  error={email === "" && validationError}
                   required
                   id="email"
                   label="Email:"
@@ -109,10 +109,10 @@ const { registration, error, success} = useRegistration();
                   value={email}
                   onChange={(event) => setEmail(event.target.value)} />
                 <FormControl variant="outlined">
-                  <InputLabel htmlFor="password" error={password === "" && localError}>Password</InputLabel>
+                  <InputLabel htmlFor="password" error={password === "" && validationError}>Password</InputLabel>
                   <OutlinedInput
                     id="password"
-                    error={password === "" && localError}
+                    error={password === "" && validationError}
                     required
                     type={showPassword ? 'text' : 'password'}
                     endAdornment={
@@ -134,9 +134,9 @@ const { registration, error, success} = useRegistration();
                 <Button onClick={() => logInOrSignUp(true)} variant="contained" color="primary" type="button">
                   Sign Up
                 </Button>
-                {error && (
+                {errormessage && (
                   <Typography color="error" sx={{ mt: 2 }}>
-                    {error}
+                    {errormessage}
                   </Typography>
                 )}
                 {success && (

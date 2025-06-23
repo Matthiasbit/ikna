@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Cards } from "@/pages/learningpage";
 
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-function useGetCards() {
+function useGetCards(userId: number) {
   const [cards, setCards] = useState<Cards[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  const fetchCards = useCallback(() => {
     setLoading(true);
-    fetch(`${API_BASE_URL}/getCards`, {
+    fetch(`${API_BASE_URL}/getCards?userId=${userId}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' }
     })
@@ -29,9 +29,12 @@ function useGetCards() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [userId]);
 
-  return { cards, loading };
+  useEffect(() => {
+    fetchCards();
+  }, [fetchCards]);
+
+  return { cards, loading, refetch: fetchCards };
 }
-
 export default useGetCards;

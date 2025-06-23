@@ -2,32 +2,47 @@ import React, { useState } from 'react';
 import { Box, Button, Typography, Card, CardContent, Chip } from '@mui/material';
 import Header from '@/Components/Header';
 import useGetCards from '@/api/getCards';
+import updateCard from '@/api/updateCard';
 import "../app/bodyfix.css";
 
 export type Cards = {
   id: string;
   question: string;
   answer: string;
-  difficulty: number;
+  status?: number;
+  difficulty: string;
 };
 
 export function Learningpage() {
-  const { cards } = useGetCards();
+  const { cards, refetch } = useGetCards();
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
 
-  const updateCardStatus = async (cardId: string, status: boolean, chipLabel: string | null) => {
-    console.log(`Card ${cardId} status updated to ${status ? 'correct' : 'incorrect'} as ${chipLabel}`);
-  };
+  async function handleButtonClick(isCorrect: boolean) {
+  setShowAnswer(false);
 
-  async function handleButtonClick(value: boolean) {
-    setShowAnswer(false);
-    updateCardStatus(cards[currentCardIndex].id, value, selectedChip);
-    setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
-    setSelectedChip(null);
-   
+  const current = cards[currentCardIndex];
+  let newStatus = isCorrect
+    ? (current.status ?? 0) + 1
+    : (current.status ?? 0) - 1;
+
+  newStatus = Math.max(0, Math.min(10, newStatus));
+
+  const updateObj: any = {
+    id: Number(current.id),
+    status: newStatus,
   };
+  if (selectedChip !== null) {
+    updateObj.difficulty = selectedChip;
+  }
+
+  await updateCard(updateObj);
+  refetch();
+
+  setCurrentCardIndex((prevIndex) => (prevIndex + 1) % cards.length);
+  setSelectedChip(null);
+}
 
   function handleChipClick(chipLabel: string){
     setSelectedChip(chipLabel);
@@ -48,31 +63,31 @@ export function Learningpage() {
             <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Typography variant="h5" align="center">{currentCard.answer}</Typography>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '8px', padding: '8px' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: '8px', padding: '8px', height: '8vh' }}>
               <Chip
                 label="Leicht"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Leicht' ? 'lightblue' : 'inherit' }}
+                sx={{ width: '100%', backgroundColor: selectedChip === 'leicht' ? 'lightblue' : 'inherit', height: '100%' }}
                 clickable
-                onClick={() => handleChipClick('Leicht')}
+                onClick={() => handleChipClick('leicht')}
               />
               <Chip
                 label="Mittel"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Mittel' ? 'lightblue' : 'inherit' }}
+                sx={{ width: '100%', backgroundColor: selectedChip === 'mittel' ? 'lightblue' : 'inherit', height: '100%'}}
                 clickable
-                onClick={() => handleChipClick('Mittel')}
+                onClick={() => handleChipClick('mittel')}
               />
               <Chip
                 label="Schwer"
                 variant="outlined"
-                sx={{ width: '100%', backgroundColor: selectedChip === 'Schwer' ? 'lightblue' : 'inherit' }}
+                sx={{ width: '100%', backgroundColor: selectedChip === 'schwer' ? 'lightblue' : 'inherit', height: '100%' }}
                 clickable
-                onClick={() => handleChipClick('Schwer')}
+                onClick={() => handleChipClick('schwer')}
               />
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', padding: '16px' }}>
-              <Button onClick={() => handleButtonClick(false)} color="secondary" variant="text" sx={{ width: '100%' }}>Incorrect</Button>
+              <Button onClick={() => handleButtonClick(false)} color="secondary" variant="text" sx={{ width: '100%','&:hover': {borderColor: '#d32f2f', backgroundColor: 'rgba(239,154,154,0.1)',}, }}>Incorrect</Button>
               <Button onClick={() => handleButtonClick(true)} color="primary" variant="text" sx={{ width: '100%' }}>Correct</Button>
             </Box>
           </Card>
