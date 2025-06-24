@@ -17,10 +17,14 @@ async function updateCard(card: CardUpdate) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(card),
     });
+
     if (!response.ok) {
-      throw new Error("Fehlerhafte Antwort vom Server beim Aktualisieren der Karte");
-    }
-  } catch (error) {
+          if (response.status === 401) {
+              window.location.href = 'ikna/loginpage';
+          }
+          throw new Error('Fehlerhafte Antwort vom Server beim Aktualisieren der Karte');
+        }
+      } catch (error) {
     console.error("Fehler beim Aktualisieren der Karte:", error);
   }
 }

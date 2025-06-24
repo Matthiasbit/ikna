@@ -19,9 +19,13 @@ function useGetCards() {
     })
       .then(response => {
         if (!response.ok) {
+          if (response.status === 401) {
+              window.location.href = 'ikna/loginpage';
+          }
           throw new Error('Fehlerhafte Antwort vom Server');
         }
         return response.json();
+        
       })
       .then(data => {
         setCards(data);

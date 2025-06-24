@@ -7,7 +7,6 @@ import { sortByDifficulty, leitnerSpacedRepetition } from "../utils/learningStra
 import { user as userTable } from "../db/schema";
 import jwt from "jsonwebtoken";
 import { set as setTable } from "../db/schema";
-
 const router = Router();
 
 const updateCardSchema = z.object({
