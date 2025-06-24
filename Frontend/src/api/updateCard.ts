@@ -12,7 +12,7 @@ export interface CardUpdate {
 
 async function updateCard(card: CardUpdate) {
   try {
-    const response = await fetch(`${API_BASE_URL}/updateCard/${card.id}`, {
+    const response = await fetch(`${API_BASE_URL}/card/${card.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(card),

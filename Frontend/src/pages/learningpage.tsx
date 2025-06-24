@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 
 export type Cards = {
   id: string;
+  set: number;
   question: string;
   answer: string;
   status?: number;

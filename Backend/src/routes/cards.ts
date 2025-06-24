@@ -19,8 +19,12 @@ const updateCardSchema = z.object({
   lastreview: z.string().optional(),
 });
 
+interface JwtPayload {
+  id: number;
+}
+
 //Alle Karten abrufen
-router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
+router.get("/cards", async (req: Request, res: Response): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -28,9 +32,9 @@ router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
       return;
     }
     const token = authHeader.split(" ")[1];
-    let decode: any;
+    let decode: JwtPayload;
     try {
-      decode = jwt.verify(token, process.env.JWT_SECRET!);
+      decode = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     } catch (e) {
       res.status(401).json({ error: "Token ungültig" });
       return;
@@ -84,7 +88,7 @@ router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
 });
 
 //Karte nach ID aktualisieren
-router.put("/updateCard/:id", async (req: Request, res: Response): Promise<void>  => {
+router.put("/card/:id", async (req: Request, res: Response): Promise<void>  => {
   const { id } = req.params;
   const parseResult = updateCardSchema.safeParse(req.body);
 

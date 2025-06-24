@@ -10,7 +10,7 @@ function useGetCards() {
   const fetchCards = useCallback(() => {
     setLoading(true);
     const token = sessionStorage.getItem('token');
-    fetch(`${API_BASE_URL}/getCards`, {
+    fetch(`${API_BASE_URL}/cards`, {
       method: 'GET',
       headers: { 
         'Content-Type': 'application/json',
