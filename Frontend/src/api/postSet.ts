@@ -1,3 +1,5 @@
+import {Sets} from "@/api/getSets";
+
 export async function updateSet(setId: number, payload: { name?: string; kategorie?: string }, token: string) {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -20,8 +22,16 @@ export async function updateSet(setId: number, payload: { name?: string; kategor
 
 
 
-export async function createSet(token: string): Promise<{ id: number }> {
+export async function createSet(token: string): Promise<Sets> {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+    //
+    const payload = { name: "Neues Set", kategorie: "" }; // oder wie auch immer du default übergibst
+
+    console.log("→ POST to", `${API_BASE_URL}/set`);
+    console.log("→ Payload:", payload);
+    console.log("→ Token:", token);
+    //
 
     const response = await fetch(`${API_BASE_URL}/set`, {
         method: "POST",
@@ -29,7 +39,7 @@ export async function createSet(token: string): Promise<{ id: number }> {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ name: "", kategorie: "" }) // leeres Set anlegen
+        body: JSON.stringify({ name: "Neues Set", kategorie: "" }) // leeres Set anlegen
     });
 
     if (!response.ok) {

@@ -2,7 +2,7 @@ import { pgTable, integer, varchar, serial } from "drizzle-orm/pg-core";
 
 export const set = pgTable('SETS', {
     id: serial('id').primaryKey(),
-    name: varchar('name'),
+    name: varchar('name').notNull(),
     user: integer('user'),
     kategorie: varchar('kategorie'),
 });

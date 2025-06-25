@@ -174,21 +174,37 @@ router.get("/set/:id", async (req: Request, res: Response): Promise<void> => {
 // create new Set
 router.post("/set", async (req: Request, res: Response): Promise<void> => {
     const token = req.headers.authorization?.split(" ")[1] || "";
+    console.log("→ Backend: Token:", token);
 
     try {
+        console.log("→ Backend: Eingehender Payload:", req.body);
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: number };
+        console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
+        console.log("→ Backend: Decoded Token:", decoded);
 
         const parseResult = updateSetSchema.safeParse(req.body);
+        console.log("→ Backend: Eingehender Payload:", req.body);
+
         if (!parseResult.success) {
+            console.log("→ Backend: Schema-Fehler:", parseResult.error.errors);
             res.status(400).json({error: "Ungültige Eingabedaten", details: parseResult.error.errors});
             return;
         }
 
         if (!parseResult.data.name) {
             res.status(400).json({error: "Name ist erforderlich"});
+            return;
         }
 
         const {name, kategorie} = parseResult.data;
+
+        console.log("→ Backend: Insert Data", {
+            name,
+            kategorie: kategorie ?? "",
+            user: decoded.id
+        });
 
         const inserted = await db.insert(set).values({
             name,
@@ -196,10 +212,15 @@ router.post("/set", async (req: Request, res: Response): Promise<void> => {
             user: decoded.id
         }).returning();
 
+        console.log("→ Backend: Erfolgreich erstellt:", inserted);
         res.status(201).json({message: "Set erstellt", set: inserted[0]});
     } catch (err) {
         console.error("Fehler beim Erstellen:", err);
-        res.status(500).json({error: "Set konnte nicht erstellt werden"});
+        if (!res.headersSent) {
+            res.status(500).json({ error: "Set konnte nicht erstellt werden" });
+        }
+
+        // res.status(500).json({error: "Set konnte nicht erstellt werden"});
     }
 });
 

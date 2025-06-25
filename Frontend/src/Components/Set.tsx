@@ -11,6 +11,14 @@ type SetProps = {
 }
 
 export default function Set({data}: SetProps) {
+    const theme = useTheme();
+
+    const sm = useMediaQuery(theme.breakpoints.down('sm'));
+    const lg = useMediaQuery(theme.breakpoints.down('lg'));
+    const xl = useMediaQuery(theme.breakpoints.up('lg'));
+
+    const [height, setHeight] = useState(300);
+    const [width, setWidth] = useState(500);
 
     //
     const [token, setToken] = useState<string | null>(null);
@@ -23,15 +31,6 @@ export default function Set({data}: SetProps) {
     }, []);
 
     //
-
-    const theme = useTheme();
-
-    const sm = useMediaQuery(theme.breakpoints.down('sm'));
-    const lg = useMediaQuery(theme.breakpoints.down('lg'));
-    const xl = useMediaQuery(theme.breakpoints.up('lg'));
-
-    const [height, setHeight] = useState(300);
-    const [width, setWidth] = useState(500);
 
     useEffect(() => {
         if (sm) {
@@ -57,12 +56,15 @@ export default function Set({data}: SetProps) {
 
 
     async function handleClick() {
+        if (!token) {
+            alert("Nicht eingeloggt!");
+            return;
+        }
+
+
         if (data === null) {
             //   const token = localStorage.getItem("token");
-            if (!token) {
-                alert("Nicht eingeloggt!");
-                return;
-            }
+
             try {
                 const created = await createSet(token);
                 window.location.href = `/ikna/createSet?set=${created.id}`;
@@ -74,6 +76,20 @@ export default function Set({data}: SetProps) {
             window.location.href = "/ikna/learningpage?id=" + data.id;
         }
     }
+
+    if (data === null && token === null) {
+        return (<div
+            style={{
+                alignItems: "center",
+                display: "flex",
+                justifyContent: "center",
+                height: "100%",
+            }}
+        >
+            <CircularProgress/>
+        </div>)
+    }
+
 
     if (data === null) {
         return (
