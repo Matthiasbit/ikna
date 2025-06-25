@@ -1,10 +1,10 @@
 import { Router, Request, Response } from "express";
-import { db } from "../db";
-import { card } from "../db/schema";
+import { db } from "../../db";
+import { card } from "../../db/schema";
 import { eq } from "drizzle-orm";
 import z from "zod";
-import { sortByDifficulty, leitnerSpacedRepetition } from "../utils/learningStrategies";
-import { user as userTable } from "../db/schema";
+import { sortByDifficulty, leitnerSpacedRepetition } from "../../utils/learningStrategies";
+import { user as userTable } from "../../db/schema";
 
 
 const router = Router();
