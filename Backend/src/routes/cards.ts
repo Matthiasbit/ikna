@@ -68,6 +68,25 @@ router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
     }
 });
 
+// Kerte nach ID anzeigen
+router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
+    const {id} = req.params;
+
+    try {
+        const cards = await db.select().from(card).where(eq(card.id, Number(id)));
+        if (!cards.length) {
+            res.status(404).json({error: "Karte nicht gefunden"});
+            return;
+        }
+
+        res.status(200).json(cards[0]);
+    } catch (e) {
+        console.error("Fehler beim Abrufen der Karte:", e);
+        res.status(500).json({error: "Fehler beim Abrufen der Karte"});
+    }
+});
+
+
 //Karte nach ID aktualisieren
 router.put("/updateCard/:id", async (req: Request, res: Response): Promise<void> => {
     const {id} = req.params;

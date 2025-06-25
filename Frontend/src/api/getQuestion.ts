@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+/*import {useEffect, useState} from "react";
 import {CardType} from "@/api/getQuestions";
 
 
@@ -25,3 +25,6 @@ export function useGetQuestion() {
     }, []);
     return {data, loading}
 }
+
+
+ */

@@ -1,25 +1,45 @@
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import {useState} from "react";
-import * as React from 'react';
+import * as React from "react";
+import {useEffect, useState} from "react";
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Card from "@mui/material/Card";
 import CloseIcon from '@mui/icons-material/Close';
 import Header from "@/Components/Header";
 import {Button, CircularProgress, Divider, Stack} from "@mui/material";
-import {useGetQuestion} from "@/api/getQuestion";
+import {useSearchParams} from "next/navigation";
+import {getCard} from "@/api/getCard";
 
 export default function CreateCard() {
 
+    const searchParams = useSearchParams();
+    const questionIdParam = searchParams?.get("question");
+    const questionId = questionIdParam ? parseInt(questionIdParam, 10) : undefined;
+    const newCard = !questionId || isNaN(questionId);
+
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
+    const [difficulty, setDifficulty] = useState<"leicht" | "mittel" | "schwer">("mittel");
+    const [loading, setLoading] = useState(false);
 
-    const questionBackend = useGetQuestion();
+    useEffect(() => {
+        if (newCard || !questionId) return;
+        setLoading(true);
 
-    const cardId = questionBackend.data?.id;
-    const newCard = cardId === undefined;
+        getCard(questionId)
+            .then((data) => {
+                setQuestion(data.question || "");
+                setAnswer(data.answer || "");
+                setDifficulty(data.difficulty || "mittel");
+            })
+            .catch((err) => {
+                console.error("Fehler beim Laden der Karte:", err);
+            })
+            .finally(() => setLoading(false));
+    }, [questionId]);
 
-    const handleSave = async (questionID: number | undefined) => {
+
+    const handleSave = async () => {
         const payload = {question, answer, difficulty, status: 0};
 
         try {
@@ -32,7 +52,7 @@ export default function CreateCard() {
                 const data = await response.json();
                 console.log("Neue Karte erstellt: ", data);
             } else {
-                const response = await fetch(`/api/updateCard/${questionID}`, {
+                const response = await fetch(`/api/updateCard/${questionId}`, {
                     method: "PUT",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify(payload),
@@ -45,10 +65,10 @@ export default function CreateCard() {
         }
     };
 
-    const handleDelete = async (questionID: number | undefined) => {
-        if (!questionID) return;
+    const handleDelete = async () => {
+        if (!questionId) return;
         try {
-            const response = await fetch(`api/cards/deleteCard/${questionID}`, {
+            const response = await fetch(`api/cards/deleteCard/${questionId}`, {
                 method: "DELETE",
             });
             const data = await response.json();
@@ -59,25 +79,21 @@ export default function CreateCard() {
         }
     };
 
-    const [difficulty, setDifficulty] = useState<"leicht" | "mittel" | "schwer">("mittel");
-
     const handleNext = async (questionID: number | undefined) => {
         if (!questionID && !newCard) return;
 
-        await handleSave(questionID);
+        await handleSave();
         window.location.href = "/ikna/createCard"
     }
 
-
-    if (questionBackend.data === undefined) {
-        return <CircularProgress/>
-    };
-
-  const handleClose = () => {
+    const handleClose = () => {
         setQuestion("")
         setAnswer("")
-
         window.location.href = "/ikna/createSet"
+    }
+
+    if (loading) {
+        return <CircularProgress/>
     }
 
     return (
@@ -134,12 +150,12 @@ export default function CreateCard() {
                 <br/>
 
                 <Divider/>
-                <Stack direction="row" spacing={2} key={questionBackend.data.id} style={{width: "100%"}}
+                <Stack direction="row" spacing={2} style={{width: "100%"}}
                        justifyContent="space-between">
                     <Button style={{width: "25%"}}><DeleteForeverIcon
-                        onClick={() => handleDelete(questionBackend.data?.id)}/></Button>
-                    <Button onClick={() => handleSave(questionBackend.data?.id)} style={{width: "25%"}}> Save </Button>
-                    <Button onClick={() => handleNext(questionBackend.data?.id)} style={{width: "25%"}}> next
+                        onClick={handleDelete}/></Button>
+                    <Button onClick={handleSave} style={{width: "25%"}}> Save </Button>
+                    <Button onClick={() => handleNext(undefined)} style={{width: "25%"}}> next
                         card</Button>
                 </Stack>
             </Card>
