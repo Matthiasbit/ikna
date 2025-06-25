@@ -1,10 +1,12 @@
 import {Sets} from "@/api/getSets";
 import {BarChart} from "@mui/x-charts/BarChart";
-import {Card, CircularProgress, Stack, useMediaQuery, useTheme} from "@mui/material";
+import {Card, CircularProgress, IconButton, Stack, useMediaQuery, useTheme} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import {useEffect, useState} from "react";
 import {createSet} from "@/api/postSet";
+import {deleteSet} from "@/api/deleteSet";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 type SetProps = {
     data: Sets | null;
@@ -30,8 +32,6 @@ export default function Set({data}: SetProps) {
 
     }, []);
 
-    //
-
     useEffect(() => {
         if (sm) {
             setHeight(200);
@@ -45,16 +45,6 @@ export default function Set({data}: SetProps) {
         }
     }, [sm, lg, xl]);
 
-    //
-    /*   if (token===null && data===null) {
-           return <CircularProgress/>;
-       }
-
-     */
-    //
-    console.log("Token:", token);
-
-
     async function handleClick() {
         if (!token) {
             alert("Nicht eingeloggt!");
@@ -63,8 +53,6 @@ export default function Set({data}: SetProps) {
 
 
         if (data === null) {
-            //   const token = localStorage.getItem("token");
-
             try {
                 const created = await createSet(token);
                 window.location.href = `/ikna/createSet?set=${created.id}`;
@@ -76,6 +64,21 @@ export default function Set({data}: SetProps) {
             window.location.href = "/ikna/learningpage?id=" + data.id;
         }
     }
+
+    const handleDelete = async () => {
+        if (!token || !data?.id) return;
+
+        const confirm = window.confirm("Willst du dieses Set wirklich löschen?");
+        if (!confirm) return;
+
+        try {
+            await deleteSet(data.id, token);
+            window.location.reload(); // oder redirect zur Startseite
+        } catch (err) {
+            console.error("Fehler beim Löschen des Sets:", err);
+            alert("Fehler beim Löschen!");
+        }
+    };
 
     if (data === null && token === null) {
         return (<div
@@ -107,8 +110,15 @@ export default function Set({data}: SetProps) {
                        style={{width: "100%", paddingRight: "5px", paddingLeft: "5px"}}>
                     <div onClick={handleClick} style={{cursor: "pointer"}}></div>
                     <h2 onClick={handleClick} style={{cursor: "pointer"}}>{data.name}</h2>
-                    <EditIcon onClick={() => window.location.href = "/ikna/createSet?id=" + data.id}
-                              style={{cursor: "pointer"}}/>
+                    <Stack direction="row" spacing={1}>
+                        <IconButton sx={{color: "black"}} onClick={handleDelete}>
+                            <DeleteForeverIcon/>
+                        </IconButton>
+                        <IconButton onClick={() => window.location.href = "/ikna/createSet?id=" + data.id}
+                                    style={{cursor: "pointer", color: "black"}}>
+                            <EditIcon/>
+                        </IconButton>
+                    </Stack>
                 </Stack>
                 <div onClick={handleClick} style={{cursor: "pointer"}}>
                     <BarChart
