@@ -4,7 +4,6 @@ import cors from "cors";
 import settingsRouter from "./routes/settings";
 import cardsRouter from "./routes/cards";
 import registrationRouter from "./routes/registration";
-import serverless from "serverless-http";
 
 const app = express();
 app.use(express.json());
