@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { db } from "../../db";
-import { set, card, user } from "../../db/schema";
+import { db } from "../db";
+import { set, card, user } from "../db/schema";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
 
