@@ -19,6 +19,7 @@ type UpdateCardPayload = {
   id: number;
   status: number;
   difficulty?: string;
+  lastreview?: string;
 };
 
 export function Learningpage() {
@@ -48,15 +49,21 @@ export function Learningpage() {
     const updateObj: UpdateCardPayload = {
       id: Number(current.id),
       status: newStatus,
+      lastreview: new Date().toISOString(),
+
     };
     if (selectedChip !== null) {
       updateObj.difficulty = selectedChip;
     }
 
     await updateCard(updateObj);
-    refetch();
 
-    setCurrentCardIndex((prevIndex) => (prevIndex + 1) % filteredCards.length);
+    if (currentCardIndex === filteredCards.length - 1) {
+      await refetch();
+      setCurrentCardIndex(0);
+    } else {
+      setCurrentCardIndex((prevIndex) => prevIndex + 1);
+    }
     setSelectedChip(null);
   }
 
