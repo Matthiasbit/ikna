@@ -4,6 +4,7 @@ import cors from "cors";
 import settingsRouter from "./routes/settings";
 import cardsRouter from "./routes/cards";
 import registrationRouter from "./routes/registration";
+import serverless from "serverless-http";
 
 const app = express();
 app.use(express.json());
@@ -19,5 +20,4 @@ app.get("/", (_, res) => {
   res.send("Hello express");
 });
 
-app.listen(80);
-console.log("Server started at http://localhost:80");
+module.exports.handler = serverless(app);
