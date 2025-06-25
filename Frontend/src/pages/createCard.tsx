@@ -1,5 +1,5 @@
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -24,7 +24,7 @@ export default function CreateCard() {
 
         try {
             if (newCard) {
-                const response = await fetch("/api/cards/createCard", {
+                const response = await fetch("/api/createCard", {
                     method: "POST",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify(payload),
@@ -32,7 +32,7 @@ export default function CreateCard() {
                 const data = await response.json();
                 console.log("Neue Karte erstellt: ", data);
             } else {
-                const response = await fetch(`/api/cards/updateCard/${questionID}`, {
+                const response = await fetch(`/api/updateCard/${questionID}`, {
                     method: "PUT",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify(payload),
@@ -71,22 +71,9 @@ export default function CreateCard() {
 
     if (questionBackend.data === undefined) {
         return <CircularProgress/>
-    }
-    ;
+    };
 
-
-    useEffect(() => {
-        if (!questionBackend.data || newCard) return;
-
-        setQuestion(questionBackend.data.question);
-        setAnswer(questionBackend.data.answer);
-        setDifficulty(questionBackend.data.difficulty || "mittel");
-    }, [questionBackend.data]);
-
-
-    // console.log(question, answer) // TODO: API call an Backend
-
-    const handleClose = () => {
+  const handleClose = () => {
         setQuestion("")
         setAnswer("")
 

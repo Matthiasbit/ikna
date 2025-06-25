@@ -6,6 +6,8 @@ import { useState, useMemo } from "react";
 import { Sets, useGetSets } from "@/api/getSets";
 import "../app/bodyfix.css";
 
+// TODO : add new id by clicking on plus and postSet
+
 
 export default function Startseite() {
 

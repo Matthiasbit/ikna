@@ -6,7 +6,7 @@ import updateCard from '@/api/updateCard';
 import "../app/bodyfix.css";
 
 export type Cards = {
-  id: string;
+  id: number;
   question: string;
   answer: string;
   status?: number;
