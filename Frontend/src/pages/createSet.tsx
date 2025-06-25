@@ -1,98 +1,168 @@
-import {ListItem, ListItemText, ListItemIcon, List, ListItemButton, Button, Stack, TextField, Divider} from "@mui/material";
+import {
+    Button,
+    Divider,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Stack,
+    TextField
+} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import Header from "@/Components/Header";
-import {useGetQuestions} from "@/api/getQuestions";
 import {Delete} from "@mui/icons-material";
 import {useEffect, useState} from "react";
-import { useGetSet } from "@/api/getSet";
-import { useSearchParams } from "next/navigation";
+import getSet from "@/api/getSet";
+import {useSearchParams} from "next/navigation";
 import "../app/bodyfix.css";
+import {updateSet} from "@/api/updateSet";
+import createCard from "@/api/createCard";
+import {getCardsBySetId} from "@/api/getCards";
+import deleteCard from "@/api/deleteCard";
 
+function CreateSet() {
 
-export default function CreateSet() {
-    const serachParams = useSearchParams();
-    const [setID, setSetID] = useState(0);
-    const questionsArray = useGetQuestions();
-    const data = useGetSet();
+    const searchParams = useSearchParams();
+    const setIdParam = searchParams?.get("setId");
+    const setId = Number(setIdParam);
+
+    const [cardsArray, setCardsArray] = useState<{ cards: { id: number; question: string }[] }>({cards: []});
     const [newSetname, setNewSetname] = useState("");
     const [newCategory, setNewCategory] = useState("");
 
-    function saveSet() {
-        console.log("save set" + newSetname + newCategory);
-    }
-
-
-
     useEffect(() => {
-        if (data.data === undefined) {
-            return;
-        }
-        if (serachParams === null) {
-            return;
-        }
-        const setParam = serachParams.get("set");
-        setSetID(setParam !== null ? parseInt(setParam) : 0);
-        setNewSetname(data.data.name)
-        setNewCategory(data.data.category ?? "")
-    }, [data]);
 
-    const handleAddCard = () => {
-        window.location.href = `/ikna/createCard`
-        console.log("createNewID")
-    }
-    const handleEditCard = (questionID: number) => {
-        window.location.href = `/ikna/createCard?set=${setID}&question=${questionID}`
-        console.log("navigate to createCard with the ID", questionID)
-    }
-    const handleDeleteCard = (questionID: number) => {
-        console.log("delete card by ID", questionID)
-    }
+        if (!setId) return;
+
+        const loadSetData = async () => {
+            try {
+                const data = await getSet(setId);
+                setNewSetname(data.name ?? "");
+                setNewCategory(data.kategorie ?? "");
+
+                const cards = await getCardsBySetId(setId);
+                setCardsArray({cards});
+            } catch (err) {
+                console.error("Fehler beim Laden von Set oder Karten: ", err);
+                setCardsArray({cards: []});
+            }
+        };
+
+        loadSetData();
+    }, [setId]);
+
+    const handleChangeName = async (value: string) => {
+        setNewSetname(value);
+        if (!setId) return;
+        try {
+            await updateSet(setId, {name: value});
+        } catch (err) {
+            console.error("Fehler beim Set-Update (name): ", err);
+        }
+    };
+
+    const handleChangeCategory = async (value: string) => {
+        setNewCategory(value);
+        if (!setId) return;
+        try {
+            await updateSet(setId, {kategorie: value});
+        } catch (err) {
+            console.error("Fehler beim Set-Update (kategorie): ", err);
+        }
+
+    };
+
+    const handleAddCard = async () => {
+        if (!setId) return;
+        try {
+            const newCard = await createCard({
+                question: "", answer: "", difficulty: "mittel", setId,
+            });
+            const newCardId = newCard?.card?.id;
+            if (newCardId) {
+                window.location.href = `/ikna/createCard?setId=${setId}&question=${newCardId}`;
+            } else {
+                console.warn("Keine gültige Karten ID")
+            }
+        } catch (err) {
+            console.error("Fehler beim Erstellen der Karte: ", err);
+        }
+    };
+
+    const handleEditCard = (cardId: number) => {
+        if (!setId) return;
+        window.location.href = `/ikna/createCard?setId=${setId}&question=${cardId}`
+    };
+
+    const handleDeleteCard = async (cardId: number) => {
+        const confirmDelete = window.confirm("Willst du diese Karte wirklich löschen?");
+        if (!confirmDelete) return;
+
+        try {
+            await deleteCard(cardId);
+            setCardsArray((prev) => ({
+                cards: prev.cards.filter((card) => card.id !== cardId),
+            }));
+        } catch (error) {
+            console.error("Fehler beim Löschen der Karte:", error);
+            alert("Beim Löschen der Karte ist ein Fehler aufgetreten.");
+        }
+    };
 
     return (
         <>
             <Header text={'edit-set-page'}/>
             <Stack direction="column" spacing={2} style={{padding: '10px'}}>
-                <TextField 
+                <TextField
                     label='setname'
                     value={newSetname}
-                    onChange={(event) => setNewSetname(event.target.value) }
-                    onBlur={saveSet}
-                    />
-                <TextField 
+                    onChange={(event) => handleChangeName(event.target.value)}
+                />
+                <TextField
                     label='category'
                     value={newCategory}
-                    onChange={(event) => setNewCategory(event.target.value)}
-                    onBlur={saveSet}
-                    />
+                    onChange={(event) => handleChangeCategory(event.target.value)}
+                />
 
                 <Divider/>
 
-                <Button style={{justifyContent: 'center', border: '1px solid lightgrey', marginLeft: '10px', marginRight: '10px'}}>  
-                    <AddIcon onClick={handleAddCard}/>
+                <Button style={{
+                    justifyContent: 'center',
+                    border: '1px solid lightgrey',
+                    marginLeft: '10px',
+                    marginRight: '10px'
+                }} onClick={handleAddCard}>
+                    <AddIcon/>
                 </Button>
 
-                {questionsArray.data.flatMap((question) => {
-                    return (
-                        <List>
-                            <ListItem>
+                <List>
+                    {cardsArray?.cards?.map((card) => {
+                        return (
+                            <ListItem key={card.id}>
                                 <ListItemButton style={{border: '1px solid lightgrey'}}>
-                                    <ListItemText primary={question.question}/>
+                                    <ListItemText primary={card.question}/>
                                 </ListItemButton>
                                 <ListItemIcon>
-                                    <ListItemButton style={{padding: '12px', border: '1px solid lightgrey'}}>
-                                        <EditIcon onClick={()=>handleEditCard(question.id)}/>
+                                    <ListItemButton style={{padding: '12px', border: '1px solid lightgrey'}}
+                                                    onClick={() => handleEditCard(card.id)}>
+                                        <EditIcon/>
                                     </ListItemButton>
-                                    <ListItemButton style={{padding: '12px', border: '1px solid lightgrey'}}>
-                                        <Delete onClick={() => handleDeleteCard(question.id)}/>
+                                    <ListItemButton style={{padding: '12px', border: '1px solid lightgrey'}}
+                                                    onClick={() => handleDeleteCard(card.id)}>
+                                        <Delete/>
                                     </ListItemButton>
                                 </ListItemIcon>
                             </ListItem>
-                        </List>
-                    )
-                })
-                }
+                        )
+                    })
+                    }
+                </List>
             </Stack>
         </>
     )
 }
+
+
+export default CreateSet;
