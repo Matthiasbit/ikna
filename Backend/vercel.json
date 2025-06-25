@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "api/index.js": {
-      "runtime": "nodejs21.6.1."
-    }
-  }
-}
