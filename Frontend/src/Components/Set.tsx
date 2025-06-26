@@ -55,7 +55,7 @@ export default function Set({data}: SetProps) {
         if (data === null) {
             try {
                 const created = await createSet();
-                window.location.href = `/ikna/createSet?set=${created.id}`;
+                window.location.href = `/ikna/createSet?setId=${created.id}`;
             } catch (err) {
                 console.error("Fehler bim Erstellen des Sets ", err);
                 alert("Set konnte nicht erstellt werden");

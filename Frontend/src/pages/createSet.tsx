@@ -17,10 +17,10 @@ import {useEffect, useState} from "react";
 import getSet from "@/api/getSet";
 import {useSearchParams} from "next/navigation";
 import "../app/bodyfix.css";
-import {Sets} from "@/api/getSets";
 import {updateSet} from "@/api/postSet";
 import createCard from "@/api/createCard";
 import {getCardsBySetId} from "@/api/getCardsBySet";
+import deleteCard from "@/api/deleteCard";
 
 function CreateSet() {
 
@@ -29,62 +29,34 @@ function CreateSet() {
     const setId = Number(setIdParam);
 
     const [cardsArray, setCardsArray] = useState<{ cards: { id: number; question: string }[] }>({cards: []});
-    const [setData, setSetData] = useState<Sets | null>(null);
     const [newSetname, setNewSetname] = useState("");
     const [newCategory, setNewCategory] = useState("");
 
     useEffect(() => {
+
         if (!setId) return;
 
         const loadSetData = async () => {
             try {
                 console.log(setId);
                 const data = await getSet(setId);
-                setSetData(data);
                 setNewSetname(data.name ?? "");
                 setNewCategory(data.kategorie ?? "");
 
-                 const cards = await getCardsBySetId(setId);
-                setCardsArray({ cards });
+                const cards = await getCardsBySetId(setId);
+                setCardsArray({cards});
             } catch (err) {
                 console.error("Fehler beim Laden von Set oder Karten: ", err);
-                setSetData(null);
-                setCardsArray({ cards: [] });
+                setCardsArray({cards: []});
             }
         };
 
         loadSetData();
     }, [setId]);
 
-    /*
-        useEffect(() => {
-            if (!setID || !token) return
-
-            getSet(setID, token)
-                .then(async (data) => {
-                    if (!data) {
-                        console.warn("Set nicht gefunden");
-                        setSetData(null);
-                        return;
-                    }
-                    setSetData(data);
-                    setNewSetname(data.name ?? "");
-                    setNewCategory(data.kategorie ?? "");
-
-                    const cards = await getCardsBySetId(setID, token);
-                    setCardsArray({cards});
-                })
-                .catch((err) => {
-                    console.error("Fehler beim Laden der Sets: ", err);
-                    setSetData(null);
-                });
-        }, [setID, token]);
-
-     */
-
     const handleChangeName = async (value: string) => {
         setNewSetname(value);
-        if (setId ) {
+        if (setId) {
             try {
                 await updateSet(setId, {name: value});
             } catch (err) {
@@ -123,12 +95,27 @@ function CreateSet() {
 
     const handleEditCard = (cardId: number) => {
         if (!setId) return;
-        window.location.href = `/ikna/createCard?set=${setId}&question=${cardId}`
+        window.location.href = `/ikna/createCard?setId=${setId}&question=${cardId}`
         console.log("navigate to createCard with the ID", cardId)
     }
-    const handleDeleteCard = (cardId: number) => {
-        console.log("delete card by ID", cardId)
-    }
+
+    const handleDeleteCard = async (cardId: number) => {
+        const confirmDelete = window.confirm("Willst du diese Karte wirklich löschen?");
+        if (!confirmDelete) return;
+
+        try {
+            await deleteCard(cardId);
+
+
+            setCardsArray((prev) => ({
+                cards: prev.cards.filter((card) => card.id !== cardId),
+            }));
+
+        } catch (error) {
+            console.error("Fehler beim Löschen der Karte:", error);
+            alert("Beim Löschen der Karte ist ein Fehler aufgetreten.");
+        }
+    };
 
     return (
         <>

@@ -46,40 +46,34 @@ export default function CreateCard() {
     }, [questionId]);
 
 
-    const handleSave = async () => {
-        if(!question || !answer) {
+    const handleSave = async (redirect: boolean = true) => {
+        if (!question || !answer) {
             alert("Bitte sowohl Frage als auch Antwort eingeben.");
             return;
         }
 
-        if(!questionId) {
-            console.error("Keine gültige Karten-Id übergeben.");
-            return;
-        }
-        try{
-            await updateCard({
-                id: questionId, question, answer, difficulty, status:0,
-            });
-            console.log("Karte gespeichert: ", questionId);
-            window.location.href = `/ikna/createSet?setId=${setId}`;
+
+        try {
+            if (!questionId || isNaN(questionId)) {
+                if (!setId) {
+                    alert("Kein Set ausgewählt – setId fehlt!");
+                    return;
+                }
+                const response = await createCard({question, answer, difficulty, setId});
+                console.log("Neue Karte erstellt: ", response);
+            } else {
+                await updateCard({id: questionId, question, answer, difficulty, status: 0});
+                console.log("Karte gespeichert: ", questionId);
+            }
+
+            if (redirect) {
+                window.location.href = `/ikna/createSet?setId=${setId}`;
+            }
         } catch (err) {
-            console.error("Fehelr beim Speichern der Karte ", err);
+            console.error("Fehler beim Speichern der Karte:", err);
+            alert("Fehler beim Speichern.");
         }
 
-        if (newCard) {
-            if (!setId) {
-                alert("❌ Kein Set ausgewählt – setId fehlt!");
-                return;
-            }
-            const response = await createCard({question, answer, difficulty, setId});
-            console.log("Neue Karte erstellt: ", response);
-        } else {
-            if (!questionId || isNaN(questionId)) {
-                console.error("❌ Ungültige Karten-ID beim Speichern");
-                return;
-            }
-            await updateCard({ id: questionId, question, answer, difficulty, status: 0 });
-        }
 
     };
 
@@ -97,9 +91,27 @@ export default function CreateCard() {
 
     const handleNext = async () => {
 
-        await handleSave();
-        window.location.href = "/ikna/createCard?setId=" + setId;
-    }
+        await handleSave(false);
+
+        if (!setId) {
+            alert("Kein Set ausgewählt - setId fehlt!")
+            return;
+        }
+        try {
+            const response = await createCard({
+                question: "", answer: "", difficulty: "mittel", setId
+            });
+            const newCardId = response?.card?.id;
+            if (newCardId) {
+                window.location.href = `/ikna/createCard?setId=${setId}&question=${newCardId}`;
+            } else {
+                alert("Fehler beim Erstellen der neuen Karte.");
+            }
+        } catch (err) {
+            console.error("Fehler beim Erstellen der neuen Karte: ", err);
+            alert("Fehler beim Erstellen der neuen Karte.");
+        }
+    };
 
     const handleClose = () => {
         setQuestion("")
@@ -169,7 +181,7 @@ export default function CreateCard() {
                        justifyContent="space-between">
                     <Button style={{width: "25%"}}><DeleteForeverIcon
                         onClick={handleDelete}/></Button>
-                    <Button onClick={handleSave} style={{width: "25%"}}> Save </Button>
+                    <Button onClick={() => handleSave(true)} style={{width: "25%"}}> Save </Button>
                     <Button onClick={handleNext} style={{width: "25%"}}> next
                         card</Button>
                 </Stack>

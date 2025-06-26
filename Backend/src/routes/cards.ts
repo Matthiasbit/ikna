@@ -21,6 +21,7 @@ const updateCardSchema = z.object({
 router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
     try {
         const userId = Number(req.query.userId);
+        const setId = Number(req.query.setId);
 
         if (!userId) {
             res.status(400).json({error: "UserId fehlt"});
@@ -33,7 +34,7 @@ router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        const rawCards = await db.select().from(card);
+        const rawCards = await db.select().from(card).where(eq(card.set, setId));
 
         const cards = rawCards.map(c => ({
             ...c,
