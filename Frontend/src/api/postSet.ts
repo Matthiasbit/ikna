@@ -1,13 +1,13 @@
 import {Sets} from "@/api/getSets";
 
-export async function updateSet(setId: number, payload: { name?: string; kategorie?: string }, token: string) {
+export async function updateSet(setId: number, payload: { name?: string; kategorie?: string }) {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     const response = await fetch(`${API_BASE_URL}/set/${setId}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
         body: JSON.stringify(payload),
     });
@@ -22,7 +22,7 @@ export async function updateSet(setId: number, payload: { name?: string; kategor
 
 
 
-export async function createSet(token: string): Promise<Sets> {
+export async function createSet(): Promise<Sets> {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     //
@@ -30,13 +30,13 @@ export async function createSet(token: string): Promise<Sets> {
 
     console.log("→ POST to", `${API_BASE_URL}/set`);
     console.log("→ Payload:", payload);
-    console.log("→ Token:", token);
+
     //
 
     const response = await fetch(`${API_BASE_URL}/set`, {
         method: "POST",
         headers: {
-            "Authorization": `Bearer ${token}`,
+            "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
             "Content-Type": "application/json"
         },
         body: JSON.stringify({ name: "Neues Set", kategorie: "" }) // leeres Set anlegen

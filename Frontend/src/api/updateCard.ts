@@ -12,16 +12,22 @@ export interface CardUpdate {
 
 async function updateCard(card: CardUpdate) {
   try {
-    const response = await fetch(`${API_BASE_URL}/updateCard/${card.id}`, {
+    const { id, ...rest} = card;
+
+    const response = await fetch(`${API_BASE_URL}/updateCard/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(card),
+      body: JSON.stringify(rest),
     });
     if (!response.ok) {
+      const errorBody = await response.json();
+      console.error("Fehlerhafte Serverantwort:", errorBody);
+
       throw new Error("Fehlerhafte Antwort vom Server beim Aktualisieren der Karte");
     }
   } catch (error) {
     console.error("Fehler beim Aktualisieren der Karte:", error);
+    throw error;
   }
 }
 export default updateCard;

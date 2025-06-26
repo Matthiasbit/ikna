@@ -9,6 +9,9 @@ import Header from "@/Components/Header";
 import {Button, CircularProgress, Divider, Stack} from "@mui/material";
 import {useSearchParams} from "next/navigation";
 import {getCard} from "@/api/getCard";
+import createCard from "@/api/createCard";
+import updateCard from "@/api/updateCard";
+import deleteCard from "@/api/deleteCard";
 
 export default function CreateCard() {
 
@@ -22,8 +25,12 @@ export default function CreateCard() {
     const [difficulty, setDifficulty] = useState<"leicht" | "mittel" | "schwer">("mittel");
     const [loading, setLoading] = useState(false);
 
+    const setIdParam = searchParams?.get("setId");
+    const setId = setIdParam ? parseInt(setIdParam, 10) : undefined;
+
+
     useEffect(() => {
-        if (newCard || !questionId) return;
+        if (newCard || !questionId || isNaN(questionId)) return;
         setLoading(true);
 
         getCard(questionId)
@@ -40,50 +47,58 @@ export default function CreateCard() {
 
 
     const handleSave = async () => {
-        const payload = {question, answer, difficulty, status: 0};
-
-        try {
-            if (newCard) {
-                const response = await fetch("/api/createCard", {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(payload),
-                });
-                const data = await response.json();
-                console.log("Neue Karte erstellt: ", data);
-            } else {
-                const response = await fetch(`/api/updateCard/${questionId}`, {
-                    method: "PUT",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(payload),
-                });
-                const data = await response.json();
-                console.log("Karte aktualisiert: ", data);
-            }
-        } catch (e) {
-            console.error("Fehler beim Speichern der Karte: ", e);
+        if(!question || !answer) {
+            alert("Bitte sowohl Frage als auch Antwort eingeben.");
+            return;
         }
+
+        if(!questionId) {
+            console.error("Keine gültige Karten-Id übergeben.");
+            return;
+        }
+        try{
+            await updateCard({
+                id: questionId, question, answer, difficulty, status:0,
+            });
+            console.log("Karte gespeichert: ", questionId);
+            window.location.href = `/ikna/createSet?setId=${setId}`;
+        } catch (err) {
+            console.error("Fehelr beim Speichern der Karte ", err);
+        }
+
+        if (newCard) {
+            if (!setId) {
+                alert("❌ Kein Set ausgewählt – setId fehlt!");
+                return;
+            }
+            const response = await createCard({question, answer, difficulty, setId});
+            console.log("Neue Karte erstellt: ", response);
+        } else {
+            if (!questionId || isNaN(questionId)) {
+                console.error("❌ Ungültige Karten-ID beim Speichern");
+                return;
+            }
+            await updateCard({ id: questionId, question, answer, difficulty, status: 0 });
+        }
+
     };
 
     const handleDelete = async () => {
         if (!questionId) return;
         try {
-            const response = await fetch(`api/cards/deleteCard/${questionId}`, {
-                method: "DELETE",
-            });
-            const data = await response.json();
-            console.log("Karte gelöscht: ", data);
+            await deleteCard(questionId)
+
+            console.log("Karte gelöscht: ", questionId);
             window.location.href = "/ikna/createCard";
         } catch (e) {
             console.error("Fehler beim Löschen: ", e);
         }
     };
 
-    const handleNext = async (questionID: number | undefined) => {
-        if (!questionID && !newCard) return;
+    const handleNext = async () => {
 
         await handleSave();
-        window.location.href = "/ikna/createCard"
+        window.location.href = "/ikna/createCard?setId=" + setId;
     }
 
     const handleClose = () => {
@@ -155,7 +170,7 @@ export default function CreateCard() {
                     <Button style={{width: "25%"}}><DeleteForeverIcon
                         onClick={handleDelete}/></Button>
                     <Button onClick={handleSave} style={{width: "25%"}}> Save </Button>
-                    <Button onClick={() => handleNext(undefined)} style={{width: "25%"}}> next
+                    <Button onClick={handleNext} style={{width: "25%"}}> next
                         card</Button>
                 </Stack>
             </Card>

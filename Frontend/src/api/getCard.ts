@@ -11,6 +11,11 @@ export interface CardData {
 }
 
 export async function getCard(cardId: number): Promise<CardData> {
+
+    if(!cardId || isNaN(cardId)){
+        throw new Error("Ungültige Karten-id");
+    }
+
     const response = await fetch(`${API_BASE_URL}/card/${cardId}`);
 
     if (!response.ok) {

@@ -19,59 +19,74 @@ import {useSearchParams} from "next/navigation";
 import "../app/bodyfix.css";
 import {Sets} from "@/api/getSets";
 import {updateSet} from "@/api/postSet";
+import createCard from "@/api/createCard";
+import {getCardsBySetId} from "@/api/getCardsBySet";
 
 function CreateSet() {
 
     const searchParams = useSearchParams();
-    const [setID, setSetID] = useState<number | null>(null);
+    const setIdParam = searchParams?.get("setId");
+    const setId = Number(setIdParam);
+
     const [cardsArray, setCardsArray] = useState<{ cards: { id: number; question: string }[] }>({cards: []});
     const [setData, setSetData] = useState<Sets | null>(null);
     const [newSetname, setNewSetname] = useState("");
     const [newCategory, setNewCategory] = useState("");
 
-    const [token, setToken] = useState<string | null>(null);
-
-
     useEffect(() => {
-        if (typeof window === "undefined") return
-        const storedToken = localStorage.getItem("token");
-        setToken(storedToken);
+        if (!setId) return;
 
-        if (!searchParams) return;
-        const param = searchParams.get("set") ?? searchParams.get("id");
-        const parsed = param ? parseInt(param) : null;
-        if (parsed && !isNaN(parsed)) {
-            setSetID(parsed);
-        }
-
-    }, [searchParams]);
-
-
-    useEffect(() => {
-        if (!setID || !token) return
-
-        getSet(setID, token)
-            .then((data) => {
-                if (!data) {
-                    console.warn("Set nicht gefunden");
-                    setSetData(null);
-                    return;
-                }
+        const loadSetData = async () => {
+            try {
+                console.log(setId);
+                const data = await getSet(setId);
                 setSetData(data);
                 setNewSetname(data.name ?? "");
                 setNewCategory(data.kategorie ?? "");
-            })
-            .catch((err) => {
-                console.error("Fehler beim Laden der Sets: ", err);
+
+                 const cards = await getCardsBySetId(setId);
+                setCardsArray({ cards });
+            } catch (err) {
+                console.error("Fehler beim Laden von Set oder Karten: ", err);
                 setSetData(null);
-            });
-    }, [setID, token]);
+                setCardsArray({ cards: [] });
+            }
+        };
+
+        loadSetData();
+    }, [setId]);
+
+    /*
+        useEffect(() => {
+            if (!setID || !token) return
+
+            getSet(setID, token)
+                .then(async (data) => {
+                    if (!data) {
+                        console.warn("Set nicht gefunden");
+                        setSetData(null);
+                        return;
+                    }
+                    setSetData(data);
+                    setNewSetname(data.name ?? "");
+                    setNewCategory(data.kategorie ?? "");
+
+                    const cards = await getCardsBySetId(setID, token);
+                    setCardsArray({cards});
+                })
+                .catch((err) => {
+                    console.error("Fehler beim Laden der Sets: ", err);
+                    setSetData(null);
+                });
+        }, [setID, token]);
+
+     */
 
     const handleChangeName = async (value: string) => {
         setNewSetname(value);
-        if (setID && token) {
+        if (setId ) {
             try {
-                await updateSet(setID, {name: value}, token);
+                await updateSet(setId, {name: value});
             } catch (err) {
                 console.error("Fehler beim Set-Update (name): ", err);
             }
@@ -79,23 +94,36 @@ function CreateSet() {
     };
     const handleChangeCategory = async (value: string) => {
         setNewCategory(value);
-        if (setID && token) {
+        if (setId) {
             try {
-                await updateSet(setID, {kategorie: value}, token);
+                await updateSet(setId, {kategorie: value});
             } catch (err) {
                 console.error("Fehler beim Set-Update (kategorie): ", err);
             }
         }
     };
 
-    const handleAddCard = () => {
-        if (!setID) return;
-        window.location.href = `/ikna/createCard`
-        console.log("createNewID")
-    }
+    const handleAddCard = async () => {
+        if (!setId) return;
+        try {
+            const newCard = await createCard({
+                question: "", answer: "", difficulty: "mittel", setId: setId,
+            });
+            const newCardId = newCard?.card?.id;
+            if (newCardId) {
+                window.location.href = `/ikna/createCard?setId=${setId}&question=${newCardId}`;
+            } else {
+                alert("fegler beim Erstellen der Karte");
+            }
+
+        } catch (err) {
+            console.error("Fehler beim Erstellen der Karte: ", err);
+        }
+    };
+
     const handleEditCard = (cardId: number) => {
-        if (!setID) return;
-        window.location.href = `/ikna/createCard?set=${setID}&question=${cardId}`
+        if (!setId) return;
+        window.location.href = `/ikna/createCard?set=${setId}&question=${cardId}`
         console.log("navigate to createCard with the ID", cardId)
     }
     const handleDeleteCard = (cardId: number) => {
@@ -129,9 +157,9 @@ function CreateSet() {
                 </Button>
 
                 <List>
-                    {cardsArray?.cards?.flatMap((card) => {
+                    {cardsArray?.cards?.map((card) => {
                         return (
-                            <ListItem>
+                            <ListItem key={card.id}>
                                 <ListItemButton style={{border: '1px solid lightgrey'}}>
                                     <ListItemText primary={card.question}/>
                                 </ListItemButton>
