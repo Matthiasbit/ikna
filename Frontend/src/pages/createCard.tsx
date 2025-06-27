@@ -1,61 +1,126 @@
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import {useState, useEffect} from "react";
-import * as React from 'react';
+import * as React from "react";
+import {useEffect, useState} from "react";
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Card from "@mui/material/Card";
 import CloseIcon from '@mui/icons-material/Close';
 import Header from "@/Components/Header";
 import {Button, CircularProgress, Divider, Stack} from "@mui/material";
-import {useGetQuestion} from "@/api/getQuestion";
+import {useSearchParams} from "next/navigation";
+import {getCard} from "@/api/getCard";
+import createCard from "@/api/createCard";
+import updateCard from "@/api/updateCard";
+import deleteCard from "@/api/deleteCard";
 
 export default function CreateCard() {
 
-    const questionBackend = useGetQuestion();
+    const searchParams = useSearchParams();
+    const questionIdParam = searchParams?.get("question");
+    const questionId = questionIdParam ? parseInt(questionIdParam, 10) : undefined;
+    const newCard = !questionId || isNaN(questionId);
 
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
+    const [difficulty, setDifficulty] = useState<"leicht" | "mittel" | "schwer">("mittel");
+    const [loading, setLoading] = useState(false);
+
+    const setIdParam = searchParams?.get("setId");
+    const setId = setIdParam ? parseInt(setIdParam, 10) : undefined;
+
 
     useEffect(() => {
-        if (questionBackend.data === undefined) {
-            return
+        if (newCard || !questionId || isNaN(questionId)) return;
+        setLoading(true);
+
+        getCard(questionId)
+            .then((data) => {
+                setQuestion(data.question || "");
+                setAnswer(data.answer || "");
+                setDifficulty(data.difficulty || "mittel");
+            })
+            .catch((err) => {
+                console.error("Fehler beim Laden der Karte:", err);
+            })
+            .finally(() => setLoading(false));
+    }, [questionId]);
+
+
+    const handleSave = async (redirect: boolean = true) => {
+        if (!question || !answer) {
+            alert("Bitte sowohl Frage als auch Antwort eingeben.");
+            return;
         }
-        setQuestion(questionBackend.data.question)
-        setAnswer(questionBackend.data.answer)
-    }, [questionBackend.data])
 
-    console.log(question, answer) // TODO: API call an Backend
 
-    const handleClose =()=> {
+        try {
+            if (!questionId || isNaN(questionId)) {
+                if (!setId) {
+                    alert("Kein Set ausgewählt – setId fehlt!");
+                    return;
+                }
+                const response = await createCard({question, answer, difficulty, setId});
+                console.log("Neue Karte erstellt: ", response);
+            } else {
+                await updateCard({id: questionId, question, answer, difficulty, status: 0});
+                console.log("Karte gespeichert: ", questionId);
+            }
+
+            if (redirect) {
+                window.location.href = `/ikna/createSet?setId=${setId}`;
+            }
+        } catch (err) {
+            console.error("Fehler beim Speichern der Karte:", err);
+            alert("Fehler beim Speichern.");
+        }
+
+
+    };
+
+    const handleDelete = async () => {
+        if (!questionId) return;
+        try {
+            await deleteCard(questionId)
+
+            console.log("Karte gelöscht: ", questionId);
+            window.location.href = "/ikna/createCard";
+        } catch (e) {
+            console.error("Fehler beim Löschen: ", e);
+        }
+    };
+
+    const handleNext = async () => {
+
+        await handleSave(false);
+
+        if (!setId) {
+            alert("Kein Set ausgewählt - setId fehlt!")
+            return;
+        }
+        try {
+            const response = await createCard({
+                question: "", answer: "", difficulty: "mittel", setId
+            });
+            const newCardId = response?.card?.id;
+            if (newCardId) {
+                window.location.href = `/ikna/createCard?setId=${setId}&question=${newCardId}`;
+            } else {
+                alert("Fehler beim Erstellen der neuen Karte.");
+            }
+        } catch (err) {
+            console.error("Fehler beim Erstellen der neuen Karte: ", err);
+            alert("Fehler beim Erstellen der neuen Karte.");
+        }
+    };
+
+    const handleClose = () => {
         setQuestion("")
         setAnswer("")
-       
-        window.location.href= "ikna/createSet"
-        //TODO: cancel edit and go one page back ??
-    }
-    const hanldeDelete = (questionID: number | undefined) => {
-        if (questionID === undefined) {
-            return
-        }
-        console.log("delete: " , questionID)
-    }
-    const handleSave = (questionID: number | undefined) => {
-        if (questionID === undefined) {
-            return
-        }
-        console.log("save: " , questionID, "in setID" )
-    }
-    const handleNext = (questionID: number | undefined) => {
-        if (questionID === undefined) {
-            return
-        }
-        handleSave(questionID)
-        window.location.href = "/ikna/createCard"
-        console.log("save:", questionID, "open new createCard")
+        window.location.href = "/ikna/createSet"
     }
 
-    if (questionBackend.data === undefined) {
-        return <CircularProgress />
+    if (loading) {
+        return <CircularProgress/>
     }
 
     return (
@@ -69,7 +134,8 @@ export default function CreateCard() {
                       padding: '5vw',
                       paddingTop: '2vw'
                   }}>
-                <Box style={{textAlign: 'right', cursor: "pointer", padding: "5px"}}> <CloseIcon onClick={handleClose}/> </Box>
+                <Box style={{textAlign: 'right', cursor: "pointer", padding: "5px"}}> <CloseIcon onClick={handleClose}/>
+                </Box>
                 <Box>
                     <Card variant={'outlined'} style={{
                         border: '2px solid black',
@@ -101,17 +167,23 @@ export default function CreateCard() {
                     </Card>
                 </Box>
                 <Box style={{display: 'flex', justifyContent: 'center', border: '1px solid black'}}>
-                    <Button style={{width: '33.33%', backgroundColor: 'lightgreen', height: '10vw', color: "black"}}> easy</Button>
-                    <Button style={{width: '33.33%', backgroundColor: 'yellow', height: '10vw' , color: "black"}}> middle</Button>
-                    <Button style={{width: '33.33%', backgroundColor: 'coral', height: '10vw', color: "black"}}> hard</Button>
+                    <Button style={{width: '33.33%', backgroundColor: 'lightgreen', height: '10vw', color: "black"}}
+                            onClick={() => setDifficulty("leicht")}> easy</Button>
+                    <Button style={{width: '33.33%', backgroundColor: 'yellow', height: '10vw', color: "black"}}
+                            onClick={() => setDifficulty("mittel")}> middle</Button>
+                    <Button style={{width: '33.33%', backgroundColor: 'coral', height: '10vw', color: "black"}}
+                            onClick={() => setDifficulty("schwer")}> hard</Button>
                 </Box>
                 <br/>
 
                 <Divider/>
-                <Stack direction="row" spacing={2} key={questionBackend.data.id} style={{width: "100%"}} justifyContent="space-between">
-                    <Button style={{width: "25%"}}><DeleteForeverIcon onClick={() => hanldeDelete(questionBackend.data?.id)}/></Button>
-                    <Button onClick={() => handleSave(questionBackend.data?.id)} style={{width: "25%"}}> Save </Button>
-                    <Button onClick={() => handleNext(questionBackend.data?.id)} style={{width: "25%"}}> next card</Button>
+                <Stack direction="row" spacing={2} style={{width: "100%"}}
+                       justifyContent="space-between">
+                    <Button style={{width: "25%"}}><DeleteForeverIcon
+                        onClick={handleDelete}/></Button>
+                    <Button onClick={() => handleSave(true)} style={{width: "25%"}}> Save </Button>
+                    <Button onClick={handleNext} style={{width: "25%"}}> next
+                        card</Button>
                 </Stack>
             </Card>
         </>

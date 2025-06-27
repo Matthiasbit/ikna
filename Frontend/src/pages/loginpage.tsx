@@ -33,7 +33,10 @@ const { registration, errormessage, success} = useRegistration();
   const handleResetLinkClick = () => {
     setIsResetPassword(!isResetPassword);
   };
-  
+
+
+
+
   return (
     <div>
       <Header text={tabValue === "1" ? isResetPassword ? "Reset Password" : "Login" : "Sign up" } />

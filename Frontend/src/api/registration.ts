@@ -35,6 +35,8 @@ function useRegistration() {
       if (!response.ok) setErrorMessage(data.error || "Registrierung fehlgeschlagen");
       else setSuccess(true);
       sessionStorage.setItem("token", data);
+      console.log("Token: ", data)
+      localStorage.setItem("token", data)
       return data;
     } catch (err: any) {
       setErrorMessage(err?.message || "Unbekannter Fehler");
