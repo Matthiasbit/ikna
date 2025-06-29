@@ -15,7 +15,7 @@ const [showPassword, setShowPassword] = useState(false);
 const [validationError, setValidationError] = useState(false);
 const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
-const { registration, errormessage, setErrorMessage, success} = useRegistration();
+const { registration, errorMessage, setErrorMessage, success} = useRegistration();
 
   function logInOrSignUp(signUp: boolean) {
     setValidationError(true);
@@ -93,9 +93,9 @@ const { registration, errormessage, setErrorMessage, success} = useRegistration(
                 <Button onClick={() => logInOrSignUp(false)} variant="contained" color="primary" type="button">
                   {isResetPassword ? "Reset Password" : "Login"}
                 </Button>
-                {errormessage && (
+                {errorMessage && (
                 <Typography color="error" sx={{ mt: 2 }}>
-                  {errormessage}
+                  {errorMessage}
                 </Typography>
               )}
               </Stack>
@@ -139,9 +139,9 @@ const { registration, errormessage, setErrorMessage, success} = useRegistration(
                 <Button onClick={() => logInOrSignUp(true)} variant="contained" color="primary" type="button">
                   Sign Up
                 </Button>
-                {errormessage && (
+                {errorMessage && (
                   <Typography color="error" sx={{ mt: 2 }}>
-                    {errormessage}
+                    {errorMessage}
                   </Typography>
                 )}
                 {success && (
