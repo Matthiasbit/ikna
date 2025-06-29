@@ -31,19 +31,28 @@ function useRegistration() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = {};
+      }
       if (!response.ok) setErrorMessage(data.error || "Registrierung fehlgeschlagen");
       else setSuccess(true);
       sessionStorage.setItem("token", data);
       return data;
-    } catch (err: any) {
-      setErrorMessage(err?.message || "Unbekannter Fehler");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrorMessage(err.message || "Unbekannter Fehler");
+      } else {
+        setErrorMessage("Unbekannter Fehler");
+      }
     } finally {
       setLoading(false);
     }
   }
 
-  return { registration, errormessage, loading, success };
+  return { registration, errormessage, setErrorMessage, loading, success };
 }
 
 export default useRegistration;

@@ -5,8 +5,8 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 import { sortByDifficulty, leitnerSpacedRepetition } from "../utils/learningStrategies";
 import { user as userTable } from "../db/schema";
-
-
+import jwt from "jsonwebtoken";
+import { set as setTable } from "../db/schema";
 const router = Router();
 
 const updateCardSchema = z.object({
@@ -18,15 +18,28 @@ const updateCardSchema = z.object({
   lastreview: z.string().optional(),
 });
 
-//Alle Karten abrufen
-router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
-  try {
-    const userId = Number(req.query.userId);
+interface JwtPayload {
+  id: number;
+}
 
-    if (!userId) {
-      res.status(400).json({ error: "UserId fehlt" });
+//Alle Karten abrufen
+router.get("/cards", async (req: Request, res: Response): Promise<void> => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      res.status(401).json({ error: "Kein Token mitgesendet" });
       return;
     }
+    const token = authHeader.split(" ")[1];
+    let decode: JwtPayload;
+    try {
+      decode = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+    } catch (e) {
+      res.status(401).json({ error: "Token ungültig" });
+      return;
+    }
+    const userId = decode.id;
+
     
     const user = await db.select().from(userTable).where(eq(userTable.id, userId)).limit(1);
     if (!user[0]) {
@@ -34,16 +47,20 @@ router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const rawCards = await db.select().from(card);
+    const rawCards = await db
+      .select()
+      .from(card)
+      .innerJoin(setTable, eq(card.set, setTable.id))
+      .where(eq(setTable.user, userId));
 
-    const cards = rawCards.map(c => ({
-      ...c,
-      set: c.set ?? 0,
-      question: c.question ?? "",
-      answer: c.answer ?? "",
-      status: c.status ?? 0,
-      difficulty: c.difficulty ?? "leicht",
-      lastreview: c.lastreview ?? "",
+    const cards = rawCards.map(row => ({
+      ...row.CARD,
+      set: row.CARD.set ?? 0,
+      question: row.CARD.question ?? "",
+      answer: row.CARD.answer ?? "",
+      status: row.CARD.status ?? 0,
+      difficulty: row.CARD.difficulty ?? "leicht",
+      lastreview: row.CARD.lastreview ?? "",
     }));
 
     const userIntervals = {
@@ -70,7 +87,22 @@ router.get("/getCards", async (req: Request, res: Response): Promise<void> => {
 });
 
 //Karte nach ID aktualisieren
-router.put("/updateCard/:id", async (req: Request, res: Response): Promise<void>  => {
+router.put("/card/:id", async (req: Request, res: Response): Promise<void>  => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    res.status(401).json({ error: "Kein Token mitgesendet" });
+    return;
+  }
+  const token = authHeader.split(" ")[1];
+  let decode: JwtPayload;
+  try {
+    decode = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+  } catch (e) {
+    res.status(401).json({ error: "Token ungültig" });
+    return;
+  }
+  const userId = decode.id;
+  
   const { id } = req.params;
   const parseResult = updateCardSchema.safeParse(req.body);
 

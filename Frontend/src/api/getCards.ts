@@ -1,24 +1,31 @@
 import { useEffect, useState, useCallback } from "react";
 import { Cards } from "@/pages/learningpage";
 
-
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-function useGetCards(userId: number) {
+function useGetCards() {
   const [cards, setCards] = useState<Cards[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchCards = useCallback(() => {
     setLoading(true);
-    fetch(`${API_BASE_URL}/getCards?userId=${userId}`, {
+    const token = sessionStorage.getItem('token');
+    fetch(`${API_BASE_URL}/cards`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token || ""}`
+      }
     })
       .then(response => {
         if (!response.ok) {
+          if (response.status === 401) {
+              window.location.href = 'ikna/loginpage';
+          }
           throw new Error('Fehlerhafte Antwort vom Server');
         }
         return response.json();
+        
       })
       .then(data => {
         setCards(data);
@@ -29,7 +36,7 @@ function useGetCards(userId: number) {
       .finally(() => {
         setLoading(false);
       });
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
     fetchCards();
@@ -37,4 +44,5 @@ function useGetCards(userId: number) {
 
   return { cards, loading, refetch: fetchCards };
 }
+
 export default useGetCards;

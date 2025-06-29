@@ -15,7 +15,7 @@ const [showPassword, setShowPassword] = useState(false);
 const [validationError, setValidationError] = useState(false);
 const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
-const { registration, errormessage, success} = useRegistration();
+const { registration, errormessage, setErrorMessage, success} = useRegistration();
 
   function logInOrSignUp(signUp: boolean) {
     setValidationError(true);
@@ -41,7 +41,7 @@ const { registration, errormessage, success} = useRegistration();
         <Box sx={{ maxWidth: { xs: '90%', sm: '70%', md: '50%', lg: '30%' }, margin: 'auto'}}>
           <TabContext value={tabValue}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={(_event, value) => setTabValue(value)} centered>
+              <TabList onChange={(_event, value) => {setTabValue(value); setErrorMessage(null);}} centered>
                 <Tab label="Login" value="1"/>
                 <Tab label="Sign Up" value="2" />
               </TabList>
@@ -93,6 +93,11 @@ const { registration, errormessage, success} = useRegistration();
                 <Button onClick={() => logInOrSignUp(false)} variant="contained" color="primary" type="button">
                   {isResetPassword ? "Reset Password" : "Login"}
                 </Button>
+                {errormessage && (
+                <Typography color="error" sx={{ mt: 2 }}>
+                  {errormessage}
+                </Typography>
+              )}
               </Stack>
             </TabPanel>
             <TabPanel value="2">

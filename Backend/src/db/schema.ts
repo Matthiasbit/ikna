@@ -13,7 +13,7 @@ export const card = pgTable('CARD', {
     question: varchar('question'),
     answer: varchar('answer'),
     status: integer('status').notNull().default(5), //richtig -> steigt & falsch -> sinkt 
-    difficulty: varchar('difficulty'), // schwer, mittel, leicht
+    difficulty: varchar('difficulty'),
     lastreview: varchar('lastreview').default('now()'), //wann zuletzt gesehen
 });
 

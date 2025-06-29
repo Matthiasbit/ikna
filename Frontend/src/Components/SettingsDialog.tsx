@@ -1,6 +1,7 @@
 import { Dialog ,DialogTitle, Button, DialogActions, DialogContent, FormControl, InputLabel, Select, MenuItem, Stack, TextField, Switch, FormControlLabel, CircularProgress} from '@mui/material';
 import { ReactElement, useEffect, useState } from 'react';
 import { useGetSettings } from '@/api/getSettings';
+import { updateSettings } from '@/api/updateSettings';
 
 type SettingsDialogProps = {
     open: boolean;
@@ -41,7 +42,7 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                 shareStats: data.shareStats,
             });
         }
-    }, [data]);
+    }, [data, loading]);
 
     if (loading) {
         return <Dialog open={open} onClose={handleClose} maxWidth="lg"><div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%'}}><CircularProgress /></div></Dialog>;
@@ -70,7 +71,7 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                     </Stack>
                     <h3>Account</h3>
                     <Stack direction="row" spacing={2}>
-                        <Button style={{width: "163px"}}>Log Out</Button>
+                        <Button style={{width: "163px"}} onClick={() => sessionStorage.removeItem('token')}>Log Out</Button>
                         <Button style={{width: "163px"}}>Delete Account</Button>
                     </Stack>
                     <h3>Friends</h3>
@@ -84,15 +85,14 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                 <Button onClick={handleClose} color="secondary">
                     Cancel
                 </Button>
-                <Button onClick={() => {
-                    fetch('http://localhost:80/Settings', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(options)
-                    })
+                <Button
+                onClick={async () => {
+                    await updateSettings(options);
                     handleClose();
-                }} color="primary">
-                    Apply
+                }}
+                color="primary"
+                >
+                Apply
                 </Button>
             </DialogActions>
         </Dialog>
