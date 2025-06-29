@@ -88,6 +88,21 @@ router.get("/cards", async (req: Request, res: Response): Promise<void> => {
 
 //Karte nach ID aktualisieren
 router.put("/card/:id", async (req: Request, res: Response): Promise<void>  => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    res.status(401).json({ error: "Kein Token mitgesendet" });
+    return;
+  }
+  const token = authHeader.split(" ")[1];
+  let decode: JwtPayload;
+  try {
+    decode = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+  } catch (e) {
+    res.status(401).json({ error: "Token ungültig" });
+    return;
+  }
+  const userId = decode.id;
+  
   const { id } = req.params;
   const parseResult = updateCardSchema.safeParse(req.body);
 

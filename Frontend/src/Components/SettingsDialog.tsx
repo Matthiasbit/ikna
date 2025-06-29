@@ -1,7 +1,8 @@
 import { Dialog ,DialogTitle, Button, DialogActions, DialogContent, FormControl, InputLabel, Select, MenuItem, Stack, TextField, Switch, FormControlLabel, CircularProgress} from '@mui/material';
 import { ReactElement, useEffect, useState } from 'react';
 import { useGetSettings } from '@/api/getSettings';
-import { updateSettings } from "../api/updateSettings";
+import { updateSettings } from '@/api/updateSettings';
+
 type SettingsDialogProps = {
     open: boolean;
     handleClose: () => void;

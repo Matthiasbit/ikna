@@ -16,18 +16,19 @@ interface SettingsBody {
 }
 
 router.get("/Settings", (req, res) => {
-    let authorized = true;
-    jwt.verify(req.headers.authorization?.split(" ")[1] || "", process.env.JWT_SECRET!, (err) => {
-        if (err) {
-            res.status(401).json({ error: "Unauthorized" });
-            authorized = false;
-            return;
-        }
-    });
-    if (!authorized) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        res.status(401).json({ error: "No token provided" });
         return;
     }
-    const decode = jwt.decode(req.headers.authorization?.split(" ")[1] || "") as { id: number, email: string, iat: number, exp: number };
+    const token = authHeader.split(" ")[1];
+    let decoded: any;
+    try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    } catch (err) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+    }
     db.select().from(userTable).where(eq(userTable.id, decode.id)).then((result) => {
     if (result.length > 0) {
         const userSettings = result[0];
