@@ -21,15 +21,15 @@ router.get("/Settings", (req, res) => {
         res.status(401).json({ error: "No token provided" });
         return;
     }
-    const token = authHeader.split(" ")[1];
-    let decoded: any;
+const token = authHeader.split(" ")[1];
+    let decoded: { id: number };
     try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET!);
+        decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: number };
     } catch (err) {
         res.status(401).json({ error: "Unauthorized" });
         return;
     }
-    db.select().from(userTable).where(eq(userTable.id, decode.id)).then((result) => {
+    db.select().from(userTable).where(eq(userTable.id, decoded.id)).then((result) => {
     if (result.length > 0) {
         const userSettings = result[0];
         res.status(200).json({
