@@ -22,6 +22,16 @@ export interface JwtPayload {
 
 
 router.get("/sets", (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1] || "";
+
+    try{
+       jwt.verify(token, process.env.JWT_SECRET!);
+    } catch (err) {
+        console.error(err);
+        res.status(401).json({error: "Unauthorized"});
+        return;
+    }
+
     let authorized = true;
     jwt.verify(req.headers.authorization?.split(" ")[1] || "", process.env.JWT_SECRET!, (err) => {
         if (err) {
@@ -174,6 +184,9 @@ router.post("/set", async (req: Request, res: Response): Promise<void> => {
 
 // update set by id
 router.put("/set/:id", async (req: Request, res: Response): Promise<void> => {
+   const user = getVerifiedToken(req, res);
+   if(!user) return ;
+
     const id = req.params.id;
 
     const parseResult = updateSetSchema.safeParse(req.body);
@@ -198,6 +211,10 @@ router.put("/set/:id", async (req: Request, res: Response): Promise<void> => {
 
 // delete set by id
 router.delete("/set/:id", async (req: Request, res: Response): Promise<void> => {
+
+    const user = getVerifiedToken(req, res);
+    if(!user) return ;
+
     const setId = Number(req.params.id);
 
     if (isNaN(setId)) {
@@ -219,3 +236,18 @@ router.delete("/set/:id", async (req: Request, res: Response): Promise<void> => 
 
 
 export default router;
+
+export function getVerifiedToken(req: Request, res: Response): JwtPayload | undefined {
+    const token = req.headers.authorization?.split(" ")[1];
+    if(!token){
+        res.status(401).json({error : "Kein Token vorhanden"});
+        return;
+    }
+    try{
+        jwt.verify(token, process.env.JWT_SECRET!);
+    } catch (err){
+        console.error(err);
+        res.status(401).json({error: " Ungültiger Token"});
+        return;
+    }
+}

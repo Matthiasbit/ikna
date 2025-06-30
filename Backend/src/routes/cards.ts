@@ -4,7 +4,7 @@ import {card, set, user as userTable} from "../db/schema";
 import {and, eq} from "drizzle-orm";
 import z from "zod";
 import {leitnerSpacedRepetition, sortByDifficulty} from "../utils/learningStrategies";
-import {JwtPayload} from "./Set";
+import {getVerifiedToken, JwtPayload} from "./Set";
 import jwt from "jsonwebtoken";
 import { set as setTable } from "../db/schema";
 const router = Router();
@@ -107,6 +107,10 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
 
 // Kerte nach ID anzeigen
 router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
+
+    const user = getVerifiedToken(req, res);
+    if(!user) return ;
+
     const id = req.params.id;
 
     try {
@@ -123,24 +127,13 @@ router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-
+// TODO : token ünerall im backend egal ob genutzt oder nicht und userID falls notwenig
 //Karte nach ID aktualisieren
-router.put("/card/:id", async (req: Request, res: Response): Promise<void>  => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    res.status(401).json({ error: "Kein Token mitgesendet" });
-    return;
-  }
-  const token = authHeader.split(" ")[1];
-  let decode: JwtPayload;
-  try {
-    decode = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-  } catch (e) {
-    res.status(401).json({ error: "Token ungültig" });
-    return;
-  }
-  const userId = decode.id;
-  
+router.put("/card/:id", async (req: Request, res: Response): Promise<void> => {
+
+    const user = getVerifiedToken(req, res);
+    if(!user) return ;
+
     const id = req.params.id;
     const parseResult = updateCardSchema.safeParse(req.body);
 
@@ -172,6 +165,10 @@ router.put("/card/:id", async (req: Request, res: Response): Promise<void>  => {
 
 // create a new card with POST
 router.post("/card", async (req: Request, res: Response): Promise<void> => {
+
+    const user = getVerifiedToken(req, res);
+    if(!user) return ;
+
     const parseResult = updateCardSchema.safeParse(req.body);
 
     if (!parseResult.success) {
@@ -195,7 +192,16 @@ router.post("/card", async (req: Request, res: Response): Promise<void> => {
 
 // delete card by id
 router.delete("/card/:id", async (req: Request, res: Response): Promise<void> => {
-    const id = req.params.id;
+
+    const user = getVerifiedToken(req, res);
+    if(!user) return ;
+
+
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+        res.status(400).json({error: "Ungültige Karten Id"});
+        return;
+    }
 
     try {
         const deleted = await db.delete(card).where(eq(card.id, Number(id)));
