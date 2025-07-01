@@ -3,6 +3,10 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 async function deleteCard(id: number): Promise<void> {
 
     const token = sessionStorage.getItem("token");
+    if (!token) {
+        window.location.href = "/ikna/loginpage";
+        return;
+    }
 
 
     try {

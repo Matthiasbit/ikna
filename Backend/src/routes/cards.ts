@@ -6,7 +6,7 @@ import z from "zod";
 import {leitnerSpacedRepetition, sortByDifficulty} from "../utils/learningStrategies";
 import {getVerifiedToken, JwtPayload} from "./Set";
 import jwt from "jsonwebtoken";
-import { set as setTable } from "../db/schema";
+
 const router = Router();
 
 const updateCardSchema = z.object({
@@ -17,10 +17,6 @@ const updateCardSchema = z.object({
     difficulty: z.string().optional(),
     lastreview: z.string().optional(),
 });
-
-interface JwtPayload {
-  id: number;
-}
 
 //Alle Karten abrufen
 router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> => {
@@ -109,7 +105,7 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
 router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
     const id = req.params.id;
 
@@ -132,7 +128,7 @@ router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
 router.put("/card/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
     const id = req.params.id;
     const parseResult = updateCardSchema.safeParse(req.body);
@@ -167,7 +163,7 @@ router.put("/card/:id", async (req: Request, res: Response): Promise<void> => {
 router.post("/card", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
     const parseResult = updateCardSchema.safeParse(req.body);
 
@@ -194,7 +190,7 @@ router.post("/card", async (req: Request, res: Response): Promise<void> => {
 router.delete("/card/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
 
     const id = Number(req.params.id);

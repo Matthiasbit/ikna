@@ -16,11 +16,19 @@ export function useGetSets() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+
+
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            window.location.href = "/ikna/loginpage";
+            return;
+        }
+
         fetch(process.env.NEXT_PUBLIC_API_BASE_URL! + "/sets", {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'authorization': "Bearer " + sessionStorage.getItem('token') || "Bearer " + ''
+                'Authorization': `Bearer ${token}`,
             }
         })
             .then(response => {
