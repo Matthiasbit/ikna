@@ -4,9 +4,9 @@ import {card, set, user as userTable} from "../db/schema";
 import {and, eq} from "drizzle-orm";
 import z from "zod";
 import {leitnerSpacedRepetition, sortByDifficulty} from "../utils/learningStrategies";
-import {getVerifiedToken, JwtPayload} from "./Set";
+import {getVerifiedToken, JwtPayload} from "../utils/utility";
 import jwt from "jsonwebtoken";
-import { set as setTable } from "../db/schema";
+
 const router = Router();
 
 const updateCardSchema = z.object({
@@ -18,11 +18,6 @@ const updateCardSchema = z.object({
     lastreview: z.string().optional(),
 });
 
-interface JwtPayload {
-  id: number;
-}
-
-//Alle Karten abrufen
 router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> => {
 
     const token = req.headers.authorization?.split(" ")[1];
@@ -105,7 +100,6 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
     }
 });
 
-// Kerte nach ID anzeigen
 router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
@@ -127,8 +121,6 @@ router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-// TODO : token ünerall im backend egal ob genutzt oder nicht und userID falls notwenig
-//Karte nach ID aktualisieren
 router.put("/card/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
@@ -195,7 +187,6 @@ router.delete("/card/:id", async (req: Request, res: Response): Promise<void> =>
 
     const user = getVerifiedToken(req, res);
     if(!user) return ;
-
 
     const id = Number(req.params.id);
     if (isNaN(id)) {

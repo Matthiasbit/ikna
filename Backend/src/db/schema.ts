@@ -14,7 +14,7 @@ export const card = pgTable('CARD', {
     answer: varchar('answer'),
     status: integer('status').notNull().default(5),
     difficulty: varchar('difficulty'),
-    lastreview: varchar('lastreview').default('now()'), //wann zuletzt gesehen
+    lastreview: varchar('lastreview').default('now()'),
 });
 
 export const user = pgTable('USER', {
