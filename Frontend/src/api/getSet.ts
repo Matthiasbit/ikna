@@ -1,23 +1,25 @@
-import { useEffect, useState } from "react";
-import { Sets } from "./getSets";
+import {Sets} from "./getSets"
 
-export function useGetSet() {
-  const [data, setData] = useState<Sets>({id: "0", name: "lala", category: "category1", zero: 1, fifty: 1,seventyfive: 1,twentyfive: 1,hundred: 1 });
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-  setData({id: "0", name: "lala", category: "category1", zero: 1, fifty: 1,seventyfive: 1,twentyfive: 1,hundred: 1 });
-  setLoading(false)
-  }, []);
+function getSet(setId: number): Promise<Sets> {
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
- /* useEffect(() => {
-    fetch("/api/sets")
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      });
-  }, [setData]); */
+    return fetch(`${API_BASE_URL}/set/${setId}`, {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+    })
+        .then((res) => {
+            if (!res.ok) {
 
-  return { data, loading };
+                return res.json().then((errorBody) => {
+                    throw new Error(errorBody?.error || "Unbekannter Fehler beim Laden des Sets");
+
+                });
+            }
+            return res.json();
+        })
 }
+
+export default getSet;

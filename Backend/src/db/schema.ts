@@ -2,7 +2,7 @@ import { pgTable, integer, varchar, serial } from "drizzle-orm/pg-core";
 
 export const set = pgTable('SETS', {
     id: serial('id').primaryKey(),
-    name: varchar('name'),
+    name: varchar('name').notNull(),
     user: integer('user'),
     kategorie: varchar('kategorie'),
 });
@@ -12,7 +12,7 @@ export const card = pgTable('CARD', {
     set: integer('set'),
     question: varchar('question'),
     answer: varchar('answer'),
-    status: integer('status').notNull().default(5), //richtig -> steigt & falsch -> sinkt 
+    status: integer('status').notNull().default(5),
     difficulty: varchar('difficulty'),
     lastreview: varchar('lastreview').default('now()'), //wann zuletzt gesehen
 });

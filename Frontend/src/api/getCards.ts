@@ -1,11 +1,33 @@
-import { useEffect, useState, useCallback } from "react";
-import { Cards } from "@/pages/learningpage";
+import {useCallback, useEffect, useState} from "react";
+import {Cards} from "@/pages/learningpage";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export async function getCardsBySetId(setId: number) {
+    const token = sessionStorage.getItem("token");
 
-function useGetCards() {
-  const [cards, setCards] = useState<Cards[]>([]);
-  const [loading, setLoading] = useState(false);
+    if (!token) {
+        throw new Error("Token fehlt – bitte neu einloggen.");
+    }
+
+    const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/cards/${setId}`;
+    const res = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Fehler beim Laden der Karten: ${res.status} – ${errorText}`);
+    }
+
+    return await res.json();
+}
+
+
+export function useGetCards(setId: number) {
+    const [cards, setCards] = useState<Cards[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
   const fetchCards = useCallback(() => {
     setLoading(true);
@@ -38,11 +60,10 @@ function useGetCards() {
       });
   }, []);
 
-  useEffect(() => {
-    fetchCards();
-  }, [fetchCards]);
+    useEffect(() => {
+        fetchCards();
+    }, [fetchCards]);
 
-  return { cards, loading, refetch: fetchCards };
+    return {cards, loading, error, refetch: fetchCards};
 }
-
 export default useGetCards;

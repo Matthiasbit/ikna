@@ -7,8 +7,8 @@ import "../app/bodyfix.css";
 import { useParams } from 'react-router-dom';
 
 export type Cards = {
-  id: string;
   set: number;
+  id: number;
   question: string;
   answer: string;
   status?: number;
