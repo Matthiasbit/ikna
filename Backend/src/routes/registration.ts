@@ -40,7 +40,7 @@ router.post("/registration", async (req: Request, res: Response): Promise<void> 
     res.status(200).json(token);
   } catch (e) {
     console.error(e);
-    res.status(400).json({ error: "Registrierung fehlgeschlagen" });
+    res.status(500).json({ error: "Registrierung fehlgeschlagen" });
   }
 });
 

@@ -3,25 +3,25 @@ import { db } from "../db";
 import { user as userTable} from "../db/schema";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
+import { getVerifiedToken } from "../utils/utility"; 
 
 const router = Router();
 
-interface SettingsBody {
+type SettingsBody = {
     easy: number;
     medium: number;
     hard: number;
     lernmethode: string;
-    shareSets: boolean;
-    shareStats: boolean;
 }
 
 router.get("/Settings", (req, res) => {
+    const user = getVerifiedToken(req, res);
     const authHeader = req.headers.authorization;
     if (!authHeader) {
         res.status(401).json({ error: "No token provided" });
         return;
     }
-const token = authHeader.split(" ")[1];
+    const token = authHeader.split(" ")[1];
     let decoded: { id: number };
     try {
         decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: number };
@@ -30,21 +30,21 @@ const token = authHeader.split(" ")[1];
         return;
     }
     db.select().from(userTable).where(eq(userTable.id, decoded.id)).then((result) => {
-    if (result.length > 0) {
-        const userSettings = result[0];
-        res.status(200).json({
-            easy: userSettings.leicht,
-            medium: userSettings.mittel,
-            hard: userSettings.schwer,
-            lernmethode: userSettings.lernmethode,
-        });
-    } else {
-        res.status(404).json({ error: "User settings not found" });
-    }
-}).catch(error => {
-    console.error("Error fetching settings:", error);
-    res.status(500).json({ error: "Internal server error" });
-});
+        if (result.length > 0) {
+            const userSettings = result[0];
+            res.status(200).json({
+                easy: userSettings.leicht,
+                medium: userSettings.mittel,
+                hard: userSettings.schwer,
+                lernmethode: userSettings.lernmethode,
+            });
+        } else {
+            res.status(404).json({ error: "User settings not found" });
+        }
+    }).catch(error => {
+        console.error("Error fetching settings:", error);
+        res.status(500).json({ error: "Internal server error" });
+    });
 });
 
 router.post("/Settings", async (req, res) => {
