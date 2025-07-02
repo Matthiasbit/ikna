@@ -15,7 +15,6 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export function useGetCards(setId: number) {
     const [cards, setCards] = useState<Cards[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
     const fetchCards = useCallback(() => {
         if (isNaN(setId) || setId <= 0) {
@@ -54,7 +53,7 @@ export function useGetCards(setId: number) {
         fetchCards();
     }, [fetchCards]);
 
-    return {cards, loading, error, refetch: fetchCards};
+    return {cards, loading, refetch: fetchCards};
 }
 
 export default useGetCards;
