@@ -27,7 +27,7 @@ async function updateCard(card: CardUpdate): Promise<void> {
         const response = await fetch(`${API_BASE_URL}/card/${id}`, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json", Authorization: "Bearer ${token}",
+                "Content-Type": "application/json", Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(payload),
         });

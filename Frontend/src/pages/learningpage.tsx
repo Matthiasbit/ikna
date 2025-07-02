@@ -52,7 +52,7 @@ function Learningpage() {
     await updateCard(updateObj);
 
     if (currentCardIndex === cards.length - 1) {
-      await refetch();
+      refetch();
       setCurrentCardIndex(0);
     } else {
       setCurrentCardIndex((prevIndex) => prevIndex + 1);
@@ -97,8 +97,8 @@ function Learningpage() {
               />
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'center', gap: '16px', padding: '16px' }}>
-              <Button onClick={() => handleButtonClick(false)} color="secondary" variant="text" sx={{ width: '100%','&:hover': {borderColor: '#d32f2f', backgroundColor: 'rgba(239,154,154,0.1)',}, }}>Incorrect</Button>
-              <Button onClick={() => handleButtonClick(true)} color="primary" variant="text" sx={{ width: '100%' }}>Correct</Button>
+              <Button type="button" onClick={() => handleButtonClick(false)} color="secondary" variant="text" sx={{ width: '100%','&:hover': {borderColor: '#d32f2f', backgroundColor: 'rgba(239,154,154,0.1)',}, }}>Incorrect</Button>
+              <Button type="button" onClick={() => handleButtonClick(true)} color="primary" variant="text" sx={{ width: '100%' }}>Correct</Button>
             </Box>
           </Card>
         ) : (

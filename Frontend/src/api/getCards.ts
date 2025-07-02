@@ -28,7 +28,6 @@ export async function getCardsBySetId(setId: number) {
 
 
 export function useGetCards(setId: number) {
-    console.log(setId);
     const [cards, setCards] = useState<Cards[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
