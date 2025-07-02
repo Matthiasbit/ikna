@@ -73,11 +73,7 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                             }}>
                                 Log Out
                         </Button>
-                        <Button style={{width: "163px"}} onClick={() => {
-                            deleteUser();
-                            sessionStorage.removeItem('token');
-                            window.location.href = "ikna/loginpage";
-                        }}>
+                        <Button style={{width: "163px"}} onClick={deleteUser}>
                             Delete Account
                         </Button>
                     </Stack>

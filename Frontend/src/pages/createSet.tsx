@@ -31,7 +31,7 @@ export default function CreateSet() {
     const [newSetname, setNewSetname] = useState("");
     const [newCategory, setNewCategory] = useState("");
 
-    const {cards, loading, error, refetch} = useGetCards(setId);
+    const {cards, loading, refetch} = useGetCards(setId);
 
     useEffect(() => {
 
@@ -65,7 +65,7 @@ export default function CreateSet() {
         setNewCategory(value);
         if (!setId) return;
         try {
-            await updateSet(setId, {kategorie: value});
+            await updateSet(setId, {name: newSetname, kategorie: value});
         } catch (err) {
             console.error("Fehler beim Set-Update (kategorie): ", err);
         }
@@ -134,7 +134,6 @@ export default function CreateSet() {
                 </Button>
 
                 {loading && <p>Karten werden geladen...</p>}
-                {error && <p>Fehler: {error}</p>}
 
                 <List>
                     {cards?.map((card) => {
