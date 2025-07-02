@@ -2,9 +2,9 @@ import {Request, Response, Router} from "express";
 import {db} from "../db";
 import {card, set, user as userTable} from "../db/schema";
 import {and, eq} from "drizzle-orm";
-import jwt from "jsonwebtoken";
 import z from "zod";
-import {getVerifiedToken, JwtPayload} from "../utils/utility";
+import {getVerifiedToken} from "../utils/utility";
+
 const router = Router();
 
 
@@ -13,7 +13,7 @@ const updateSetSchema = z.object({
     kategorie: z.string().optional(),
 });
 
-router.get("/sets/:category",async (req, res) => {
+router.get("/sets/:category", async (req, res) => {
     const user = getVerifiedToken(req, res);
     if (!user) return;
 
@@ -74,17 +74,8 @@ router.get("/sets/:category",async (req, res) => {
 
 router.get("/set/:id", async (req: Request, res: Response): Promise<void> => {
 
-    const token = req.headers.authorization?.split(" ")[1] || "";
-
-    let decoded: JwtPayload;
-
-    try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET!) as typeof decoded;
-    } catch (err) {
-        console.error("JWT Fehler oder DB Fehler:", err);
-        res.status(401).json({error: "Unauthorized"});
-        return;
-    }
+    const user = getVerifiedToken(req, res);
+    if (!user) return;
 
     const setId = Number(req.params.id);
     if (isNaN(setId)) {
@@ -94,7 +85,7 @@ router.get("/set/:id", async (req: Request, res: Response): Promise<void> => {
 
     try {
         const setsFound = await db.select().from(set).where(
-            and(eq(set.id, setId), eq(set.user, decoded.id))
+            and(eq(set.id, setId), eq(set.user, user.id))
         );
 
         if (setsFound.length === 0) {
@@ -109,12 +100,13 @@ router.get("/set/:id", async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-// create new Set
+
 router.post("/set", async (req: Request, res: Response): Promise<void> => {
-    const token = req.headers.authorization?.split(" ")[1] || "";
+
+    const user = getVerifiedToken(req, res);
+    if (!user) return;
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
         const parseResult = updateSetSchema.safeParse(req.body);
 
@@ -128,26 +120,21 @@ router.post("/set", async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        const {name, kategorie} = parseResult.data;
-
         const insertedSet = await db.insert(set).values({
-            name,
-            kategorie: kategorie ?? "",
-            user: decoded.id
+            name: parseResult.data.name,
+            kategorie: parseResult.data.kategorie ?? "",
+            user: user.id
         }).returning();
 
-        console.log(insertedSet[0])
 
         res.status(201).json(insertedSet[0]);
     } catch (err) {
         console.error("Fehler beim Erstellen:", err);
-        if (!res.headersSent) {
-            res.status(500).json({error: "Set konnte nicht erstellt werden"});
-        }
+        res.status(500).json({error: "Set konnte nicht erstellt werden"});
     }
 });
 
-// update set by id
+
 router.put("/set/:id", async (req: Request, res: Response): Promise<void> => {
     const user = getVerifiedToken(req, res);
     if (!user) return;
@@ -160,11 +147,9 @@ router.put("/set/:id", async (req: Request, res: Response): Promise<void> => {
         return;
     }
 
-    const updateData = parseResult.data;
-
     try {
         await db.update(set)
-            .set(updateData)
+            .set(parseResult.data)
             .where(eq(set.id, Number(id)));
 
         res.json({message: "Set aktualisiert"});
@@ -174,7 +159,7 @@ router.put("/set/:id", async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-// delete set by id
+
 router.delete("/set/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
@@ -200,12 +185,12 @@ router.delete("/set/:id", async (req: Request, res: Response): Promise<void> => 
 });
 
 
-router.get("/autocompleteOptions",async (req, res): Promise<void> => {
+router.get("/autocompleteOptions", async (req, res): Promise<void> => {
     const user = getVerifiedToken(req, res);
     if (!user) return;
     const sets = await db.select().from(set).where(eq(set.user, user.id));
-    const categorys = sets.map(setItem => setItem.kategorie).filter(category => category !== null && category !== "");
-    res.status(200).json(categorys);
+    const categories = sets.map(setItem => setItem.kategorie).filter(category => category !== null && category !== "");
+    res.status(200).json(categories);
 });
 
 

@@ -23,7 +23,6 @@ async function deleteCard(id: number): Promise<void> {
 
     } catch (error) {
         console.error("Fehler beim Löschen der Karte:", error);
-        throw error;
     }
 }
 

@@ -4,16 +4,10 @@ import {Sets} from "./getSets"
 function getSet(setId: number): Promise<Sets> {
     const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-        window.location.href = "/ikna/loginpage";
-        throw new Error("Kein Token – Weiterleitung zur Loginpage");
-    }
-
     return fetch(`${API_BASE_URL}/set/${setId}`, {
         method: "GET",
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
     })
         .then((res) => {

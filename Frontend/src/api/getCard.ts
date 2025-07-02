@@ -27,6 +27,5 @@ export async function getCard(cardId: number): Promise<CardData | undefined> {
         return await response.json();
     } catch (err) {
         console.error("Fehler beim Abrufen der Karte:", err);
-        throw err;
     }
 }
