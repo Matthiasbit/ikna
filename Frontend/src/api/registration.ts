@@ -36,7 +36,7 @@ function useRegistration() {
             else setSuccess(true);
             sessionStorage.setItem("token", data);
             return data;
-        } catch (err: unknown) {
+        } catch (err) {
             const message =
                 err instanceof Error
                     ? err.message || "Unbekannter Fehler"

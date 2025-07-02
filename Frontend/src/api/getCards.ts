@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from "react";
 
-export interface Cards {
+export type Cards = {
     id: number;
     set: number;
     question: string;

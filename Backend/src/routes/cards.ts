@@ -12,7 +12,7 @@ const updateCardSchema = z.object({
     set: z.number(),
     question: z.string(),
     answer: z.string(),
-    status: z.number().optional(),
+    status: z.number().min(0).optional(),
     difficulty: z.string().optional(),
     lastreview: z.string().optional(),
 });
@@ -54,14 +54,14 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
                 )
             );
 
-        const cards = rawCards.map(c => ({
-            ...c,
-            set: c.set ?? 0,
-            question: c.question ?? "",
-            answer: c.answer ?? "",
-            status: c.status ?? 0,
-            difficulty: c.difficulty ?? "leicht",
-            lastreview: c.lastreview ?? "",
+        const cards = rawCards.map(item => ({
+            ...item,
+            set: item.set ?? 0,
+            question: item.question ?? "",
+            answer: item.answer ?? "",
+            status: item.status ?? 0,
+            difficulty: item.difficulty ?? "leicht",
+            lastreview: item.lastreview ?? "",
         }));
 
         const userIntervals = {

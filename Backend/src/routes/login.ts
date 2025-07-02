@@ -17,14 +17,12 @@ export const loginSchema = z.object({
 
 router.post("/login", async (req: Request, res: Response): Promise<void> => {
   const loginBody = loginSchema.safeParse(req.body);
+
   if (!loginBody.success) {
     res.status(400).json({ error: "Ungültige Eingabedaten", details: loginBody.error.errors });
     return;
   }
-  if ( !loginBody.data.email || !loginBody.data.password) {
-    res.status(400).json({ error: "E-Mail und Passwort sind erforderlich" });
-    return;
-  }
+  
   try {
     const existingUser = await db.select().from(userTable).where(eq(userTable.email, loginBody.data.email));
     if (existingUser.length === 0) {
@@ -32,14 +30,19 @@ router.post("/login", async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const isPasswordValid = await argon2.verify(existingUser[0].password, loginBody.data.password);
-    if (!isPasswordValid) {
-      res.status(400).json({ error: "Falsches Passwort" });
-      return;
-    }
+    if (!await argon2.verify(existingUser[0].password, loginBody.data.password)) {
+    res.status(400).json({ error: "Falsches Passwort" });
+    return;
+  }
 
-    const token = jwt.sign({ id: existingUser[0].id, email: existingUser[0].email }, process.env.JWT_SECRET!, { expiresIn: '1h' });
-    res.status(200).json(token);
+    res.status(200).json(
+    jwt.sign(
+      { id: existingUser[0].id, email: existingUser[0].email },
+      process.env.JWT_SECRET!,
+      { expiresIn: '1h' }
+    )
+  );
+  
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "Interner Serverfehler" });

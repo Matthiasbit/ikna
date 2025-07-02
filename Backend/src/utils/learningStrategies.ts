@@ -1,4 +1,4 @@
-interface Card {
+type Card = {
   id: number;
   set: number; 
   question: string;
@@ -8,7 +8,7 @@ interface Card {
   lastReviewed?: string; 
 }
 
-interface UserIntervals {
+type UserIntervals ={
   leicht: number; 
   mittel: number; 
   schwer: number; 
@@ -59,7 +59,7 @@ function sortByDifficulty(cards: Card[], userIntervals: UserIntervals): Card[] {
   }
 
   return [...filtered].sort(
-    (a, b) => difficultyToWeight(b.difficulty) - difficultyToWeight(a.difficulty)
+    (cardA, cardB) => difficultyToWeight(cardB.difficulty) - difficultyToWeight(cardA.difficulty)
   );
 }
 
@@ -95,18 +95,18 @@ function leitnerSpacedRepetition(cards: Card[], userIntervals: UserIntervals): C
 
   const today = new Date();
 
-  return [...filtered].sort((a, b) => {
-    const aNext = getNextReviewDate(a.status, a.lastReviewed, a.difficulty, userIntervals);
-    const bNext = getNextReviewDate(b.status, b.lastReviewed, b.difficulty, userIntervals);
+return [...filtered].sort((cardA, cardB) => {
+    const cardANext = getNextReviewDate(cardA.status, cardA.lastReviewed, cardA.difficulty, userIntervals);
+    const cardBNext = getNextReviewDate(cardB.status, cardB.lastReviewed, cardB.difficulty, userIntervals);
 
-    const aDue = aNext <= today ? 0 : 1;
-    const bDue = bNext <= today ? 0 : 1;
-    if (aDue !== bDue) {
-      return aDue - bDue;
+    const cardADue = cardANext <= today ? 0 : 1;
+    const cardBDue = cardBNext <= today ? 0 : 1;
+    if (cardADue !== cardBDue) {
+      return cardADue - cardBDue;
     }
 
-    if (a.status !== b.status) {
-      return a.status - b.status;
+    if (cardA.status !== cardB.status) {
+      return cardA.status - cardB.status;
     }
 
     function difficultyToNumber(difficulty: string): number {
@@ -117,7 +117,7 @@ function leitnerSpacedRepetition(cards: Card[], userIntervals: UserIntervals): C
         default: return 5;
       }
     }
-    return difficultyToNumber(b.difficulty) - difficultyToNumber(a.difficulty);
+    return difficultyToNumber(cardB.difficulty) - difficultyToNumber(cardA.difficulty);
   });
 }
 

@@ -23,17 +23,16 @@ router.post("/user", async (req, res): Promise<void> => {
     res.status(400).json({ error: "Ungültige Eingabedaten", details: parseResult.error.errors });
     return;
   }
-  const { email, password } = parseResult.data;
   try {
-    const existingUser = await db.select().from(userTable).where(eq(userTable.email, email));
+    const existingUser = await db.select().from(userTable).where(eq(userTable.email, parseResult.data.email));
     if (existingUser.length > 0) {
       res.status(400).json({ error: "E-Mail bereits registriert" });
       return;
     }
 
-    const passwordHash = await argon2.hash(password, { type: argon2.argon2id });
+    const passwordHash = await argon2.hash(parseResult.data.password, { type: argon2.argon2id });
     const returnedUser = await db.insert(userTable).values([{
-      email,
+      email: parseResult.data.email,
       password: passwordHash,
       leicht: 3,
       mittel: 5,

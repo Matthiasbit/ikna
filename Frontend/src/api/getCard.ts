@@ -1,6 +1,6 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export interface CardData {
+export type CardData = {
     id: number;
     set: number;
     question: string;
@@ -8,8 +8,7 @@ export interface CardData {
     status: number;
     difficulty: "leicht" | "mittel" | "schwer";
     lastreview: string;
-}
-
+};
 export async function getCard(cardId: number): Promise<CardData | undefined> {
 
     try {
