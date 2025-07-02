@@ -46,12 +46,8 @@ export function useGetCards(setId: number) {
             })
             .catch(error => {
                 console.error('Fehler beim Laden der Karten:', error);
-                setLoading(false);
 
             })
-            .finally(() => {
-                setLoading(false);
-            });
     }, [setId]);
 
     useEffect(() => {

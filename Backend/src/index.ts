@@ -1,18 +1,18 @@
 import express from "express";
 import setRouter from "./routes/Set";
 import cors from "cors";
-import settingsRouter from "./routes/user";
+import userRouter from "./routes/user";
 import cardsRouter from "./routes/cards";
-import registrationRouter from "./routes/login";
+import loginRouter from "./routes/login";
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(express.json());
 app.use("/", setRouter)
-app.use("/", settingsRouter);
+app.use("/", userRouter);
 app.use("/", cardsRouter);
-app.use("/", registrationRouter);
+app.use("/", loginRouter);
 
 
 app.get("/", (_, res) => { 
