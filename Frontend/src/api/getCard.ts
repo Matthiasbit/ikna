@@ -12,20 +12,22 @@ export interface CardData {
 
 export async function getCard(cardId: number): Promise<CardData | undefined> {
 
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-        window.location.href = "/ikna/loginpage";
-        return;
+    try {
+        const response = await fetch(`${API_BASE_URL}/card/${cardId}`, {
+            headers: {Authorization: `Bearer ${sessionStorage.getItem('token')}`}
+        });
+
+        if (response.status === 401) {
+            window.location.href = "ikna/loginpage";
+            return;
+        }
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error?.error || "Fehler beim Abrufen der Karte");
+        }
+        return await response.json();
+    } catch (err) {
+        console.error("Fehler beim Abrufen der Karte:", err);
+        throw err;
     }
-
-    const response = await fetch(`${API_BASE_URL}/card/${cardId}`, {
-        headers: {Authorization: `Bearer ${token}`}
-    });
-
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error?.error || "Fehler beim Abrufen der Karte");
-    }
-
-    return await response.json();
 }

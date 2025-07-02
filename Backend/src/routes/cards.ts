@@ -4,8 +4,7 @@ import {card, set, user as userTable} from "../db/schema";
 import {and, eq} from "drizzle-orm";
 import z from "zod";
 import {leitnerSpacedRepetition, sortByDifficulty} from "../utils/learningStrategies";
-import {getVerifiedToken, JwtPayload} from "../utils/utility";
-import jwt from "jsonwebtoken";
+import {getVerifiedToken} from "../utils/utility";
 
 const router = Router();
 
@@ -20,20 +19,8 @@ const updateCardSchema = z.object({
 
 router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> => {
 
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-        res.status(401).json({error: "Kein Token vorhanden"});
-        return;
-    }
-
-    let decoded: JwtPayload;
-    try {
-        decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
-    } catch (err) {
-        console.error(err);
-        res.status(401).json({error: "Ungültiger Token"});
-        return
-    }
+    const user = getVerifiedToken(req, res);
+    if (!user) return;
 
     const setId = Number(req.params.setId);
     if (isNaN(setId)) {
@@ -42,8 +29,8 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
     }
 
     try {
-        const user = await db.select().from(userTable).where(eq(userTable.id, decoded.id)).limit(1);
-        if (!user[0]) {
+        const userData = await db.select().from(userTable).where(eq(userTable.id, user.id)).limit(1);
+        if (!userData[0]) {
             res.status(404).json({error: "User nicht gefunden"});
             return;
         }
@@ -63,7 +50,7 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
             .where(
                 and(
                     eq(card.set, setId),
-                    eq(set.user, decoded.id)
+                    eq(set.user, user.id)
                 )
             );
 
@@ -78,12 +65,12 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
         }));
 
         const userIntervals = {
-            leicht: user[0].leicht,
-            mittel: user[0].mittel,
-            schwer: user[0].schwer,
+            leicht: userData[0].leicht,
+            mittel: userData[0].mittel,
+            schwer: userData[0].schwer,
         };
 
-        const lernmethode = user[0].lernmethode;
+        const lernmethode = userData[0].lernmethode;
 
         let sortedCards;
         if (lernmethode === "leitner") {
@@ -103,7 +90,7 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
 router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
     const id = req.params.id;
 
@@ -124,7 +111,7 @@ router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
 router.put("/card/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
     const id = req.params.id;
     const parseResult = updateCardSchema.safeParse(req.body);
@@ -159,7 +146,7 @@ router.put("/card/:id", async (req: Request, res: Response): Promise<void> => {
 router.post("/card", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
     const parseResult = updateCardSchema.safeParse(req.body);
 
@@ -186,7 +173,7 @@ router.post("/card", async (req: Request, res: Response): Promise<void> => {
 router.delete("/card/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
     const id = Number(req.params.id);
     if (isNaN(id)) {

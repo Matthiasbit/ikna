@@ -9,12 +9,6 @@ export interface CardCreate {
 
 async function createCard(card: CardCreate): Promise<{ card: { id: number } } | undefined> {
 
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-        window.location.href = "/ikna/loginpage";
-        return;
-    }
-
     try {
         const {setId, difficulty} = card;
         const payload = {
@@ -24,13 +18,10 @@ async function createCard(card: CardCreate): Promise<{ card: { id: number } } | 
             difficulty: difficulty ?? "mittel",
         };
 
-        console.log("▶️ Payload an Backend:", payload);
-
-
         const response = await fetch(`${API_BASE_URL}/card`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json", Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json", Authorization: `Bearer ${sessionStorage.getItem('token')}`,
             },
             body: JSON.stringify(payload),
         });
@@ -43,8 +34,7 @@ async function createCard(card: CardCreate): Promise<{ card: { id: number } } | 
         if (!response.ok) {
             const errorBody = contentType?.includes("application/json")
                 ? await response.json()
-                : await response.text(); // Fallback für HTML/Text
-
+                : await response.text();
             console.error("Fehler vom Server:", errorBody);
             throw new Error("Fehlerhafte Antwort vom Server beim Erstellen der Karte");
         }

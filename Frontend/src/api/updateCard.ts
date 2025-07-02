@@ -12,11 +12,6 @@ export interface CardUpdate {
 
 async function updateCard(card: CardUpdate): Promise<void> {
 
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-        window.location.href = "/ikna/loginpage";
-        return;
-    }
 
     try {
         const {id, ...rest} = card;
@@ -32,7 +27,6 @@ async function updateCard(card: CardUpdate): Promise<void> {
             body: JSON.stringify(payload),
         });
 
-        const contentType = response.headers.get("content-type");
         if (response.status === 401) {
             window.location.href = "/ikna/loginpage";
             return;
@@ -40,8 +34,8 @@ async function updateCard(card: CardUpdate): Promise<void> {
 
         if (!response.ok) {
             if (response.status === 401) {
-              window.location.href = 'ikna/loginpage';
-          }
+                window.location.href = 'ikna/loginpage';
+            }
 
             throw new Error("Fehlerhafte Antwort vom Server beim Aktualisieren der Karte");
         }
