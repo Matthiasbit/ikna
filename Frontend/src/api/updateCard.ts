@@ -13,7 +13,7 @@ async function updateCard(card: Cards): Promise<void> {
         const response = await fetch(`${API_BASE_URL}/card/${id}`, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json", Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json", Authorization: `Bearer ${sessionStorage.getItem('token')}`,
             },
             body: JSON.stringify(payload),
         });
