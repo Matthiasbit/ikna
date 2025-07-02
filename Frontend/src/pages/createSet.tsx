@@ -19,7 +19,7 @@ import {useSearchParams} from "next/navigation";
 import "../app/bodyfix.css";
 import {updateSet} from "@/api/updateSet";
 import createCard from "@/api/createCard";
-import {getCardsBySetId} from "@/api/getCards";
+import useGetCards from "@/api/getCards";
 import deleteCard from "@/api/deleteCard";
 
 export default function CreateSet() {
@@ -28,9 +28,10 @@ export default function CreateSet() {
     const setIdParam = searchParams?.get("setId");
     const setId = Number(setIdParam);
 
-    const [cardsArray, setCardsArray] = useState<{ cards: { id: number; question: string }[] }>({cards: []});
     const [newSetname, setNewSetname] = useState("");
     const [newCategory, setNewCategory] = useState("");
+
+    const {cards, loading, error, refetch} = useGetCards(setId);
 
     useEffect(() => {
 
@@ -42,11 +43,8 @@ export default function CreateSet() {
                 setNewSetname(data.name ?? "");
                 setNewCategory(data.kategorie ?? "");
 
-                const cards = await getCardsBySetId(setId);
-                setCardsArray({cards});
             } catch (err) {
                 console.error("Fehler beim Laden von Set oder Karten: ", err);
-                setCardsArray({cards: []});
             }
         };
 
@@ -102,9 +100,7 @@ export default function CreateSet() {
 
         try {
             await deleteCard(cardId);
-            setCardsArray((prev) => ({
-                cards: prev.cards.filter((card) => card.id !== cardId),
-            }));
+            refetch();
         } catch (error) {
             console.error("Fehler beim Löschen der Karte:", error);
             alert("Beim Löschen der Karte ist ein Fehler aufgetreten.");
@@ -137,8 +133,11 @@ export default function CreateSet() {
                     <AddIcon/>
                 </Button>
 
+                {loading && <p>Karten werden geladen...</p>}
+                {error && <p>Fehler: {error}</p>}
+
                 <List>
-                    {cardsArray?.cards?.map((card) => {
+                    {cards?.map((card) => {
                         return (
                             <ListItem key={card.id}>
                                 <ListItemButton style={{border: '1px solid lightgrey'}}>
