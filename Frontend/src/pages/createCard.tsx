@@ -76,11 +76,15 @@ export default function CreateCard() {
     };
 
     const handleDelete = async () => {
-        if (!questionId) return;
+        if (!questionId || !setId) return;
+
+        const confirmDelete = window.confirm("Willst du diese Karte wirkich löschen?");
+        if(!confirmDelete) return;
+
         try {
             await deleteCard(questionId)
 
-            window.location.href = "/ikna/createCard";
+            window.location.href = `/ikna/createSet?setId=${setId}`;
         } catch (e) {
             console.error("Fehler beim Löschen: ", e);
         }
