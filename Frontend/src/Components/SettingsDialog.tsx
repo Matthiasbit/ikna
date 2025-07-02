@@ -57,6 +57,7 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                         >
                             <MenuItem value="leitner">Leitner-System</MenuItem>
                             <MenuItem value="difficulty">Nach Schwierigkeit</MenuItem>
+                            <MenuItem value="random">Zufällige Sortierung</MenuItem>
                         </Select>
                     </FormControl>
                     <Stack direction="row" spacing={2}>

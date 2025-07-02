@@ -12,7 +12,7 @@ export const card = pgTable('CARD', {
     set: integer('set'),
     question: varchar('question'),
     answer: varchar('answer'),
-    status: integer('status').notNull().default(5),
+    status: integer('status').notNull().default(0),
     difficulty: varchar('difficulty'),
     lastreview: varchar('lastreview').default('now()'),
 });

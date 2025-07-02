@@ -13,17 +13,41 @@ interface UserIntervals {
   mittel: number; 
   schwer: number; 
 }
+//Hilfsfunktion
+function isCardCompleted(card: Card, userIntervals: UserIntervals): boolean {
+  const difficulty = card.difficulty.toLowerCase();
+  const requiredRepeats = userIntervals[difficulty as keyof UserIntervals] ?? 1;
+  return card.status >= requiredRepeats;
+}
 
-// Sortiert Karten: schwer > mittel > leicht
-function sortByDifficulty(cards: Card[], userIntervals: UserIntervals): Card[] {
-    const filtered = cards.filter(
+// Fisher-Yates Shuffle
+function randomLearningMode(cards: Card[], userIntervals: UserIntervals): Card[] {
+  const filtered = cards.filter(
     card =>
       card &&
       typeof card.status === "number" &&
       typeof card.difficulty === "string" &&
       typeof card.question === "string" &&
       typeof card.answer === "string" &&
-      card.status < 10
+      !isCardCompleted(card, userIntervals)
+  );
+  for (let i = filtered.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+  }
+  return filtered;
+}
+
+// Sortiert Karten: schwer > mittel > leicht
+function sortByDifficulty(cards: Card[], userIntervals: UserIntervals): Card[] {
+  const filtered = cards.filter(
+    card =>
+      card &&
+      typeof card.status === "number" &&
+      typeof card.difficulty === "string" &&
+      typeof card.question === "string" &&
+      typeof card.answer === "string" &&
+      !isCardCompleted(card, userIntervals)
   );
   function difficultyToWeight(difficulty: string): number {
     switch (difficulty.toLowerCase()) {
@@ -66,7 +90,7 @@ function leitnerSpacedRepetition(cards: Card[], userIntervals: UserIntervals): C
       typeof card.difficulty === "string" &&
       typeof card.question === "string" &&
       typeof card.answer === "string" &&
-      card.status < 10
+      !isCardCompleted(card, userIntervals)
   );
 
   const today = new Date();
@@ -97,4 +121,4 @@ function leitnerSpacedRepetition(cards: Card[], userIntervals: UserIntervals): C
   });
 }
 
-export { sortByDifficulty, leitnerSpacedRepetition };
+export { sortByDifficulty, leitnerSpacedRepetition, randomLearningMode };
