@@ -15,9 +15,9 @@ export async function deleteUser(): Promise<void> {
     }
 
     if (!response.ok) {
-        throw new Error("Fehler beim Löschen des Sets");
+        throw new Error("Fehler beim Löschen des Users");
     }
 
-    window.location.reload();
-
+    window.location.href = "/ikna/loginpage";
+    sessionStorage.removeItem("token");
 }
