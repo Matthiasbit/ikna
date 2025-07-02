@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, Card, CardContent, Chip, CircularProgress} from '@mui/material';
 import Header from '@/Components/Header';
-import useGetCards from '@/api/getCards';
-import updateCard, { CardUpdate } from '@/api/updateCard';
+import updateCard from '@/api/updateCard';
+import useGetCards, { Cards } from '@/api/getCards';
 import "../app/bodyfix.css";
 import {useSearchParams} from "next/navigation";
 
@@ -42,7 +42,7 @@ function Learningpage() {
 
     newStatus = Math.max(0, Math.min(10, newStatus));
 
-    const updateObj: CardUpdate = {
+    const updateObj: Cards = {
       ...current,
       status: newStatus,
       lastreview: new Date().toISOString(),

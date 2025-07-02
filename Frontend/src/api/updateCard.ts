@@ -1,16 +1,7 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { Cards } from "@/api/getCards";
 
-export interface CardUpdate {
-    id: number;
-    set: number;
-    question: string;
-    answer: string;
-    status?: number;
-    difficulty?: string;
-    lastreview?: string;
-}
-
-async function updateCard(card: CardUpdate): Promise<void> {
+async function updateCard(card: Cards): Promise<void> {
 
     const token = sessionStorage.getItem("token");
     if (!token) {
