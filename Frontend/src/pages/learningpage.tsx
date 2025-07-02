@@ -1,64 +1,59 @@
 import React, { useState } from 'react';
-import { Box, Button, Typography, Card, CardContent, Chip } from '@mui/material';
+import { Box, Button, Typography, Card, CardContent, Chip, CircularProgress} from '@mui/material';
 import Header from '@/Components/Header';
 import useGetCards from '@/api/getCards';
-import updateCard from '@/api/updateCard';
+import updateCard, { CardUpdate } from '@/api/updateCard';
 import "../app/bodyfix.css";
-import { useParams } from 'react-router-dom';
+import {useSearchParams} from "next/navigation";
 
-export type Cards = {
-  set: number;
-  id: number;
-  question: string;
-  answer: string;
-  status?: number;
-  difficulty: string;
-};
 
-type UpdateCardPayload = {
-  id: number;
-  status: number;
-  difficulty?: string;
-  lastreview?: string;
-};
-
-export function Learningpage() {
-  const { setId } = useParams(); 
-  const { cards, refetch } = useGetCards();
-  const filteredCards = setId ? cards.filter(card => String(card.set) === String(setId)) : cards;
+function Learningpage() {
+  const searchParams = useSearchParams();
+  const setIdParam = searchParams?.get("setId");
+  console.log("setIdParam:", setIdParam);
+  const setId = setIdParam ? parseInt(setIdParam, 10) : undefined;
+  console.log("setId:", setId);
+  const { cards, loading, refetch } = useGetCards(Number.isFinite(setId) ? setId! : 0);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
 
-  if (!filteredCards || filteredCards.length === 0) {
-    return <div>Keine Karten in diesem Set gefunden.</div>;
+  if (loading) {
+      return (
+          <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100vh',
+              width: '100vw'
+          }}>
+              <CircularProgress/>
+          </div>
+      );
   }
 
-  const currentCard = filteredCards[currentCardIndex];
+  const currentCard = cards[currentCardIndex];
 
   async function handleButtonClick(isCorrect: boolean) {
     setShowAnswer(false);
 
-    const current = filteredCards[currentCardIndex];
+    const current = cards[currentCardIndex];
     let newStatus = isCorrect
       ? (current.status ?? 0) + 1
       : (current.status ?? 0) - 1;
 
     newStatus = Math.max(0, Math.min(10, newStatus));
 
-    const updateObj: UpdateCardPayload = {
-      id: Number(current.id),
+    const updateObj: CardUpdate = {
+      ...current,
       status: newStatus,
       lastreview: new Date().toISOString(),
-
+      difficulty: selectedChip ?? current.difficulty ?? "mittel",
     };
-    if (selectedChip !== null) {
-      updateObj.difficulty = selectedChip;
-    }
 
     await updateCard(updateObj);
 
-    if (currentCardIndex === filteredCards.length - 1) {
+    if (currentCardIndex === cards.length - 1) {
       await refetch();
       setCurrentCardIndex(0);
     } else {

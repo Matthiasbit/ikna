@@ -28,6 +28,7 @@ export async function getCardsBySetId(setId: number) {
 
 
 export function useGetCards(setId: number) {
+    console.log(setId);
     const [cards, setCards] = useState<Cards[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -35,7 +36,7 @@ export function useGetCards(setId: number) {
     const fetchCards = useCallback(() => {
         setLoading(true);
         const token = sessionStorage.getItem('token');
-        fetch(`${API_BASE_URL}/cards`, {
+        fetch(`${API_BASE_URL}/cards/${setId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,9 +55,12 @@ export function useGetCards(setId: number) {
             })
             .then(data => {
                 setCards(data);
+                setLoading(false);
             })
             .catch(error => {
                 console.error('Fehler beim Laden der Karten:', error);
+                setLoading(false);
+
             })
             .finally(() => {
                 setLoading(false);

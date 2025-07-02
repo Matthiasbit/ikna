@@ -21,7 +21,7 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
 
     const user = getVerifiedToken(req, res);
     if (!user) return;
-
+    console.log(req.params.setId); 
     const setId = Number(req.params.setId);
     if (isNaN(setId)) {
         res.status(400).json({error: "Ungültige SetId"});
