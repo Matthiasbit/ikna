@@ -21,6 +21,7 @@ import {updateSet} from "@/api/updateSet";
 import createCard from "@/api/createCard";
 import useGetCards from "@/api/getCards";
 import deleteCard from "@/api/deleteCard";
+import "../app/bodyfix.css";
 
 export default function CreateSet() {
 
