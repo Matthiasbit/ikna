@@ -35,20 +35,13 @@ async function createCard(card: CardCreate): Promise<{ card: { id: number } } | 
             const errorBody = contentType?.includes("application/json")
                 ? await response.json()
                 : await response.text();
-            console.error("Fehler vom Server:", errorBody);
-            throw new Error("Fehlerhafte Antwort vom Server beim Erstellen der Karte");
+            throw new Error("Fehlerhafte Antwort vom Server beim Erstellen der Karte", errorBody);
         }
 
-        if (contentType?.includes("application/json")) {
-            return await response.json();
-        } else {
-            console.warn("Unerwarteter Inhaltstyp:", await response.text());
-            return;
-        }
+        return await response.json();
 
     } catch (error) {
         console.error("Fehler beim Aktualisieren der Karte:", error);
-        throw error;
     }
 }
 

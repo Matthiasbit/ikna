@@ -87,10 +87,10 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
     }
 });
 
-router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
+router.get("/card/:cardId", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
     const id = req.params.id;
 
@@ -108,10 +108,10 @@ router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-router.put("/card/:id", async (req: Request, res: Response): Promise<void> => {
+router.put("/card/:cardId", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
     const id = req.params.id;
     const parseResult = updateCardSchema.safeParse(req.body);
@@ -142,11 +142,11 @@ router.put("/card/:id", async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-// create a new card with POST
+
 router.post("/card", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
     const parseResult = updateCardSchema.safeParse(req.body);
 
@@ -161,7 +161,8 @@ router.post("/card", async (req: Request, res: Response): Promise<void> => {
     };
 
     try {
-        const [insertedCard] = await db.insert(card).values(newCard).returning();
+        const insertedCards = await db.insert(card).values(newCard).returning();
+        const insertedCard = insertedCards[0];
         res.status(201).json({message: "Karte erfolgreich erstellt", card: insertedCard});
     } catch (e) {
         console.error(e);
@@ -169,11 +170,11 @@ router.post("/card", async (req: Request, res: Response): Promise<void> => {
     }
 });
 
-// delete card by id
-router.delete("/card/:id", async (req: Request, res: Response): Promise<void> => {
+
+router.delete("/card/:cardId", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if(!user) return ;
+    if (!user) return;
 
     const id = Number(req.params.id);
     if (isNaN(id)) {
