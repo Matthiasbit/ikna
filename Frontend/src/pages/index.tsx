@@ -2,18 +2,31 @@ import Header from "@/Components/Header";
 import Set from "@/Components/Set";
 import {ChevronLeft, ChevronRight} from "@mui/icons-material";
 import {Autocomplete, CircularProgress, Grid, IconButton, Stack, TextField} from "@mui/material";
-import {useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {Sets, useGetSets} from "@/api/getSets";
 import "../app/bodyfix.css";
 import {useGetAutocompleteOptions} from "@/api/getAutocompleteOptions";
+import { useSearchParams, useRouter} from "next/navigation";
 
 
 export default function Startseite() {
 
     const [page, setPage] = useState(0);
     const options = useGetAutocompleteOptions();
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const category = searchParams?.get("kategorie") || "Alle";
+    const [selectedCategory, setSelectedCategory] = useState<string>("Alle");
 
-    const data = useGetSets();
+    const data = useGetSets(category);
+
+    useEffect(() => {
+        if (category) {
+            setSelectedCategory(category);
+        } else {
+            setSelectedCategory("Alle");
+        }
+    }, [category]);
 
     const pages = useMemo(() => {
         if (data.loading || !data.data) return [];
@@ -41,6 +54,12 @@ export default function Startseite() {
         }
     }
 
+    function handleBlur() {
+        const params = new URLSearchParams(Array.from(searchParams!.entries()));
+        params.set("kategorie", selectedCategory);
+        router.replace(`?${params.toString()}`);
+    }
+
     if (data.loading || options.loading) {
         return (
             <div style={{
@@ -62,6 +81,15 @@ export default function Startseite() {
                 style={{width: '50%'}}
                 options={options.data}
                 renderInput={(params) => <TextField {...params} label="Kategorien"/>}
+                value={selectedCategory}
+                onChange={(_, value) => {
+                    if(value === "" || value === null) {
+                        setSelectedCategory("Alle")
+                    } else {
+                        setSelectedCategory(value)
+                    }}
+                }
+                onBlur={handleBlur}
             />
             <Stack direction="row" spacing={2} style={{width: '100%', minHeight: '500px'}}>
                 <IconButton onClick={() => handleChange(false)}>

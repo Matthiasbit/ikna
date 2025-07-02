@@ -11,20 +11,20 @@ export type Sets = {
     hundred: number;
 }
 
-export function useGetSets() {
+export function useGetSets(category: string) {
     const [data, setData] = useState<Array<Sets>>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-
-
         const token = sessionStorage.getItem("token");
         if (!token) {
             window.location.href = "/ikna/loginpage";
             return;
         }
 
-        fetch(process.env.NEXT_PUBLIC_API_BASE_URL! + "/sets", {
+        console.log(category);
+
+        fetch(process.env.NEXT_PUBLIC_API_BASE_URL! + `/sets/${category}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -45,6 +45,6 @@ export function useGetSets() {
         }).catch(error => {
             console.error('Fehler beim Senden der Anfrage:', error);
         });
-    }, []);
+    }, [category]);
     return {data, loading};
 }
