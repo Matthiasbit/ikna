@@ -10,10 +10,8 @@ import {useSearchParams} from "next/navigation";
 function Learningpage() {
   const searchParams = useSearchParams();
   const setIdParam = searchParams?.get("setId");
-  console.log("setIdParam:", setIdParam);
   const setId = setIdParam ? parseInt(setIdParam, 10) : undefined;
-  console.log("setId:", setId);
-  const { cards, loading, refetch } = useGetCards(Number.isFinite(setId) ? setId! : 0);
+  const { cards, loading, refetch } = useGetCards(Number(setId));
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
@@ -65,10 +63,6 @@ function Learningpage() {
   function handleChipClick(chipLabel: string){
     setSelectedChip(chipLabel);
   };
-
-  if (!cards || cards.length === 0) {
-    return <div>Loading cards...</div>;
-  }
 
   return (
     <div>

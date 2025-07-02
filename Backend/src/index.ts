@@ -1,9 +1,9 @@
 import express from "express";
 import setRouter from "./routes/Set";
 import cors from "cors";
-import settingsRouter from "./routes/settings";
+import settingsRouter from "./routes/user";
 import cardsRouter from "./routes/cards";
-import registrationRouter from "./routes/registration";
+import registrationRouter from "./routes/login";
 
 const app = express();
 app.use(express.json());
@@ -20,5 +20,5 @@ app.get("/", (_, res) => {
 });
 
 
-app.listen(80),
-  console.log('Server ready on port 80.');
+app.listen(80);
+console.log('Server ready on port 80.');

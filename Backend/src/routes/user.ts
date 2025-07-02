@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { db } from "../db";
-import { user as userTable} from "../db/schema";
+import { user as userTable, set , card} from "../db/schema";
 import { eq } from "drizzle-orm";
 import { getVerifiedToken } from "../utils/utility";
 import z from "zod"; 
+import argon2 from "argon2";
+import jwt from "jsonwebtoken";
+import { loginSchema } from "./login";
 
 const router = Router();
-
 const settingsSchema = z.object({
     easy: z.number().int().min(0),
     medium: z.number().int().min(0),
@@ -14,7 +16,39 @@ const settingsSchema = z.object({
     lernmethode: z.string().min(1),
 });
 
-router.get("/Settings", (req, res) => {
+
+router.post("/user", async (req, res): Promise<void> => {
+  const parseResult = loginSchema.safeParse(req.body);
+  if (!parseResult.success) {
+    res.status(400).json({ error: "Ungültige Eingabedaten", details: parseResult.error.errors });
+    return;
+  }
+  const { email, password } = parseResult.data;
+  try {
+    const existingUser = await db.select().from(userTable).where(eq(userTable.email, email));
+    if (existingUser.length > 0) {
+      res.status(400).json({ error: "E-Mail bereits registriert" });
+      return;
+    }
+
+    const passwordHash = await argon2.hash(password, { type: argon2.argon2id });
+    const returnedUser = await db.insert(userTable).values([{
+      email,
+      password: passwordHash,
+      leicht: 3,
+      mittel: 5,
+      schwer: 7,
+      lernmethode: "difficulty"
+    }]).returning();
+    const token = jwt.sign({ id: returnedUser[0].id, email: returnedUser[0].email }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+    res.status(200).json(token);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: "Registrierung fehlgeschlagen" });
+  }
+});
+
+router.get("/user", (req, res) => {
     const user = getVerifiedToken(req, res);
     if (!user) {return;}
     db.select().from(userTable).where(eq(userTable.id, user.id)).then((result) => {
@@ -35,7 +69,7 @@ router.get("/Settings", (req, res) => {
     });
 });
 
-router.post("/Settings", async (req, res): Promise<void> => {
+router.put("/user", async (req, res): Promise<void> => {
     const user = getVerifiedToken(req, res);
     if (!user) {return;}
     const parseResult = settingsSchema.safeParse(req.body);
@@ -57,4 +91,22 @@ router.post("/Settings", async (req, res): Promise<void> => {
         res.status(500).json({ error: "Internal server error" });
     }
 });
+
+router.delete("/user", async (req, res): Promise<void> => {
+  const user = getVerifiedToken(req, res);
+  if (!user) return;
+  const sets = await db.delete(set).where(eq(set.user, user.id)).returning();
+
+  sets.forEach((set) => {
+    db.delete(card).where(eq(card.set, set.id));
+  });
+
+  db.delete(userTable).where(eq(userTable.id, user.id)).then(() => {
+    res.status(200).json({ message: "User deleted successfully" });
+  }).catch(error => {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  });
+});
+
 export default router;

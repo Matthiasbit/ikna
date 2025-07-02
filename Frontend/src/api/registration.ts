@@ -26,7 +26,7 @@ function useRegistration() {
         }
 
         try {
-            const response = await fetch(`${API_BASE_URL}/${registration ? "registration" : "login"}`, {
+            const response = await fetch(`${API_BASE_URL}/${registration ? "user" : "login"}`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({email, password}),

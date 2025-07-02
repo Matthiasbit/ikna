@@ -30,10 +30,13 @@ export async function getCardsBySetId(setId: number) {
 export function useGetCards(setId: number) {
     console.log(setId);
     const [cards, setCards] = useState<Cards[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     const fetchCards = useCallback(() => {
+        if (isNaN(setId) || setId <= 0) {
+            return;
+        }
         setLoading(true);
         const token = sessionStorage.getItem('token');
         fetch(`${API_BASE_URL}/cards/${setId}`, {
@@ -65,7 +68,7 @@ export function useGetCards(setId: number) {
             .finally(() => {
                 setLoading(false);
             });
-    }, []);
+    }, [setId]);
 
     useEffect(() => {
         fetchCards();

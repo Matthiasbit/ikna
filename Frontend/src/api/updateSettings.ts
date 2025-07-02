@@ -1,16 +1,9 @@
-export type UpdateSettingsOptions = {
-  lernmethode: string;
-  easy: number;
-  medium: number;
-  hard: number;
-  shareSets: boolean;
-  shareStats: boolean;
-};
+import { Options } from "@/Components/SettingsDialog";
 
-export async function updateSettings(options: UpdateSettingsOptions): Promise<Response> {
+export async function updateSettings(options: Options): Promise<Response> {
   const token = sessionStorage.getItem('token');
-  return fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/Settings", {
-    method: "POST",
+  return fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/user", {
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + (token || "")

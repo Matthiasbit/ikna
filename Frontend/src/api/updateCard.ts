@@ -6,7 +6,7 @@ export interface CardUpdate {
     question: string;
     answer: string;
     status?: number;
-    difficulty?: string | null;
+    difficulty?: string;
     lastreview?: string;
 }
 
@@ -32,7 +32,6 @@ async function updateCard(card: CardUpdate): Promise<void> {
             body: JSON.stringify(payload),
         });
 
-        const contentType = response.headers.get("content-type");
         if (response.status === 401) {
             window.location.href = "/ikna/loginpage";
             return;
@@ -41,8 +40,7 @@ async function updateCard(card: CardUpdate): Promise<void> {
         if (!response.ok) {
             if (response.status === 401) {
               window.location.href = 'ikna/loginpage';
-          }
-
+            }
             throw new Error("Fehlerhafte Antwort vom Server beim Aktualisieren der Karte");
         }
     } catch (error) {

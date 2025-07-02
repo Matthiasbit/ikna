@@ -1,7 +1,8 @@
-import { Dialog ,DialogTitle, Button, DialogActions, DialogContent, FormControl, InputLabel, Select, MenuItem, Stack, TextField, Switch, FormControlLabel, CircularProgress} from '@mui/material';
+import { Dialog ,DialogTitle, Button, DialogActions, DialogContent, FormControl, InputLabel, Select, MenuItem, Stack, TextField, CircularProgress} from '@mui/material';
 import { ReactElement, useEffect, useState } from 'react';
 import { useGetSettings } from '@/api/getSettings';
 import { updateSettings } from '@/api/updateSettings';
+import { deleteUser } from '@/api/deleteUser';
 
 type SettingsDialogProps = {
     open: boolean;
@@ -13,8 +14,6 @@ export type Options = {
     easy: number;
     medium: number;
     hard: number;
-    shareSets: boolean;
-    shareStats: boolean;
 }
 
 export default function SettingsDialog({open , handleClose }:SettingsDialogProps): ReactElement {
@@ -24,8 +23,6 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
         easy: data?.easy || 3,
         medium: data?.medium || 5,
         hard: data?.hard || 7,
-        shareSets: false,
-        shareStats: false,
     });
     
     useEffect(() => {
@@ -38,8 +35,6 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                 easy: data.easy,
                 medium: data.medium,
                 hard: data.hard,
-                shareSets: data.shareSets ,
-                shareStats: data.shareStats,
             });
         }
     }, [data, loading]);
@@ -65,24 +60,40 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                         </Select>
                     </FormControl>
                     <Stack direction="row" spacing={2}>
-                        <TextField label="easy" type="number" value={options.easy} onChange={(event) => setOptions({...options, easy: Number(event.target.value)})}/>
-                        <TextField label="medium" type="number" value={options.medium} onChange={(event) => setOptions({...options, medium: Number(event.target.value)})}/>  
-                        <TextField label="hard" type="number" value={options.hard} onChange={(event) => setOptions({...options, hard: Number(event.target.value)})}/>   
+                        <TextField label="easy" type="number" value={options.easy} onChange={(event) => setOptions({...options, easy: parseInt(event.target.value)})}/>
+                        <TextField label="medium" type="number" value={options.medium} onChange={(event) => setOptions({...options, medium: parseInt(event.target.value)})}/>  
+                        <TextField label="hard" type="number" value={options.hard} onChange={(event) => setOptions({...options, hard: parseInt(event.target.value)})}/>   
                     </Stack>
                     <h3>Account</h3>
                     <Stack direction="row" spacing={2}>
-                        <Button style={{width: "163px"}} onClick={() => sessionStorage.removeItem('token')}>Log Out</Button>
-                        <Button style={{width: "163px"}}>Delete Account</Button>
-                    </Stack>
-                    <h3>Friends</h3>
-                    <Stack direction="row" spacing={2}>
-                        <FormControlLabel control={<Switch value={options.shareSets} onChange={() => setOptions({...options, shareSets: !options.shareSets})}/>} label="Share your Sets" />
-                        <FormControlLabel control={<Switch value={options.shareStats}  onChange={() => setOptions({...options, shareStats: !options.shareStats})}/>} label="Share your Stats" />
+                        <Button style={{width: "163px"}} onClick={() => {
+                            sessionStorage.removeItem('token');
+                            window.location.href = "ikna/loginpage";
+                            }}>
+                                Log Out
+                        </Button>
+                        <Button style={{width: "163px"}} onClick={() => {
+                            deleteUser();
+                            sessionStorage.removeItem('token');
+                            window.location.href = "ikna/loginpage";
+                        }}>
+                            Delete Account
+                        </Button>
                     </Stack>
                 </Stack>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} color="secondary">
+                <Button onClick={() => {
+                    if (!data){return;}
+                    setOptions({
+                        lernmethode: data.lernmethode,
+                        easy: data.easy,
+                        medium: data.medium,
+                        hard: data.hard,
+                    });
+                    handleClose()}
+                } 
+                color="secondary">
                     Cancel
                 </Button>
                 <Button

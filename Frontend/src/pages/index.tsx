@@ -5,11 +5,13 @@ import {Autocomplete, CircularProgress, Grid, IconButton, Stack, TextField} from
 import {useMemo, useState} from "react";
 import {Sets, useGetSets} from "@/api/getSets";
 import "../app/bodyfix.css";
+import {useGetAutocompleteOptions} from "@/api/getAutocompleteOptions";
 
 
 export default function Startseite() {
 
     const [page, setPage] = useState(0);
+    const options = useGetAutocompleteOptions();
 
     const data = useGetSets();
 
@@ -39,7 +41,7 @@ export default function Startseite() {
         }
     }
 
-    if (data.loading) {
+    if (data.loading || options.loading) {
         return (
             <div style={{
                 display: 'flex',
@@ -58,7 +60,7 @@ export default function Startseite() {
             <Header text="Start"/>
             <Autocomplete
                 style={{width: '50%'}}
-                options={["Example1", "Example2"]}
+                options={options.data}
                 renderInput={(params) => <TextField {...params} label="Kategorien"/>}
             />
             <Stack direction="row" spacing={2} style={{width: '100%', minHeight: '500px'}}>

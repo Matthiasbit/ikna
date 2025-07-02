@@ -22,7 +22,7 @@ import createCard from "@/api/createCard";
 import {getCardsBySetId} from "@/api/getCards";
 import deleteCard from "@/api/deleteCard";
 
-function CreateSet() {
+export default function CreateSet() {
 
     const searchParams = useSearchParams();
     const setIdParam = searchParams?.get("setId");
@@ -163,6 +163,3 @@ function CreateSet() {
         </>
     )
 }
-
-
-export default CreateSet;
