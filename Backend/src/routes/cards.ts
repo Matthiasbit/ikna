@@ -3,7 +3,7 @@ import {db} from "../db";
 import {card, set, user as userTable} from "../db/schema";
 import {and, eq} from "drizzle-orm";
 import z from "zod";
-import {leitnerSpacedRepetition, sortByDifficulty} from "../utils/learningStrategies";
+import {leitnerSpacedRepetition, sortByDifficulty, randomLearningMode} from "../utils/learningStrategies";
 import {getVerifiedToken} from "../utils/utility";
 
 const router = Router();
@@ -77,6 +77,8 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
             sortedCards = leitnerSpacedRepetition(cards, userIntervals);
         } else if (lernmethode === "difficulty") {
             sortedCards = sortByDifficulty(cards, userIntervals);
+        } else if (lernmethode === "random") {
+            sortedCards = randomLearningMode(cards, userIntervals);
         } else {
             sortedCards = cards;
         }

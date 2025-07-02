@@ -31,17 +31,28 @@ function Learningpage() {
   }
 
   const currentCard = cards[currentCardIndex];
+  if (!currentCard) {
+    return (
+      <div>
+        <Header text="Lernseite" />
+        <Box sx={{ maxWidth:'90vw', margin: 'auto', paddingTop: '20px' }}>
+          <Typography variant="h5" align="center">Stapel leer, Kopf voll! Großartig gemacht!</Typography>
+        </Box>
+      </div>
+    );
+  }
 
   async function handleButtonClick(isCorrect: boolean) {
     setShowAnswer(false);
 
     const current = cards[currentCardIndex];
+
     let newStatus = isCorrect
       ? (current.status ?? 0) + 1
       : (current.status ?? 0) - 1;
 
-    newStatus = Math.max(0, Math.min(10, newStatus));
-
+    newStatus = Math.max(0, newStatus);
+    
     const updateObj: Cards = {
       ...current,
       status: newStatus,
