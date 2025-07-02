@@ -37,11 +37,11 @@ function useRegistration() {
             sessionStorage.setItem("token", data);
             return data;
         } catch (err: unknown) {
-      if (err instanceof Error) {
-        setErrorMessage(err.message || "Unbekannter Fehler");
-      } else {
-        setErrorMessage("Unbekannter Fehler");
-      }
+            const message =
+                err instanceof Error
+                    ? err.message || "Unbekannter Fehler"
+                    : "Unbekannter Fehler";
+            setErrorMessage(message);
         } finally {
             setLoading(false);
         }

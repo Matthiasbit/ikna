@@ -1,0 +1,10 @@
+{
+  "name": "app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "cd Backend && npm install && npm run build &&  cd .. && cd Frontend && npm install && npm run build && cd .. && echo Fertig!",
+    "startFrontend": "cd Frontend && npm run start",
+    "startBackend": "cd Backend && npm run start"
+  }
+}
