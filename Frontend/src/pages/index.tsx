@@ -1,7 +1,7 @@
 import Header from "@/Components/Header";
 import Set from "@/Components/Set";
 import {ChevronLeft, ChevronRight} from "@mui/icons-material";
-import {Autocomplete, CircularProgress, Grid2, IconButton, Stack, TextField} from "@mui/material";
+import {Autocomplete, CircularProgress, Grid, IconButton, Stack, TextField} from "@mui/material";
 import {useMemo, useState} from "react";
 import {Sets, useGetSets} from "@/api/getSets";
 import "../app/bodyfix.css";
@@ -65,7 +65,7 @@ export default function Startseite() {
                 <IconButton onClick={() => handleChange(false)}>
                     <ChevronLeft color="primary"/>
                 </IconButton>
-                <Grid2 container spacing={3} style={{width: '100%'}}>
+                <Grid container spacing={3} style={{width: '100%'}}>
                     {data.data.length === 0 ?
                         <Stack>
                             <h2>Keine Sets gefunden!!!</h2>
@@ -75,14 +75,14 @@ export default function Startseite() {
                         :
                         pages[page].map((_set, index) => {
                             return (
-                                <Grid2 key={index} size={{xs: 12, md: 6, lg: 4}}>
+                                <Grid key={index} size={{xs: 12, md: 6, lg: 4}}>
                                     <Set data={pages[page][index]}/>
-                                </Grid2>)
+                                </Grid>)
                         })}
-                    <Grid2 size={{xs: 12, md: 6, lg: 4}}>
+                    <Grid size={{xs: 12, md: 6, lg: 4}}>
                         <Set data={null}/>
-                    </Grid2>
-                </Grid2>
+                    </Grid>
+                </Grid>
                 <IconButton onClick={() => handleChange(true)}>
                     <ChevronRight color="primary"/>
                 </IconButton>
