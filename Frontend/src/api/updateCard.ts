@@ -1,16 +1,7 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import { Cards } from "@/api/getCards";
 
-export interface CardUpdate {
-    id: number;
-    set: number;
-    question: string;
-    answer: string;
-    status?: number;
-    difficulty?: string | null;
-    lastreview?: string;
-}
-
-async function updateCard(card: CardUpdate): Promise<void> {
+async function updateCard(card: Cards): Promise<void> {
 
 
     try {
@@ -22,7 +13,7 @@ async function updateCard(card: CardUpdate): Promise<void> {
         const response = await fetch(`${API_BASE_URL}/card/${id}`, {
             method: "PUT",
             headers: {
-                "Content-Type": "application/json", Authorization: "Bearer ${token}",
+                "Content-Type": "application/json", Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(payload),
         });
@@ -34,9 +25,8 @@ async function updateCard(card: CardUpdate): Promise<void> {
 
         if (!response.ok) {
             if (response.status === 401) {
-                window.location.href = 'ikna/loginpage';
+              window.location.href = 'ikna/loginpage';
             }
-
             throw new Error("Fehlerhafte Antwort vom Server beim Aktualisieren der Karte");
         }
     } catch (error) {

@@ -227,4 +227,13 @@ router.delete("/set/:id", async (req: Request, res: Response): Promise<void> => 
 });
 
 
+router.get("autocompleteOptions",async (req, res): Promise<void> => {
+    const user = getVerifiedToken(req, res);
+    if (!user) return;
+    const sets = await db.select().from(set).where(eq(set.user, user.id));
+    const categorys = sets.map(setItem => setItem.kategorie).filter(category => category !== null && category !== "");
+    res.status(200).json(categorys);
+});
+
+
 export default router;

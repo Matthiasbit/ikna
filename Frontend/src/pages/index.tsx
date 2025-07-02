@@ -1,15 +1,17 @@
 import Header from "@/Components/Header";
 import Set from "@/Components/Set";
 import {ChevronLeft, ChevronRight} from "@mui/icons-material";
-import {Autocomplete, CircularProgress, Grid2, IconButton, Stack, TextField} from "@mui/material";
+import {Autocomplete, CircularProgress, Grid, IconButton, Stack, TextField} from "@mui/material";
 import {useMemo, useState} from "react";
 import {Sets, useGetSets} from "@/api/getSets";
 import "../app/bodyfix.css";
+import {useGetAutocompleteOptions} from "@/api/getAutocompleteOptions";
 
 
 export default function Startseite() {
 
     const [page, setPage] = useState(0);
+    const options = useGetAutocompleteOptions();
 
     const data = useGetSets();
 
@@ -39,7 +41,7 @@ export default function Startseite() {
         }
     }
 
-    if (data.loading) {
+    if (data.loading || options.loading) {
         return (
             <div style={{
                 display: 'flex',
@@ -58,14 +60,14 @@ export default function Startseite() {
             <Header text="Start"/>
             <Autocomplete
                 style={{width: '50%'}}
-                options={["Example1", "Example2"]}
+                options={options.data}
                 renderInput={(params) => <TextField {...params} label="Kategorien"/>}
             />
             <Stack direction="row" spacing={2} style={{width: '100%', minHeight: '500px'}}>
                 <IconButton onClick={() => handleChange(false)}>
                     <ChevronLeft color="primary"/>
                 </IconButton>
-                <Grid2 container spacing={3} style={{width: '100%'}}>
+                <Grid container spacing={3} style={{width: '100%'}}>
                     {data.data.length === 0 ?
                         <Stack>
                             <h2>Keine Sets gefunden!!!</h2>
@@ -75,14 +77,14 @@ export default function Startseite() {
                         :
                         pages[page].map((_set, index) => {
                             return (
-                                <Grid2 key={index} size={{xs: 12, md: 6, lg: 4}}>
+                                <Grid key={index} size={{xs: 12, md: 6, lg: 4}}>
                                     <Set data={pages[page][index]}/>
-                                </Grid2>)
+                                </Grid>)
                         })}
-                    <Grid2 size={{xs: 12, md: 6, lg: 4}}>
+                    <Grid size={{xs: 12, md: 6, lg: 4}}>
                         <Set data={null}/>
-                    </Grid2>
-                </Grid2>
+                    </Grid>
+                </Grid>
                 <IconButton onClick={() => handleChange(true)}>
                     <ChevronRight color="primary"/>
                 </IconButton>

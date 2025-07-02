@@ -6,11 +6,9 @@ export function useGetSettings() {
   const [data, setData] = useState<Options>();
   const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
-    if (sessionStorage.getItem('token') === null) {
-        return;
-    }
-    fetch(process.env.NEXT_PUBLIC_API_BASE_URL! + "/Settings", {method: 'GET',  headers: { 'Content-Type': 'application/json', 'authorization' : "Bearer " + sessionStorage.getItem('token') || "Bearer " + '' }})
+    fetch(process.env.NEXT_PUBLIC_API_BASE_URL! + "/user", {method: 'GET',  headers: { 'Content-Type': 'application/json', 'authorization' : "Bearer " + sessionStorage.getItem('token') || "Bearer " + '' }})
         .then(response => {
             if (!response.ok) {
                 throw new Error(response.statusText);
@@ -22,8 +20,6 @@ export function useGetSettings() {
                 easy: data.easy,
                 medium: data.medium,
                 hard: data.hard,
-                shareSets: false,
-                shareStats: false,
             };
             setData(options);
             setLoading(false);

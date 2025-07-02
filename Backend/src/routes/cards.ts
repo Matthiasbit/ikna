@@ -21,7 +21,7 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
 
     const user = getVerifiedToken(req, res);
     if (!user) return;
-
+    console.log(req.params.setId);
     const setId = Number(req.params.setId);
     if (isNaN(setId)) {
         res.status(400).json({error: "Ungültige SetId"});
@@ -29,8 +29,8 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
     }
 
     try {
-        const userData = await db.select().from(userTable).where(eq(userTable.id, user.id)).limit(1);
-        if (!userData[0]) {
+        const userObject = await db.select().from(userTable).where(eq(userTable.id, user.id)).limit(1);
+        if (!userObject[0]) {
             res.status(404).json({error: "User nicht gefunden"});
             return;
         }
@@ -65,12 +65,12 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
         }));
 
         const userIntervals = {
-            leicht: userData[0].leicht,
-            mittel: userData[0].mittel,
-            schwer: userData[0].schwer,
+            leicht: userObject[0].leicht,
+            mittel: userObject[0].mittel,
+            schwer: userObject[0].schwer,
         };
 
-        const lernmethode = userData[0].lernmethode;
+        const lernmethode = userObject[0].lernmethode;
 
         let sortedCards;
         if (lernmethode === "leitner") {
@@ -90,7 +90,7 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
 router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if (!user) return;
+    if(!user) return ;
 
     const id = req.params.id;
 
@@ -111,7 +111,7 @@ router.get("/card/:id", async (req: Request, res: Response): Promise<void> => {
 router.put("/card/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if (!user) return;
+    if(!user) return ;
 
     const id = req.params.id;
     const parseResult = updateCardSchema.safeParse(req.body);
@@ -146,7 +146,7 @@ router.put("/card/:id", async (req: Request, res: Response): Promise<void> => {
 router.post("/card", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if (!user) return;
+    if(!user) return ;
 
     const parseResult = updateCardSchema.safeParse(req.body);
 
@@ -173,7 +173,7 @@ router.post("/card", async (req: Request, res: Response): Promise<void> => {
 router.delete("/card/:id", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
-    if (!user) return;
+    if(!user) return ;
 
     const id = Number(req.params.id);
     if (isNaN(id)) {
