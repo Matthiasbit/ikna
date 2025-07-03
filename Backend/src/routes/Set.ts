@@ -72,7 +72,7 @@ router.get("/sets/:category", async (req, res) => {
     res.status(200).json(setsWithStats);
 });
 
-router.get("/set/:id", async (req: Request, res: Response): Promise<void> => {
+router.get("/set/:setId", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
     if (!user) return;
@@ -135,7 +135,7 @@ router.post("/set", async (req: Request, res: Response): Promise<void> => {
 });
 
 
-router.put("/set/:id", async (req: Request, res: Response): Promise<void> => {
+router.put("/set/:setId", async (req: Request, res: Response): Promise<void> => {
     const user = getVerifiedToken(req, res);
     if (!user) return;
 
@@ -160,7 +160,7 @@ router.put("/set/:id", async (req: Request, res: Response): Promise<void> => {
 });
 
 
-router.delete("/set/:id", async (req: Request, res: Response): Promise<void> => {
+router.delete("/set/:setId", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
     if (!user) return;
