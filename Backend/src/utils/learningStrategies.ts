@@ -42,25 +42,6 @@ function filterValidCards(cards: Card[], userIntervals: UserIntervals): Card[] {
   );
 }
 
-// Fisher-Yates Shuffle
-function randomLearningMode(cards: Card[], userIntervals: UserIntervals): Card[] {
-  const filtered = filterValidCards(cards, userIntervals);
-  for (let i = filtered.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
-  }
-  return filtered;
-}
-
-// Sortiert Karten: schwer > mittel > leicht
-function sortByDifficulty(cards: Card[], userIntervals: UserIntervals): Card[] {
-  const filtered = filterValidCards(cards, userIntervals);
-  return [...filtered].sort(
-    (cardA, cardB) => difficultyToValue(cardB.difficulty, userIntervals) - difficultyToValue(cardA.difficulty, userIntervals)
-  );
-}
-
-// Leitner-System: Karten werden nach Fälligkeit (basierend auf Box und User-Intervallen) sortiert
 function getNextReviewDate(
   status: number,
   lastReviewed: string | undefined,
@@ -77,6 +58,23 @@ function getNextReviewDate(
   const next = new Date(last);
   next.setDate(last.getDate() + interval * (status || 1));
   return next;
+}
+
+//Lernmethoden
+function randomLearningMode(cards: Card[], userIntervals: UserIntervals): Card[] {
+  const filtered = filterValidCards(cards, userIntervals);
+  for (let i = filtered.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+  }
+  return filtered;
+}
+
+function sortByDifficulty(cards: Card[], userIntervals: UserIntervals): Card[] {
+  const filtered = filterValidCards(cards, userIntervals);
+  return [...filtered].sort(
+    (cardA, cardB) => difficultyToValue(cardB.difficulty, userIntervals) - difficultyToValue(cardA.difficulty, userIntervals)
+  );
 }
 
 function leitnerSpacedRepetition(cards: Card[], userIntervals: UserIntervals): Card[] {
