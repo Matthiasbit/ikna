@@ -60,6 +60,7 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                             <MenuItem value="random">Zufällige Sortierung</MenuItem>
                         </Select>
                     </FormControl>
+                    <h4>Häufigkeit an Wiederholungen bis Karte als gelernt gilt:</h4>
                     <Stack direction="row" spacing={2}>
                         <TextField label="easy" type="number" value={options.easy} onChange={(event) => setOptions({...options, easy: parseInt(event.target.value)})}/>
                         <TextField label="medium" type="number" value={options.medium} onChange={(event) => setOptions({...options, medium: parseInt(event.target.value)})}/>  

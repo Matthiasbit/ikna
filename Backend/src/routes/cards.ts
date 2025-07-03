@@ -94,7 +94,7 @@ router.get("/card/:cardId", async (req: Request, res: Response): Promise<void> =
     const user = getVerifiedToken(req, res);
     if (!user) return;
 
-    const id = req.params.id;
+    const id = req.params.cardId;
 
     try {
         const cards = await db.select().from(card).where(eq(card.id, Number(id)));
@@ -115,7 +115,7 @@ router.put("/card/:cardId", async (req: Request, res: Response): Promise<void> =
     const user = getVerifiedToken(req, res);
     if (!user) return;
 
-    const id = req.params.id;
+    const id = req.params.cardId;
     const parseResult = updateCardSchema.safeParse(req.body);
 
     if (!parseResult.success) {
@@ -178,7 +178,7 @@ router.delete("/card/:cardId", async (req: Request, res: Response): Promise<void
     const user = getVerifiedToken(req, res);
     if (!user) return;
 
-    const id = Number(req.params.id);
+    const id = Number(req.params.cardId);
     if (isNaN(id)) {
         res.status(400).json({error: "Ungültige Karten Id"});
         return;
