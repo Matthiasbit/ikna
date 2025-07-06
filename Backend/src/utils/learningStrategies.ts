@@ -5,7 +5,7 @@ type Card = {
   answer: string;
   status: number; 
   difficulty: string;
-  lastReviewed?: string; 
+  lastreview?: string; 
 }
 
 type UserIntervals ={
@@ -79,20 +79,14 @@ function sortByDifficulty(cards: Card[], userIntervals: UserIntervals): Card[] {
 
 function leitnerSpacedRepetition(cards: Card[], userIntervals: UserIntervals): Card[] {
   const filtered = filterValidCards(cards, userIntervals);
-  const today = new Date();
 
   return [...filtered].sort((cardA, cardB) => {
-    const cardANext = getNextReviewDate(cardA.status, cardA.lastReviewed, cardA.difficulty, userIntervals);
-    const cardBNext = getNextReviewDate(cardB.status, cardB.lastReviewed, cardB.difficulty, userIntervals);
+    const aLast = cardA.lastreview ? new Date(cardA.lastreview).getTime() : 0;
+    const bLast = cardB.lastreview ? new Date(cardB.lastreview).getTime() : 0;
+    console.log(cardA.lastreview, aLast, cardB.lastreview, bLast);
 
-    const cardADue = cardANext <= today ? 0 : 1;
-    const cardBDue = cardBNext <= today ? 0 : 1;
-    if (cardADue !== cardBDue) {
-      return cardADue - cardBDue;
-    }
-
-    if (cardA.status !== cardB.status) {
-      return cardA.status - cardB.status;
+    if (aLast !== bLast) {
+      return aLast - bLast;
     }
 
     return difficultyToValue(cardB.difficulty, userIntervals) - difficultyToValue(cardA.difficulty, userIntervals);
