@@ -83,7 +83,6 @@ function leitnerSpacedRepetition(cards: Card[], userIntervals: UserIntervals): C
   return [...filtered].sort((cardA, cardB) => {
     const aLast = cardA.lastreview ? new Date(cardA.lastreview).getTime() : 0;
     const bLast = cardB.lastreview ? new Date(cardB.lastreview).getTime() : 0;
-    console.log(cardA.lastreview, aLast, cardB.lastreview, bLast);
 
     if (aLast !== bLast) {
       return aLast - bLast;

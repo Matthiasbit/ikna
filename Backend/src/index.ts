@@ -4,11 +4,20 @@ import cors from "cors";
 import userRouter from "./routes/user";
 import cardsRouter from "./routes/cards";
 import loginRouter from "./routes/login";
+import helmet from "helmet";
+
 
 const app = express();
-app.use(express.json());
-app.use(cors());
-app.use(express.json());
+app.use(helmet());
+app.use(cors({
+  origin: [
+    //hier noch Vercel URL einfügen .env vermutlich auch
+    "http://localhost:3000"
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+}));
+app.use(express.json()); 
 app.use("/", setRouter)
 app.use("/", userRouter);
 app.use("/", cardsRouter);
