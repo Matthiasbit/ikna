@@ -1,11 +1,11 @@
 import express from "express";
-import setRouter from "./routes/Set";
+import setRouter from "../../src/routes/Set";
 import cors from "cors";
-import userRouter from "./routes/user";
-import cardsRouter from "./routes/cards";
-import loginRouter from "./routes/login";
+import userRouter from "../../src/routes/user";
+import cardsRouter from "../../src/routes/cards";
+import loginRouter from "../../src/routes/login";
 import helmet from "helmet";
-
+import serverless from "serverless-http";
 
 const app = express();
 app.use(helmet());
@@ -23,10 +23,4 @@ app.use("/", userRouter);
 app.use("/", cardsRouter);
 app.use("/", loginRouter);
 
-
-app.get("/", (_, res) => { 
-  res.send("Hello express");
-});
-
-app.listen(80);
-module.exports = app;
+export const handler = serverless(app);
