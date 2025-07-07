@@ -47,7 +47,7 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "include": [
-    "netlify/functions/**/*.ts", "src/db.ts"  ],
+    "netlify/functions/**/*.ts", "src/**/*.ts"  ],
   "exclude": [
     "node_modules",
     "dist"

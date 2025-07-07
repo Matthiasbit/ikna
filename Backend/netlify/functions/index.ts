@@ -9,15 +9,11 @@ import serverless from "serverless-http";
 
 const app = express();
 app.use(helmet());
-app.use(cors({
-  origin: [
-    "https://matthiasbit.github.io/ikna",
-    "http://localhost:3000"
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-}));
-app.use(express.json()); 
+app.use(cors());
+app.use(express.json());
+app.get("/", (req, res) => {
+  res.send("Antwort von use");
+});
 app.use("/", setRouter)
 app.use("/", userRouter);
 app.use("/", cardsRouter);
