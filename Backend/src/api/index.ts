@@ -5,6 +5,7 @@ import userRouter from "./routes/user";
 import cardsRouter from "./routes/cards";
 import loginRouter from "./routes/login";
 import helmet from "helmet";
+import {Request, Response} from "express";
 
 
 const app = express();
@@ -27,9 +28,5 @@ app.use("/", loginRouter);
 app.get("/", (_, res) => { 
   res.send("Hello express");
 });
-
-
-app.listen(80);
-console.log('Server ready on port 80.');
 
 module.exports = app;
