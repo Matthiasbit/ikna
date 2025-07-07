@@ -31,3 +31,5 @@ app.get("/", (_, res) => {
 
 app.listen(80);
 console.log('Server ready on port 80.');
+
+module.exports = app;
