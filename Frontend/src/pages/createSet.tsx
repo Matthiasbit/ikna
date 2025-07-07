@@ -32,7 +32,7 @@ export default function CreateSet() {
     const [newSetname, setNewSetname] = useState("");
     const [newCategory, setNewCategory] = useState("");
 
-    const {cards, loading, refetch} = useGetCards(setId);
+    const {cards, loading, refetch} = useGetCards(setId, true);
 
     useEffect(() => {
 

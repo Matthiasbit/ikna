@@ -17,16 +17,23 @@ const updateCardSchema = z.object({
     lastreview: z.string().optional(),
 });
 
+//TODo : boolean und prüfen o true oder false, falls true: lettzer teil if(true) cards so hoch schicken else (false) das ws davon gemacht hat
+// im frontend da hook als query einbauen /cards/:setId/ irgendwas anderes -> parse condole los auch rasu schmeisen
+// wo david das aufrtuft false aufrufen und einbauen
+
+// todo: testen obs geklappt hat
 router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
     if (!user) return;
-    console.log(req.params.setId);
+
     const setId = Number(req.params.setId);
     if (isNaN(setId)) {
         res.status(400).json({error: "Ungültige SetId"});
         return;
     }
+
+    const showAllCards = req.query.all === "true";
 
     try {
         const userObject = await db.select().from(userTable).where(eq(userTable.id, user.id)).limit(1);
@@ -63,6 +70,11 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
             difficulty: item.difficulty ?? "leicht",
             lastreview: item.lastreview ?? "",
         }));
+
+        if(showAllCards){
+            res.json(cards);
+            return ;
+        }
 
         const userIntervals = {
             leicht: userObject[0].leicht,

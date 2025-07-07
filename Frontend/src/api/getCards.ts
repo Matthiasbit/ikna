@@ -12,7 +12,7 @@ export type Cards = {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export function useGetCards(setId: number) {
+export function useGetCards(setId: number, fetchAll: boolean = false) {
     const [cards, setCards] = useState<Cards[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -22,7 +22,10 @@ export function useGetCards(setId: number) {
         }
         setLoading(true);
         const token = sessionStorage.getItem('token');
-        fetch(`${API_BASE_URL}/cards/${setId}`, {
+
+        const queryParam = fetchAll ? "?all=true" : "";
+
+        fetch(`${API_BASE_URL}/cards/${setId}${queryParam}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -47,7 +50,7 @@ export function useGetCards(setId: number) {
                 console.error('Fehler beim Laden der Karten:', error);
 
             })
-    }, [setId]);
+    }, [setId, fetchAll]);
 
     useEffect(() => {
         fetchCards();
