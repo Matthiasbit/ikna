@@ -11,7 +11,7 @@ const app = express();
 app.use(helmet());
 app.use(cors({
   origin: [
-    //hier noch Vercel URL einfügen .env vermutlich auch
+    "https://matthiasbit.github.io/ikna",
     "http://localhost:3000"
   ],
   credentials: true,
