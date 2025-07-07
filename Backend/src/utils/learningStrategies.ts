@@ -8,7 +8,7 @@ type Card = {
   lastreview?: string; 
 }
 
-type UserIntervals ={
+export type UserIntervals ={
   leicht: number; 
   mittel: number; 
   schwer: number; 
