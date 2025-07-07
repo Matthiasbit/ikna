@@ -1,9 +1,9 @@
 import {Request, Response, Router} from "express";
-import {db} from "../db";
-import {card, set, user as userTable} from "../db/schema";
+import {db} from "../../db";
+import {card, set, user as userTable} from "../../db/schema";
 import {and, eq} from "drizzle-orm";
 import z from "zod";
-import {getVerifiedToken} from "../utils/utility";
+import {getVerifiedToken} from "../../utils/utility";
 
 const router = Router();
 

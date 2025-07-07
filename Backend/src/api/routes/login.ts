@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import argon2 from "argon2";
-import { db } from "../db";
-import { user as userTable } from "../db/schema";
+import { db } from "../../db";
+import { user as userTable } from "../../db/schema";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";

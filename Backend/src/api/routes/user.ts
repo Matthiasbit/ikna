@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { db } from "../db";
-import { user as userTable, set , card} from "../db/schema";
+import { db } from "../../db";
+import { user as userTable, set , card} from "../../db/schema";
 import { eq } from "drizzle-orm";
-import { getVerifiedToken } from "../utils/utility";
+import { getVerifiedToken } from "../../utils/utility";
 import z from "zod"; 
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
