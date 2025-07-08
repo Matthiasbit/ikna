@@ -77,7 +77,8 @@ router.get("/set/:setId", async (req: Request, res: Response): Promise<void> => 
     const user = getVerifiedToken(req, res);
     if (!user) return;
 
-    const setId = Number(req.params.id);
+    const setId = Number(req.params.setId);
+    console.log("param", req.params.setId);
     if (isNaN(setId)) {
         res.status(404).json({error: "Set nicht gefunden"});
         return;
@@ -139,7 +140,7 @@ router.put("/set/:setId", async (req: Request, res: Response): Promise<void> => 
     const user = getVerifiedToken(req, res);
     if (!user) return;
 
-    const id = req.params.id;
+    const id = req.params.setId;
 
     const parseResult = updateSetSchema.safeParse(JSON.parse(req.body));
     if (!parseResult.success) {
