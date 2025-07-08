@@ -6,7 +6,7 @@ import {useEffect, useMemo, useState} from "react";
 import {Sets, useGetSets} from "@/api/getSets";
 import "../app/bodyfix.css";
 import {useGetAutocompleteOptions} from "@/api/getAutocompleteOptions";
-import { useSearchParams, useRouter} from "next/navigation";
+import { useSearchParams} from "next/navigation";
 
 
 export default function Startseite() {
@@ -14,7 +14,6 @@ export default function Startseite() {
     const [page, setPage] = useState(0);
     const options = useGetAutocompleteOptions();
     const searchParams = useSearchParams();
-    const router = useRouter();
     const category = searchParams?.get("kategorie") || "Alle";
     const [selectedCategory, setSelectedCategory] = useState<string>("Alle");
 
@@ -57,9 +56,8 @@ export default function Startseite() {
     function handleBlur() {
         const params = new URLSearchParams(Array.from(searchParams!.entries()));
         params.set("kategorie", selectedCategory);
-        router.replace(`?${params.toString()}`);
+        window.location.href = `?${params.toString()}`;
     }
-
     if (data.loading || options.loading) {
         return (
             <div style={{
