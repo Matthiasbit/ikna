@@ -45,19 +45,17 @@ function Learningpage() {
   async function handleButtonClick(isCorrect: boolean) {
     setShowAnswer(false);
 
-    const current = cards[currentCardIndex];
-
     let newStatus = isCorrect
-      ? (current.status ?? 0) + 1
-      : (current.status ?? 0) - 1;
+      ? (currentCard.status ?? 0) + 1
+      : (currentCard.status ?? 0) - 1;
 
     newStatus = Math.max(0, newStatus);
     
     const updateObj: Cards = {
-      ...current,
+      ...currentCard,
       status: newStatus,
       lastreview: new Date().toISOString(),
-      difficulty: selectedChip ?? current.difficulty ?? "mittel",
+      difficulty: selectedChip ?? currentCard.difficulty ?? "mittel",
     };
 
     await updateCard(updateObj);

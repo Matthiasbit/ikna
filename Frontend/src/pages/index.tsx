@@ -1,9 +1,14 @@
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Index() {
     const router = useRouter();
 
-    router.replace("homepage");
+    useEffect(() => {
+        if (router) {
+            router.replace("homepage");
+        }
+    }, [router]);
     return (
         <div style={{
                 display: 'flex',
