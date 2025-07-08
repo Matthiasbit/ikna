@@ -21,7 +21,7 @@ const { registration, errormessage, setErrorMessage} = useRegistration();
     setValidationError(true);
     const success = await registration(email, password, signUp);
     if (success) {
-      window.location.href = "/ikna/";
+      window.location.href = "homepage";
     }
   }
   
