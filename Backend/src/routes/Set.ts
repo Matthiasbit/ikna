@@ -17,59 +17,64 @@ router.get("/sets/:category", async (req, res) => {
     const user = getVerifiedToken(req, res);
     if (!user) return;
 
-    const userData = await db.select().from(userTable).where(eq(userTable.id, user.id))
-    if (userData.length === 0) {
-        res.status(404).json({error: "User not found"});
-        return;
-    }
-    const actualUser = {
-        id: userData[0].id,
-        leicht: userData[0].leicht,
-        mittel: userData[0].mittel,
-        schwer: userData[0].schwer,
-        lernmethode: userData[0].lernmethode
-    };
-    let sets;
-    if (req.params.category === "Alle") {
-        sets = await db.select().from(set).where(eq(set.user, user.id));
-    } else {
-        sets = await db.select().from(set).where(and(eq(set.user, user.id), eq(set.kategorie, req.params.category)));
-    }
-    const setsWithStats = await Promise.all(
-        sets.map(async item => {
-            const cards = await db.select().from(card).where(eq(card.set, item.id));
-            let zero = 0, twentyfive = 0, fifty = 0, seventyfive = 0, hundred = 0;
-            cards.forEach(cardItem => {
-                if (cardItem.status === 0) {
-                    zero++;
-                    return;
-                }
-                const percentage =
-                    cardItem.difficulty === "leicht"
-                        ? cardItem.status / actualUser.leicht
-                        : cardItem.difficulty === "mittel"
-                            ? cardItem.status / actualUser.mittel
-                            : cardItem.status / actualUser.schwer;
-                if (percentage <= 0.25) {
-                    twentyfive++;
-                } else if (percentage <= 0.5) {
-                    fifty++;
-                } else if (percentage <= 0.75) {
-                    seventyfive++;
-                } else {
-                    hundred++;
-                }
-            });
-            return {
-                id: item.id,
-                name: item.name,
-                category: item.kategorie,
-                zero, twentyfive, fifty, seventyfive, hundred
-            };
-        })
-    );
+    try {
+        const userData = await db.select().from(userTable).where(eq(userTable.id, user.id))
+        if (userData.length === 0) {
+            res.status(404).json({error: "User not found"});
+            return;
+        }
+        const actualUser = {
+            id: userData[0].id,
+            leicht: userData[0].leicht,
+            mittel: userData[0].mittel,
+            schwer: userData[0].schwer,
+            lernmethode: userData[0].lernmethode
+        };
+        let sets;
+        if (req.params.category === "Alle") {
+            sets = await db.select().from(set).where(eq(set.user, user.id));
+        } else {
+            sets = await db.select().from(set).where(and(eq(set.user, user.id), eq(set.kategorie, req.params.category)));
+        }
+        const setsWithStats = await Promise.all(
+            sets.map(async item => {
+                const cards = await db.select().from(card).where(eq(card.set, item.id));
+                let zero = 0, twentyfive = 0, fifty = 0, seventyfive = 0, hundred = 0;
+                cards.forEach(cardItem => {
+                    if (cardItem.status === 0) {
+                        zero++;
+                        return;
+                    }
+                    const percentage =
+                        cardItem.difficulty === "leicht"
+                            ? cardItem.status / actualUser.leicht
+                            : cardItem.difficulty === "mittel"
+                                ? cardItem.status / actualUser.mittel
+                                : cardItem.status / actualUser.schwer;
+                    if (percentage <= 0.25) {
+                        twentyfive++;
+                    } else if (percentage <= 0.5) {
+                        fifty++;
+                    } else if (percentage <= 0.75) {
+                        seventyfive++;
+                    } else {
+                        hundred++;
+                    }
+                });
+                return {
+                    id: item.id,
+                    name: item.name,
+                    category: item.kategorie,
+                    zero, twentyfive, fifty, seventyfive, hundred
+                };
+            })
+        );
 
-    res.status(200).json(setsWithStats);
+        res.status(200).json(setsWithStats);
+    } catch(error) {
+        console.error("Fehler beim Abrufen der Sets: ", error);
+        res.status(500).json({error: "Interner Serverfehler"});
+    }
 });
 
 router.get("/set/:setId", async (req: Request, res: Response): Promise<void> => {
