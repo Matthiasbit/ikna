@@ -5,6 +5,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab';
 import Header from '@/Components/Header';
 import "../app/bodyfix.css";
 import useRegistration from '@/api/registration';
+import { useRouter } from 'next/navigation';
 
 
 export function Loginpage() {
@@ -16,12 +17,13 @@ const [validationError, setValidationError] = useState(false);
 const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
 const { registration, errormessage, setErrorMessage} = useRegistration();
+  const router = useRouter();
 
   async function logInOrSignUp(signUp: boolean) {
     setValidationError(true);
     const success = await registration(email, password, signUp);
     if (success) {
-      window.location.href = "homepage";
+      router.push("homepage");
     }
   }
   

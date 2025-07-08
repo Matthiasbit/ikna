@@ -7,6 +7,7 @@ import {useEffect, useState} from "react";
 import {createSet} from "@/api/createSet";
 import {deleteSet} from "@/api/deleteSet";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import {useRouter} from "next/router";
 
 type SetProps = {
     data: Sets | null;
@@ -14,6 +15,7 @@ type SetProps = {
 
 export default function Set({data}: SetProps) {
     const theme = useTheme();
+    const router = useRouter();
 
     const sm = useMediaQuery(theme.breakpoints.down('sm'));
     const lg = useMediaQuery(theme.breakpoints.down('lg'));
@@ -41,12 +43,12 @@ export default function Set({data}: SetProps) {
             try {
                 const created = await createSet();
                 if (!created) return;
-                window.location.href = `createSet?setId=${created.id}`;
+                router.push(`createSet?setId=${created.id}`);
             } catch (err) {
                 console.error("Fehler bim Erstellen des Sets ", err);
             }
         } else {
-            window.location.href = "learningpage?setId=" + data.id;
+            router.push("learningpage?setId=" + data.id);
         }
     }
 
@@ -91,7 +93,7 @@ export default function Set({data}: SetProps) {
                         <IconButton sx={{color: "black"}} onClick={handleDelete}>
                             <DeleteForeverIcon/>
                         </IconButton>
-                        <IconButton onClick={() => window.location.href = "createSet?setId=" + data.id}
+                        <IconButton onClick={() => router.push("createSet?setId=" + data.id)}
                                     style={{cursor: "pointer", color: "black"}}>
                             <EditIcon/>
                         </IconButton>

@@ -12,6 +12,8 @@ import {getCard} from "@/api/getCard";
 import createCard from "@/api/createCard";
 import updateCard from "@/api/updateCard";
 import deleteCard from "@/api/deleteCard";
+import {useRouter} from "next/navigation";
+import "../app/bodyfix.css";
 
 export default function CreateCard() {
 
@@ -19,6 +21,7 @@ export default function CreateCard() {
     const questionIdParam = searchParams?.get("question");
     const questionId = questionIdParam ? parseInt(questionIdParam, 10) : undefined;
     const newCard = !questionId || isNaN(questionId);
+    const router = useRouter();
 
     const [question, setQuestion] = useState('')
     const [answer, setAnswer] = useState('')
@@ -65,7 +68,7 @@ export default function CreateCard() {
             }
 
             if (redirect) {
-                window.location.href = `createSet?setId=${setId}`;
+                router.push(`createSet?setId=${setId}`);
             }
         } catch (err) {
             console.error("Fehler beim Speichern der Karte:", err);
@@ -84,7 +87,7 @@ export default function CreateCard() {
         try {
             await deleteCard(questionId)
 
-            window.location.href = `createSet?setId=${setId}`;
+            router.push(`createSet?setId=${setId}`);
         } catch (e) {
             console.error("Fehler beim Löschen: ", e);
         }
@@ -104,7 +107,7 @@ export default function CreateCard() {
             });
             const newCardId = response?.card?.id;
             if (newCardId) {
-                window.location.href = `createCard?setId=${setId}&question=${newCardId}`;
+                router.push(`createCard?setId=${setId}&question=${newCardId}`);
             } else {
                 alert("Fehler beim Erstellen der neuen Karte.");
             }
@@ -116,7 +119,7 @@ export default function CreateCard() {
 
     const handleClose = () => {
         if (setId) {
-            window.location.href = `createSet?setId=${setId}`;
+            router.push(`createSet?setId=${setId}`);
         }
     }
 

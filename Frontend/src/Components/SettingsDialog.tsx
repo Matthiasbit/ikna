@@ -3,6 +3,7 @@ import { ReactElement, useEffect, useState } from 'react';
 import { useGetSettings } from '@/api/getSettings';
 import { updateSettings } from '@/api/updateSettings';
 import { deleteUser } from '@/api/deleteUser';
+import { useRouter } from 'next/router';
 
 type SettingsDialogProps = {
     open: boolean;
@@ -17,6 +18,7 @@ export type Options = {
 }
 
 export default function SettingsDialog({open , handleClose }:SettingsDialogProps): ReactElement {
+    const router = useRouter();
     const {data, loading} = useGetSettings();
     const [options, setOptions] = useState<Options>({
         lernmethode: data?.lernmethode || "difficulty",
@@ -70,7 +72,7 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                     <Stack direction="row" spacing={2}>
                         <Button style={{width: "163px"}} onClick={() => {
                             sessionStorage.removeItem('token');
-                            window.location.href = "loginpage";
+                            router.push("loginpage");
                             }}>
                                 Log Out
                         </Button>
