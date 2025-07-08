@@ -190,7 +190,9 @@ router.get("/autocompleteOptions", async (req, res): Promise<void> => {
     const user = getVerifiedToken(req, res);
     if (!user) return;
     const sets = await db.select().from(set).where(eq(set.user, user.id));
-    const categories = sets.map(setItem => setItem.kategorie).filter(category => category !== null && category !== "");
+    const categories = Array.from(new Set(
+        sets.map(setItem => setItem.kategorie).filter(category => category !== null && category !== "")
+    ));
     res.status(200).json(categories);
 });
 
