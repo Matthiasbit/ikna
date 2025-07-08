@@ -3,7 +3,7 @@ import {db} from "../db";
 import {card, set, user as userTable} from "../db/schema";
 import {and, eq} from "drizzle-orm";
 import z from "zod";
-import {leitnerSpacedRepetition, sortByDifficulty, randomLearningMode} from "../utils/learningStrategies";
+import {leitnerSpacedRepetition, randomLearningMode, sortByDifficulty} from "../utils/learningStrategies";
 import {getVerifiedToken} from "../utils/utility";
 
 const router = Router();
@@ -17,11 +17,6 @@ const updateCardSchema = z.object({
     lastreview: z.string().optional(),
 });
 
-//TODo : boolean und prüfen o true oder false, falls true: lettzer teil if(true) cards so hoch schicken else (false) das ws davon gemacht hat
-// im frontend da hook als query einbauen /cards/:setId/ irgendwas anderes -> parse condole los auch rasu schmeisen
-// wo david das aufrtuft false aufrufen und einbauen
-
-// todo: testen obs geklappt hat
 router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> => {
 
     const user = getVerifiedToken(req, res);
@@ -71,9 +66,9 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
             lastreview: item.lastreview ?? "",
         }));
 
-        if(showAllCards){
+        if (showAllCards) {
             res.json(cards);
-            return ;
+            return;
         }
 
         const userIntervals = {
@@ -93,6 +88,7 @@ router.get("/cards/:setId", async (req: Request, res: Response): Promise<void> =
             sortedCards = randomLearningMode(cards, userIntervals);
         } else {
             sortedCards = cards;
+            console.log("else lernmethode")
         }
         res.json(sortedCards);
     } catch (e) {

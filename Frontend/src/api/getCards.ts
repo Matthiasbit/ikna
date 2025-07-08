@@ -23,7 +23,7 @@ export function useGetCards(setId: number, fetchAll: boolean = false) {
         setLoading(true);
         const token = sessionStorage.getItem('token');
 
-        const queryParam = fetchAll ? "?all=true" : "";
+        const queryParam = fetchAll ? "?all=true" : "?all=false";
 
         fetch(`${API_BASE_URL}/cards/${setId}${queryParam}`, {
             method: 'GET',
