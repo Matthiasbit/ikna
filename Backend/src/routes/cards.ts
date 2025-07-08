@@ -124,7 +124,7 @@ router.put("/card/:cardId", async (req: Request, res: Response): Promise<void> =
     if (!user) return;
 
     const id = req.params.cardId;
-    const parseResult = updateCardSchema.safeParse(req.body);
+    const parseResult = updateCardSchema.safeParse(JSON.parse(req.body));
 
     if (!parseResult.success) {
         res.status(400).json({error: "Ungültige Eingabedaten", details: parseResult.error.errors});
@@ -158,7 +158,7 @@ router.post("/card", async (req: Request, res: Response): Promise<void> => {
     const user = getVerifiedToken(req, res);
     if (!user) return;
 
-    const parseResult = updateCardSchema.safeParse(req.body);
+    const parseResult = updateCardSchema.safeParse(JSON.parse(req.body));
 
     if (!parseResult.success) {
         res.status(400).json({error: "Ungültige Eingabedaten", details: parseResult.error.errors});
