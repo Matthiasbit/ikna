@@ -83,7 +83,7 @@ export default function Set({data}: SetProps) {
     }
 
     return (
-        <Card elevation={3} onClick={handleClick} style={{cursor: "pointer"}}>
+        <Card elevation={3}>
             <Stack direction="column" spacing={2} alignItems="center" style={{padding: "5px"}}>
                 <Stack direction="row" spacing={2} alignItems="center" justifyContent="space-between"
                        style={{width: "100%", paddingRight: "5px", paddingLeft: "5px"}}>
