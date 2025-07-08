@@ -35,7 +35,7 @@ export function useGetCards(setId: number, fetchAll: boolean = false) {
             .then(response => {
                 if (!response.ok) {
                     if (response.status === 401) {
-                        window.location.href = 'ikna/loginpage';
+                        window.location.href = 'loginpage';
                     }
                     throw new Error('Fehlerhafte Antwort vom Server');
                 }

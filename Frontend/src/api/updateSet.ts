@@ -12,7 +12,7 @@ export async function updateSet(setId: number, payload: { name?: string; kategor
     });
 
     if (response.status === 401) {
-        window.location.href = "ikna/loginpage";
+        window.location.href = "loginpage";
         return;
     }
     if (!response.ok) {

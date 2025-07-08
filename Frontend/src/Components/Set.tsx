@@ -41,12 +41,12 @@ export default function Set({data}: SetProps) {
             try {
                 const created = await createSet();
                 if (!created) return;
-                window.location.href = `/ikna/createSet?setId=${created.id}`;
+                window.location.href = `createSet?setId=${created.id}`;
             } catch (err) {
                 console.error("Fehler bim Erstellen des Sets ", err);
             }
         } else {
-            window.location.href = "ikna/learningpage?setId=" + data.id;
+            window.location.href = "learningpage?setId=" + data.id;
         }
     }
 
@@ -91,7 +91,7 @@ export default function Set({data}: SetProps) {
                         <IconButton sx={{color: "black"}} onClick={handleDelete}>
                             <DeleteForeverIcon/>
                         </IconButton>
-                        <IconButton onClick={() => window.location.href = "/ikna/createSet?setId=" + data.id}
+                        <IconButton onClick={() => window.location.href = "createSet?setId=" + data.id}
                                     style={{cursor: "pointer", color: "black"}}>
                             <EditIcon/>
                         </IconButton>

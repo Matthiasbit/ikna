@@ -13,7 +13,7 @@ function getSet(setId: number): Promise<Sets> {
         .then((res) => {
             if (!res.ok) {
                 if (res.status === 401) {
-                    window.location.href = "/ikna/loginpage";
+                    window.location.href = "loginpage";
                 }
                 return res.json().then((errorBody) => {
                     throw new Error(errorBody?.error || "Unbekannter Fehler beim Laden des Sets");

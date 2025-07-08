@@ -70,7 +70,7 @@ export default function SettingsDialog({open , handleClose }:SettingsDialogProps
                     <Stack direction="row" spacing={2}>
                         <Button style={{width: "163px"}} onClick={() => {
                             sessionStorage.removeItem('token');
-                            window.location.href = "ikna/loginpage";
+                            window.location.href = "loginpage";
                             }}>
                                 Log Out
                         </Button>

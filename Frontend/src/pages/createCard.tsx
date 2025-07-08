@@ -65,7 +65,7 @@ export default function CreateCard() {
             }
 
             if (redirect) {
-                window.location.href = `/ikna/createSet?setId=${setId}`;
+                window.location.href = `createSet?setId=${setId}`;
             }
         } catch (err) {
             console.error("Fehler beim Speichern der Karte:", err);
@@ -84,7 +84,7 @@ export default function CreateCard() {
         try {
             await deleteCard(questionId)
 
-            window.location.href = `/ikna/createSet?setId=${setId}`;
+            window.location.href = `createSet?setId=${setId}`;
         } catch (e) {
             console.error("Fehler beim Löschen: ", e);
         }
@@ -104,7 +104,7 @@ export default function CreateCard() {
             });
             const newCardId = response?.card?.id;
             if (newCardId) {
-                window.location.href = `/ikna/createCard?setId=${setId}&question=${newCardId}`;
+                window.location.href = `createCard?setId=${setId}&question=${newCardId}`;
             } else {
                 alert("Fehler beim Erstellen der neuen Karte.");
             }
@@ -116,7 +116,7 @@ export default function CreateCard() {
 
     const handleClose = () => {
         if (setId) {
-            window.location.href = `/ikna/createSet?setId=${setId}`;
+            window.location.href = `createSet?setId=${setId}`;
         }
     }
 

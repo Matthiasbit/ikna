@@ -10,7 +10,7 @@ export async function deleteUser(): Promise<void> {
     });
 
     if (response.status == 401) {
-        window.location.href = "ikna/loginpage";
+        window.location.href = "loginpage";
         return;
     }
 
@@ -18,6 +18,6 @@ export async function deleteUser(): Promise<void> {
         throw new Error("Fehler beim Löschen des Users");
     }
 
-    window.location.href = "/ikna/loginpage";
+    window.location.href = "loginpage";
     sessionStorage.removeItem("token");
 }

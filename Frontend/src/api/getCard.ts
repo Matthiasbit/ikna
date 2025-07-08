@@ -17,7 +17,7 @@ export async function getCard(cardId: number): Promise<CardData | undefined> {
         });
 
         if (response.status === 401) {
-            window.location.href = "ikna/loginpage";
+            window.location.href = "loginpage";
             return;
         }
         if (!response.ok) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { TextField, Stack, Button, FormControl, InputLabel, OutlinedInput, IconButton, InputAdornment, Typography, Link, Tab, Box } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
@@ -15,27 +15,21 @@ const [showPassword, setShowPassword] = useState(false);
 const [validationError, setValidationError] = useState(false);
 const [isResetPassword, setIsResetPassword] = useState(false);
 const [tabValue, setTabValue] = useState<"1" | "2">("1");
-const { registration, errormessage, setErrorMessage, success} = useRegistration();
+const { registration, errormessage, setErrorMessage} = useRegistration();
 
-  function logInOrSignUp(signUp: boolean) {
+  async function logInOrSignUp(signUp: boolean) {
     setValidationError(true);
-    registration(email, password, signUp);
-  }
-
-  useEffect(() => {
+    const success = await registration(email, password, signUp);
     if (success) {
-      window.location.href = "/ikna/";
+      window.location.href = "";
     }
-  }, [success]);
-
+  }
+  
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleResetLinkClick = () => {
     setIsResetPassword(!isResetPassword);
   };
-
-
-
 
   return (
     <div>
@@ -145,11 +139,6 @@ const { registration, errormessage, setErrorMessage, success} = useRegistration(
                 {errormessage && (
                   <Typography color="error" sx={{ mt: 2 }}>
                     {errormessage}
-                  </Typography>
-                )}
-                {success && (
-                  <Typography color="success.main" sx={{ mt: 2 }}>
-                    Registrierung erfolgreich!
                   </Typography>
                 )}
               </Stack>
