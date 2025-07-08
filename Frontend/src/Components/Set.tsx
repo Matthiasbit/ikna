@@ -46,7 +46,7 @@ export default function Set({data}: SetProps) {
                 console.error("Fehler bim Erstellen des Sets ", err);
             }
         } else {
-            window.location.href = "/ikna/learningpage?setId=" + data.id;
+            window.location.href = "ikna/learningpage?setId=" + data.id;
         }
     }
 

@@ -17,11 +17,6 @@ async function updateCard(card: Cards): Promise<void> {
             body: JSON.stringify(payload),
         });
 
-        if (response.status === 401) {
-            window.location.href = "/ikna/loginpage";
-            return;
-        }
-
         if (!response.ok) {
             if (response.status === 401) {
                 window.location.href = 'ikna/loginpage';

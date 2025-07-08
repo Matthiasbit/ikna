@@ -52,14 +52,14 @@ const { registration, errormessage, setErrorMessage, success} = useRegistration(
             <TabPanel value="1">
               <Typography variant="body1" gutterBottom>
                 { isResetPassword ? (
-                    <>
-                      Enter your email to reset your password. Or Log in <Link href="#" onClick={handleResetLinkClick}>here</Link>.
-                    </>
-                  ) : (
-                    <>
-                      Log in to an existing account. Or reset your Password <Link href="#" onClick={handleResetLinkClick}>here</Link>.
-                    </>
-                  )}
+                  <>
+                    Enter your email to reset your password. Or Log in <Link href="#" onClick={handleResetLinkClick}>here</Link>.
+                  </>
+                ) : (
+                  <>
+                    Log in to an existing account. Or reset your Password <Link href="#" onClick={handleResetLinkClick}>here</Link>.
+                  </>
+                )}
               </Typography>
               <Stack spacing={2} direction="column">
                 <TextField
