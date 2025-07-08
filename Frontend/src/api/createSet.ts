@@ -14,7 +14,7 @@ export async function createSet(): Promise<Sets | undefined> {
     });
 
     if (response.status === 401) {
-        window.location.href = "/ikna/loginpage";
+        window.location.href = "loginpage";
         return;
     }
 

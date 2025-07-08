@@ -28,7 +28,7 @@ async function createCard(card: CardCreate): Promise<{ card: { id: number } } | 
 
         const contentType = response.headers.get("content-type");
         if (response.status === 401) {
-            window.location.href = "/ikna/loginpage";
+            window.location.href = "loginpage";
             return;
         }
         if (!response.ok) {

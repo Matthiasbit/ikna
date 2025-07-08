@@ -19,7 +19,7 @@ async function updateCard(card: Cards): Promise<void> {
 
         if (!response.ok) {
             if (response.status === 401) {
-                window.location.href = 'ikna/loginpage';
+                window.location.href = 'loginpage';
             }
             throw new Error("Fehlerhafte Antwort vom Server beim Aktualisieren der Karte");
         }

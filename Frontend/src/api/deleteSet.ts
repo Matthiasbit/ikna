@@ -8,7 +8,7 @@ export async function deleteSet(setId: number): Promise<void> {
     });
 
     if (response.status === 401) {
-        window.location.href = "ikna/loginpage";
+        window.location.href = "loginpage";
         return;
     }
 

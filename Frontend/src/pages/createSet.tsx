@@ -81,7 +81,7 @@ export default function CreateSet() {
             });
             const newCardId = newCard?.card?.id;
             if (newCardId) {
-                window.location.href = `/ikna/createCard?setId=${setId}&question=${newCardId}`;
+                window.location.href = `createCard?setId=${setId}&question=${newCardId}`;
             } else {
                 console.warn("Keine gültige Karten ID")
             }
@@ -92,7 +92,7 @@ export default function CreateSet() {
 
     const handleEditCard = (cardId: number) => {
         if (!setId) return;
-        window.location.href = `/ikna/createCard?setId=${setId}&question=${cardId}`
+        window.location.href = `createCard?setId=${setId}&question=${cardId}`
     };
 
     const handleDeleteCard = async (cardId: number) => {

@@ -11,18 +11,16 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 function useRegistration() {
     const [loading, setLoading] = useState(false);
     const [errormessage, setErrorMessage] = useState<string | null>(null);
-    const [success, setSuccess] = useState(false);
 
-    async function registration(email: string, password: string, registration: boolean) {
+    async function registration(email: string, password: string, registration: boolean):Promise<boolean> {
         setLoading(true);
         setErrorMessage(null);
-        setSuccess(false);
 
         const parseResult = registrationSchema.safeParse({email, password});
         if (!parseResult.success) {
             setErrorMessage(parseResult.error.errors[0].message);
             setLoading(false);
-            return;
+            return false;
         }
 
         try {
@@ -32,22 +30,27 @@ function useRegistration() {
                 body: JSON.stringify({email, password}),
             });
             const data = await response.json();
-            if (!response.ok) setErrorMessage(data.error || "Registrierung fehlgeschlagen");
-            else setSuccess(true);
+            if (!response.ok){ 
+                setErrorMessage(data.error || "Registrierung fehlgeschlagen");
+                return false;
+            }
+
             sessionStorage.setItem("token", data);
-            return data;
+            return true;
+
         } catch (err) {
             const message =
                 err instanceof Error
                     ? err.message || "Unbekannter Fehler"
                     : "Unbekannter Fehler";
             setErrorMessage(message);
+            return false
         } finally {
             setLoading(false);
         }
     }
 
-  return { registration, errormessage, setErrorMessage, loading, success };
+  return { registration, errormessage, setErrorMessage, loading };
 }
 
 export default useRegistration;
