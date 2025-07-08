@@ -42,24 +42,6 @@ function filterValidCards(cards: Card[], userIntervals: UserIntervals): Card[] {
   );
 }
 
-function getNextReviewDate(
-  status: number,
-  lastReviewed: string | undefined,
-  difficulty: string,
-  userIntervals: UserIntervals
-): Date {
-  const intervals = {
-    leicht: userIntervals.leicht,
-    mittel: userIntervals.mittel,
-    schwer: userIntervals.schwer,
-  };
-  const interval = intervals[difficulty.toLowerCase() as keyof UserIntervals] ?? 1;
-  const last = lastReviewed ? new Date(lastReviewed) : new Date();
-  const next = new Date(last);
-  next.setDate(last.getDate() + interval * (status || 1));
-  return next;
-}
-
 //Lernmethoden
 function randomLearningMode(cards: Card[], userIntervals: UserIntervals): Card[] {
   const filtered = filterValidCards(cards, userIntervals);
