@@ -166,7 +166,7 @@ router.delete("/set/:setId", async (req: Request, res: Response): Promise<void> 
     const user = getVerifiedToken(req, res);
     if (!user) return;
 
-    const setId = Number(req.params.id);
+    const setId = Number(req.params.setId);
 
     if (isNaN(setId)) {
         res.status(400).json({error: "Ungültige setId"});
