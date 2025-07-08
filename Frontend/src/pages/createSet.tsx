@@ -16,18 +16,19 @@ import {Delete} from "@mui/icons-material";
 import {useEffect, useState} from "react";
 import getSet from "@/api/getSet";
 import {useSearchParams} from "next/navigation";
-import "../app/bodyfix.css";
 import {updateSet} from "@/api/updateSet";
 import createCard from "@/api/createCard";
 import useGetCards from "@/api/getCards";
 import deleteCard from "@/api/deleteCard";
 import "../app/bodyfix.css";
+import { useRouter } from "next/router";
 
 export default function CreateSet() {
 
     const searchParams = useSearchParams();
     const setIdParam = searchParams?.get("setId");
     const setId = Number(setIdParam);
+    const router = useRouter();
 
     const [newSetname, setNewSetname] = useState("");
     const [newCategory, setNewCategory] = useState("");
@@ -81,7 +82,7 @@ export default function CreateSet() {
             });
             const newCardId = newCard?.card?.id;
             if (newCardId) {
-                window.location.href = `createCard?setId=${setId}&question=${newCardId}`;
+                router.push(`createCard?setId=${setId}&question=${newCardId}`);
             } else {
                 console.warn("Keine gültige Karten ID")
             }
@@ -92,7 +93,7 @@ export default function CreateSet() {
 
     const handleEditCard = (cardId: number) => {
         if (!setId) return;
-        window.location.href = `createCard?setId=${setId}&question=${cardId}`
+        router.push(`createCard?setId=${setId}&question=${cardId}`);
     };
 
     const handleDeleteCard = async (cardId: number) => {
