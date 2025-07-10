@@ -17,6 +17,7 @@ export const loginSchema = z.object({
 
 router.post("/login", async (req: Request, res: Response): Promise<void> => {
   const loginBody = loginSchema.safeParse(JSON.parse(String(req.body)));
+  //const loginBody = loginSchema.safeParse(req.body)
   if (!loginBody.success) {
     res.status(400).json({ error: "Ungültige Eingabedaten", details: loginBody.error.errors });
     return;

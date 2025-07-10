@@ -19,6 +19,7 @@ const settingsSchema = z.object({
 
 router.post("/user", async (req, res): Promise<void> => {
   const parseResult = loginSchema.safeParse(JSON.parse(String(req.body)));
+  //const parseResult = loginSchema.safeParse(req.body);
   if (!parseResult.success) {
     res.status(400).json({ error: "Ungültige Eingabedaten", details: parseResult.error.errors });
     return;
@@ -72,6 +73,7 @@ router.put("/user", async (req, res): Promise<void> => {
     const user = getVerifiedToken(req, res);
     if (!user) {return;}
     const parseResult = settingsSchema.safeParse(JSON.parse(String(req.body)));
+    // const parseResult = settingsSchema.safeParse(req.body);
     
     if (!parseResult.success) {
         res.status(400).json({ error: "Ungültige Daten", details: parseResult.error.errors });

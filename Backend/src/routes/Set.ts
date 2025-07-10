@@ -110,6 +110,7 @@ router.post("/set", async (req: Request, res: Response): Promise<void> => {
     try {
 
         const parseResult = updateSetSchema.safeParse(JSON.parse(String(req.body)));
+        //const parseResult = updateSetSchema.safeParse(req.body);
 
         if (!parseResult.success) {
             res.status(400).json({error: "Ungültige Eingabedaten", details: parseResult.error.errors});
@@ -142,6 +143,7 @@ router.put("/set/:setId", async (req: Request, res: Response): Promise<void> => 
 
     const id = req.params.setId;
     const parseResult = updateSetSchema.safeParse(JSON.parse(String(req.body)));
+    //const parseResult = updateSetSchema.safeParse(req.body);
     
     if (!parseResult.success) {
         res.status(400).json({error: "Ungültige Eingabedaten", details: parseResult.error.errors});
